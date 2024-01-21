@@ -2,7 +2,6 @@ import * as colors from './colors'
 
 const page = {
   minHeight: '100vh',
-  margin: '40px',
 }
 
 const signInModal = {
@@ -60,5 +59,23 @@ const drawerItem = {
   color: colors.main
 }
 
+const secondaryNav = {
+  bgcolor: 'common.white',
+  color: 'primary.main',
+  height: '40px',
+  justifyContent: 'center',
+}
 
-export {logo, navLinks, buttonLink, topBar, logoLink, drawerItem, page, signInModal, mobileSignInModal }
+const slateSelector = {
+  maxHeight: '30px',
+  fontSize: '13px',
+  color: 'primary.main',
+}
+
+const slateSelectorDropdown = {
+  fontSize: '13px'
+}
+
+
+
+export {logo, navLinks, buttonLink, topBar, logoLink, drawerItem, page, signInModal, mobileSignInModal, secondaryNav, slateSelector, slateSelectorDropdown }
