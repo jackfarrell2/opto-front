@@ -28,7 +28,7 @@ function Navbar({handleOpen}) {
             ) : (
                 <Box sx={navLinks}>
                     <Link to='/nba'>
-                        <Button sx={buttonLink}>NHL</Button>
+                        <Button sx={buttonLink}>NBA</Button>
                     </Link>
                     <Link to='/mlb'>
                         <Button sx={buttonLink}>MLB</Button>
