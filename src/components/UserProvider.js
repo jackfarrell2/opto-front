@@ -74,6 +74,7 @@ function UserProvider({setOpenModal, apiUrl, children}) {
         localStorage.removeItem('token');
         setUser(null);
         setToken(null);
+        
     };
 
     function useUser() {
