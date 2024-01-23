@@ -2,15 +2,16 @@ import React from 'react'
 import { Modal, Box, useMediaQuery } from '@mui/material'
 import { signInModal, mobileSignInModal } from '../styles/classes'
 import { SlateForm } from './SlateForm'
+import { useMutation, useQueryClient } from 'react-query'
 import config from '../config'
-
 
 function SlateModal({openModal, setSlateModal, slates}) {
     const isMobile = useMediaQuery((theme) => theme.breakpoints.down('md'));
-    const apiUrl = `${config.apiUrl}`
+    const apiUrl = `${config.apiUrl}`;
+    const queryClient = useQueryClient();
 
-    const handleSubmit = async(file) => {
-        try {
+    const mutation = useMutation(
+        async (file) => {
             const formData = new FormData();
             formData.append('file', file);
 
@@ -19,11 +20,25 @@ function SlateModal({openModal, setSlateModal, slates}) {
                 body: formData,
             });
 
-            if (response.ok) {
-                console.log('Slate added')
-            } else {
-                console.error('Error:', response);
+            if (!response.ok) {
+                throw new Error('Failed to add slate');
             }
+
+            return response.json();
+        },
+        {
+            onSuccess: () => {
+                queryClient.invalidateQueries('slates');
+                console.log('Slate Added')
+                setSlateModal(false)
+                window.location.reload(true);
+            },
+        }
+    );
+
+    const handleSubmit = async(file) => {
+        try {
+            await mutation.mutateAsync(file);
         } catch (error) {
             console.error('Error:', error);
         }
@@ -36,7 +51,7 @@ function SlateModal({openModal, setSlateModal, slates}) {
             aria-describedby='modal-modal-upload-slate-form'
         >
         <Box sx={isMobile ? (mobileSignInModal) : (signInModal)}>
-            <SlateForm setSlateModal={setSlateModal} slates={slates} handleSubmit={handleSubmit} />
+            <SlateForm setSlateModal={setSlateModal} slates={slates} handleSubmit={handleSubmit} loading={mutation.isLoading} />
         </Box>
         </Modal>
     )

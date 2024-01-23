@@ -11,7 +11,7 @@ function SecondNavbar({setSlateModal, slate, slates, setSlate, setSlates}) {
     return (
         <AppBar position='static' sx={secondaryNav}>
             <Toolbar>
-                <SlateSelector slates={slates} slate={slate} handleSlateChange={(event) => setSlate(event.target.value)} />
+                <SlateSelector slates={slates} slate={slate} handleSlateChange={(newSlate) => setSlate(newSlate)} />
                 <IconButton sx={{ color: theme.palette.primary.main }} onClick={() => setSlateModal(true)}><AddIcon /></IconButton>
             </Toolbar>
         </AppBar>

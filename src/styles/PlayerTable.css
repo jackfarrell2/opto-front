@@ -1,0 +1,35 @@
+/* PlayerTable.css */
+
+.player-table {
+    width: 80%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    overflow-x: auto;
+}
+
+.player-table th,
+.player-table td {
+    padding: 5px;
+    border: 1px solid #ddd;
+    text-align: left;
+    font-size: 14px;
+}
+
+.player-table th {
+    background-color: #f2f2f2;
+}
+
+.player-table tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.player-table tbody tr:hover {
+    background-color: #e0e0e0;
+}
+
+.player-table .player-cell {
+    max-height: 150px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}

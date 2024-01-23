@@ -1,37 +1,46 @@
 import React from 'react'
-import { Box, Divider } from '@mui/material'
+import { Box, Divider, Grid, CircularProgress } from '@mui/material'
 import { page } from '../styles/classes'
 import { SecondNavbar } from '../components/SecondNavbar'
 import { SlateModal } from '../components/SlateModal'
+import { SlateInfo } from '../components/SlateInfo'
 import config from '../config'
+import { useQuery } from 'react-query'
 
 function Nba() {
     const [slateModal, setSlateModal] = React.useState(false)
-    const [slates, setSlates] = React.useState([])
     const [slate, setSlate] = React.useState('')
-
     const apiUrl = `${config.apiUrl}` 
 
-    React.useEffect(() => {
-        fetch(`${apiUrl}nba/slates`)
-            .then((response) => response.json())
-            .then((data) => {
-                const dirtySlates = data
-                const cleanSlates = dirtySlates.map(obj => obj.name); 
-                setSlates(cleanSlates)
-                setSlate(cleanSlates[0])
-            })
-            .catch((error) => {
-                console.error('Error:', error);
-            });
-    }, [apiUrl]) 
+    const { data: slates, isLoading: slatesLoading } = useQuery('slates', async () => {
+        const response = await fetch(`${apiUrl}nba/slates`)
+        if (!response.ok) {
+            throw new Error('Failed to fetch slates')
+        }
+        const data = await response.json()
+        if (data.length > 0) {
+            setSlate(data[0])
+        }
+        return data
+    });
 
     return (
         <Box sx={page}>
             <SlateModal openModal={slateModal} setSlateModal={setSlateModal} slates={slates} />
             <Divider /> 
-            <SecondNavbar setSlateModal={setSlateModal} slate={slate} slates={slates} setSlate={setSlate} setSlates={setSlates}></SecondNavbar>
-            <Divider /> 
+            {(slatesLoading || !slate) ? (
+                <Grid container justifyContent="center" alignItems="center" sx={{ height: '75vh' }}>
+                    <Grid item>
+                        <CircularProgress size={150} />
+                    </Grid>
+                </Grid>
+            ) : (
+                <>
+                    <SecondNavbar setSlateModal={setSlateModal} slate={slate} slates={slates || []} setSlate={setSlate}></SecondNavbar>
+                    <Divider /> 
+                    {slate && <SlateInfo slate={slate} />}
+                </>
+            )}
         </Box>
     )
 }

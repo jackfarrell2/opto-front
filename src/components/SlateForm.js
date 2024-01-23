@@ -1,6 +1,6 @@
 import React from 'react'
 import CloseIcon from '@mui/icons-material/Close';
-import { Button, Grid, TextField, Typography } from '@mui/material'
+import { Button, Grid, TextField, Typography, CircularProgress } from '@mui/material'
 import { useTheme } from '@mui/material/styles';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import { styled } from '@mui/material/styles';
@@ -18,7 +18,7 @@ const VisuallyHiddenInput = styled('input')({
   width: 1,
 });
 
-function SlateForm({setSlateModal, handleSubmit}) {
+function SlateForm({setSlateModal, handleSubmit, loading}) {
     const theme = useTheme()
     const [selectedFile, setSelectedFile] = React.useState(null)
 
@@ -36,32 +36,40 @@ function SlateForm({setSlateModal, handleSubmit}) {
                 <Grid item>
                     <Typography variant='h5'>Add a Slate</Typography>
                 </Grid>
-                <Grid item>
-                    <Grid container direction='row' justifyContent='center' alignItems='center' spacing={2}>
-                        <Grid item>
-                            <Button sx={{
-                            bgcolor: '#ffc107',
-                            color: 'primary.main',
-                            '&:hover': {
-                            bgcolor: '#ffc107', 
-                            color: 'primary.main', 
-                            }, }} component='label' variant='contained' startIcon={<CloudUploadIcon />}>
-                                Upload CSV
-                                <VisuallyHiddenInput type='file' onChange={handleFileChange} />
-                                {/* <input type='file' id='formFile' name='slate-csv' accept='.csv'></input> */}
-                            </Button>
-                        </Grid>
-                        <Grid item>
-                            <TextField id="standard-basic" value={selectedFile ? selectedFile.name : ''} variant="standard" />
-                        </Grid>
+                {loading ? (
+                    <Grid item sx={{ mb: 10 }}>
+                        <CircularProgress />
                     </Grid>
-                </Grid>
-                <Grid item>
-                    <Button variant='contained' onClick={() => handleSubmit(selectedFile)}>Submit</Button>
-                </Grid>
-                <Grid item>
-                    <Button variant='text' size='small' sx={{ textDecoration: 'underline' }}>Want to delete a slate?</Button>
-                </Grid>
+                    ) : (
+                    <>
+                        <Grid item>
+                            <Grid container direction='row' justifyContent='center' alignItems='center' spacing={2}>
+                                <Grid item>
+                                    <Button sx={{
+                                    bgcolor: '#ffc107',
+                                    color: 'primary.main',
+                                    '&:hover': {
+                                    bgcolor: '#ffc107', 
+                                    color: 'primary.main', 
+                                    }, }} component='label' variant='contained' startIcon={<CloudUploadIcon />}>
+                                        Upload CSV
+                                        <VisuallyHiddenInput type='file' onChange={handleFileChange} />
+                                    </Button>
+                                </Grid>
+                                <Grid item>
+                                    <TextField id="standard-basic" value={selectedFile ? selectedFile.name : ''} variant="standard" />
+                                </Grid>
+                            </Grid>
+                        </Grid>
+                        <Grid item>
+                            <Button variant='contained' onClick={() => handleSubmit(selectedFile)}>Submit</Button>
+                        </Grid>
+                        <Grid item>
+                            <Button variant='text' size='small' sx={{ textDecoration: 'underline' }}>Want to delete a slate?</Button>
+                        </Grid>
+                    </>
+                    )
+                }
             </Grid>
         </>
     )
