@@ -1,17 +1,15 @@
-/* PlayerTable.css */
-
 .player-table {
-    width: 80%;
+    width: 100%;
     border-collapse: collapse;
     margin-top: 20px;
     overflow-x: auto;
+    overflow-y: auto;
 }
 
 .player-table th,
 .player-table td {
     padding: 5px;
     border: 1px solid #ddd;
-    text-align: left;
     font-size: 14px;
 }
 
@@ -32,4 +30,12 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+}
+
+.name-cell {
+    text-align: left;
+}
+
+.select-cell, .lock-cell, .position-cell, .team-cell, .salary-cell, .opponent-cell, .ownership-cell, .projection-cell, .value-cell {
+    text-align: center;
 }

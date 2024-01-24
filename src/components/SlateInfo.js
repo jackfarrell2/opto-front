@@ -2,12 +2,14 @@ import React from 'react'
 import { useQuery } from 'react-query'
 import config from '../config'
 import { PlayerTable } from './PlayerTable';
-import { Grid, CircularProgress } from '@mui/material';
+import { Grid, CircularProgress, Box, Container } from '@mui/material';
 
 
 function SlateInfo({slate}) {
 
     const apiUrl = `${config.apiUrl}nba/get-slate/${slate.id}`
+
+
 
     const { data: players, isLoading: playersLoading } = useQuery(['players', slate.id], async () => {
         const response = await fetch(apiUrl)
@@ -18,13 +20,23 @@ function SlateInfo({slate}) {
         return data
     });
 
+
+
     const columns = [
+        {
+            Header: '',
+            accessor: 'select',
+        },
+        {
+            Header: '',
+            accessor: 'lock',
+        },
         {
             Header: 'Player',
             accessor: 'name'
         },
         {
-            Header: 'Position',
+            Header: 'Pos',
             accessor: 'position'
         },
         {
@@ -32,21 +44,29 @@ function SlateInfo({slate}) {
             accessor: 'salary'
         },
         {
-            Header: 'Projection',
-            accessor: 'projection'
-        },
-        {
             Header: 'Team',
             accessor: 'team'
         },
         {
-            Header: 'Opponent',
+            Header: 'Opp',
             accessor: 'opponent'
+        },
+        {
+            Header: 'Own',
+            accessor: 'ownership'
+        },
+        {
+            Header: 'Proj',
+            accessor: 'projection'
+        },
+        {
+            Header: 'Value',
+            accessor: 'value'
         },
     ]
 
     return (
-        <>
+        <Box>
             {playersLoading ? (
                 <Grid container sx={{ height: '75vh' }} direction='column' justifyContent='center' alignItems='center'>
                     <Grid item>
@@ -54,13 +74,17 @@ function SlateInfo({slate}) {
                     </Grid>
                 </Grid>
             ) : (
-                <Grid container direction='row' justifyContent='center'>
-                    <Grid item>
-                        <PlayerTable columns={columns} data={players.players} />
+                <Grid container direction='row' justifyContent='center' alignItems='center'>
+                    <Grid item xs={9}>
+                        <Container sx={{ maxHeight: '75vh', overflow: 'auto'}}>
+                            <PlayerTable columns={columns} data={players.players} />
+                        </Container>
+                    </Grid>
+                    <Grid item xs={3}>
                     </Grid>
                 </Grid>
             )}
-        </>
+        </Box>
     )
 }
 
