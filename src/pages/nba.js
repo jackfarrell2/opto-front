@@ -6,6 +6,7 @@ import { SlateModal } from '../components/SlateModal'
 import { SlateInfo } from '../components/SlateInfo'
 import config from '../config'
 import { useQuery } from 'react-query'
+import { PlayerRow } from '../components/PlayerRow'
 
 function Nba() {
     const [slateModal, setSlateModal] = React.useState(false)
@@ -39,6 +40,16 @@ function Nba() {
                     <SecondNavbar setSlateModal={setSlateModal} slate={slate} slates={slates || []} setSlate={setSlate}></SecondNavbar>
                     <Divider /> 
                     {slate && <SlateInfo slate={slate} />}
+                    {/* <table>
+                        <thead>
+                            <tr>
+                                <th>blah</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <PlayerRow />
+                        </tbody>
+                    </table> */}
                 </>
             )}
         </Box>
