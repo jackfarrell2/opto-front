@@ -17,7 +17,7 @@ function PlayerRow({row}) {
             <StaticCell value={row.original.salary}/> 
             <StaticCell value={row.original.team}/> 
             <StaticCell value={row.original.opponent}/>  
-            <OwnershipCell ownership={'0%'} />
+            <OwnershipCell ownership={'0'} />
             <ProjectionCell projection={projection} setProjection={setProjection} />
             <ValueCell projection={projection} salary={row.original.salary}/>
         </tr>

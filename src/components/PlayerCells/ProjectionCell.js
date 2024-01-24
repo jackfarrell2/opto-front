@@ -1,25 +1,38 @@
+import '../../styles/PlayerTable.css';
+
 function ProjectionCell({ projection, setProjection }) {
 
-  function handleChange(event) {
-    const inputValue = event.target.value;
-
-    // Regular expression to validate input with up to two decimal places
-    const validInput = /^\d+(\.\d{0,2})?$/.test(inputValue);
-
-    if (validInput) {
-      const newValue = inputValue === '' ? '0' : inputValue.replace(/^0+/, ''); // Remove leading zeros
-      setProjection(newValue);
+  function handleChange(e) {
+    // Validate input
+    const inputValue = e.target.value;
+    let dotTrails = false
+    if (inputValue === '') {
+      setProjection('0');
+      return;
     }
+    if (isNaN(inputValue)) {
+      return;
+    }
+    if (inputValue.endsWith('.')) {
+      dotTrails = true
+    }
+    if (inputValue > 1000 || inputValue < 0) {
+      return;
+    }
+    const parsedValue = parseFloat(inputValue);
+    console.log(parsedValue)
+    const roundedValue = Math.round((parsedValue + Number.EPSILON) * 100) / 100
+    setProjection(dotTrails ? roundedValue.toString() + '.' : roundedValue.toString())
   }
 
   return (
-    <td>
+    <td className='projection-cell'>
       <input
         type='text'
         name='projection'
         value={projection}
         onChange={handleChange}
-        style={{ maxWidth: '50px', minWidth: '50px', textAlign: 'center' }}
+        className='projection-input'
       />
     </td>
   );

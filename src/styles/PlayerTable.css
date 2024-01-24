@@ -32,5 +32,16 @@
     overflow: hidden;
     text-overflow: ellipsis;
     text-align: left;
-
 }
+
+.player-table .projection-cell {
+    color: inherit;
+    padding: 1px;
+}
+
+.ownership-input, .projection-input {
+    width: 50px;
+    height: 2.8vh;
+    text-align: center;
+}
+
