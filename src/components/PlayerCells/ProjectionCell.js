@@ -1,6 +1,6 @@
 import '../../styles/PlayerTable.css';
 
-function ProjectionCell({ projection, setProjection }) {
+function ProjectionCell({ cell, projection, setProjection }) {
 
   function handleChange(e) {
     // Validate input
@@ -20,13 +20,12 @@ function ProjectionCell({ projection, setProjection }) {
       return;
     }
     const parsedValue = parseFloat(inputValue);
-    console.log(parsedValue)
     const roundedValue = Math.round((parsedValue + Number.EPSILON) * 100) / 100
     setProjection(dotTrails ? roundedValue.toString() + '.' : roundedValue.toString())
   }
 
   return (
-    <td className='projection-cell'>
+    <td {...cell.getCellProps()} className='projection-cell'>
       <input
         type='text'
         name='projection'

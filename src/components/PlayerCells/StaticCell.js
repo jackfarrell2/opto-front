@@ -1,7 +1,7 @@
-function StaticCell({value, className}) {
+function StaticCell({cell, value, className}) {
 
     return (
-        <td className={className}>
+        <td {...cell.getCellProps()} className={className}>
             {value}
         </td>
     )

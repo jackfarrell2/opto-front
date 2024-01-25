@@ -1,8 +1,8 @@
 .player-table {
     width: 100%;
     border-collapse: collapse;
-    margin-top: 20px;
-    overflow-x: auto;
+    margin-top: 0px;
+    overflow-x: scroll;
     overflow-y: auto;
 }
 
@@ -35,6 +35,13 @@
 }
 
 .player-table .projection-cell {
+    max-width: 100px;
+    color: inherit;
+    padding: 1px;
+}
+
+.player-table .ownership-cell {
+    max-width: 50px;
     color: inherit;
     padding: 1px;
 }

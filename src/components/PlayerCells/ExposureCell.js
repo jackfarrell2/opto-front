@@ -2,8 +2,8 @@ import React from 'react';
 import '../../styles/PlayerTable.css';
 import { useMediaQuery } from '@mui/material';
 
-function OwnershipCell({cell, ownership}) {
-    const [ownershipInput, setOwnership] = React.useState(ownership)
+function ExposureCell({cell, exposure}) {
+    const [exposureInput, setExposure] = React.useState(exposure)
     const isMobile = useMediaQuery((theme) => theme.breakpoints.down('md'));
 
     function handleChange(e) {
@@ -11,7 +11,7 @@ function OwnershipCell({cell, ownership}) {
         const inputValue = e.target.value;
         let dotTrails = false
         if (inputValue === '') {
-        setOwnership('0');
+        setExposure('0');
         return;
         }
         if (isNaN(inputValue)) {
@@ -25,15 +25,19 @@ function OwnershipCell({cell, ownership}) {
         }
         const parsedValue = parseFloat(inputValue);
         const roundedValue = Math.round((parsedValue + Number.EPSILON) * 100) / 100
-        setOwnership(dotTrails ? roundedValue.toString() + '.' : roundedValue.toString())
+        cell.row.original.exposure = roundedValue
+        const cleanValue = dotTrails ? roundedValue.toString() + '.' : roundedValue.toString()
+        cell.row.original.exposure = cleanValue
+        setExposure(cleanValue)
+
     }
 
     return (
         <td {...cell.getCellProps()} className='ownership-cell'>
-            <input type='text' name='ownership' value={ownershipInput} onChange={handleChange} className='ownership-input'></input>
+            <input type='text' name='exposure' value={exposureInput} onChange={handleChange} className='ownership-input'></input>
             {!isMobile && <span style={{ paddingLeft: '5px' }}>%</span>}
         </td>
     )
 }
 
-export { OwnershipCell }
+export { ExposureCell }

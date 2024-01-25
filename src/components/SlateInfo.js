@@ -21,49 +21,7 @@ function SlateInfo({slate}) {
     });
 
 
-
-    const columns = [
-        {
-            Header: '',
-            accessor: 'select',
-        },
-        {
-            Header: '',
-            accessor: 'lock',
-        },
-        {
-            Header: 'Player',
-            accessor: 'name'
-        },
-        {
-            Header: 'Pos',
-            accessor: 'position'
-        },
-        {
-            Header: 'Salary',
-            accessor: 'salary'
-        },
-        {
-            Header: 'Team',
-            accessor: 'team'
-        },
-        {
-            Header: 'Opp',
-            accessor: 'opponent'
-        },
-        {
-            Header: 'Own',
-            accessor: 'ownership'
-        },
-        {
-            Header: 'Proj',
-            accessor: 'projection'
-        },
-        {
-            Header: 'Value',
-            accessor: 'value'
-        },
-    ]
+    const playerData = React.useMemo(() => players?.players, [players]) 
 
     return (
         <Box>
@@ -76,8 +34,8 @@ function SlateInfo({slate}) {
             ) : (
                 <Grid container direction='row' justifyContent='center' alignItems='center'>
                     <Grid item xs={9}>
-                        <Container sx={{ maxHeight: '75vh', overflow: 'auto'}}>
-                            <PlayerTable columns={columns} data={players.players} />
+                        <Container sx={{ maxHeight: '75vh', overflow: 'auto', mt: '2vh'}}>
+                            <PlayerTable data={playerData} />
                         </Container>
                     </Grid>
                     <Grid item xs={3}>
