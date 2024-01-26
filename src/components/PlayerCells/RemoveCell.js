@@ -13,9 +13,15 @@ function RemoveCell({cell, exclude, setExclude, setLock}) {
     return (
         <td {...cell.getCellProps()} onClick={handleClick}>
             {exclude ? (
-                <RemoveCircleIcon color='error' fontSize='small' />
+                <>
+                    <input type='hidden' value='true' name={`players[${cell.row.original.id}][remove]`} />
+                    <RemoveCircleIcon color='error' fontSize='small' />
+                </>
             ) : (
-                <RemoveCircleOutlineIcon color='error' fontSize='small' />
+                <>
+                    <input type='hidden' value='' name={`players[${cell.row.original.id}][remove]`} />
+                    <RemoveCircleOutlineIcon color='error' fontSize='small' />
+                </>
             )}
         </td>
     )

@@ -21,14 +21,16 @@ function ProjectionCell({ cell, projection, setProjection }) {
     }
     const parsedValue = parseFloat(inputValue);
     const roundedValue = Math.round((parsedValue + Number.EPSILON) * 100) / 100
-    setProjection(dotTrails ? roundedValue.toString() + '.' : roundedValue.toString())
+    const cleanValue = dotTrails ? roundedValue.toString() + '.' : roundedValue.toString()
+    cell.row.original.projection = cleanValue
+    setProjection(cleanValue)
   }
 
   return (
     <td {...cell.getCellProps()} className='projection-cell'>
       <input
         type='text'
-        name='projection'
+        name={`players[${cell.row.original.id}][projection]`}
         value={projection}
         onChange={handleChange}
         className='projection-input'

@@ -10,8 +10,23 @@ import { ProjectionCell } from './PlayerCells/ProjectionCell'
 import { OwnershipCell } from './PlayerCells/OwnershipCell' 
 import { LockCell } from './PlayerCells/LockCell'
 import { ExposureCell } from './PlayerCells/ExposureCell'
+import config from '../config'
+import { useMutation } from 'react-query'
 
-function PlayerTable({ data }) { 
+function PlayerTable({ data, optomize }) { 
+    const apiUrl = `${config.apiUrl}nba/optomize/`
+    const optimizeMutation = useMutation(async (formData) => {
+        const response = await fetch(apiUrl, {
+            method: 'POST',
+            body: formData,
+        });
+
+        if (!response.ok) {
+        throw new Error('Failed to optimize players');
+        }
+
+        return response.json();
+    });
 
     const columns = React.useMemo(() => [
         {
@@ -118,30 +133,44 @@ function PlayerTable({ data }) {
         }
     }
 
+    function handleFormSubmit(e) {
+        e.preventDefault();
+        const formData = new FormData(e.target);
+        const formDataObject = Object.fromEntries(formData);
+        const json = JSON.stringify(formDataObject);
+        const timeout = globalFilter ? 1500 : 0;
+        setGlobalFilter('');
+        setTimeout(() => {
+            optimizeMutation.mutate(json);
+
+        }, timeout)
+    }
+
     return (
-        <div>
-            <TextField size='small' id="filled-search" label="Search Player" type="search" variant="filled" value={globalFilter || ''} onChange={handleSearchChange} />
-            <table className='player-table' {...getTableProps()}>
-                <thead>
-                    {headerGroups.map(headerGroup => (
-                        <tr {...headerGroup.getHeaderGroupProps()}> 
-                            {headerGroup.headers.map(column => (
-                                <th {...column.getHeaderProps(column.getSortByToggleProps())}>
-                                    {column.render('Header')}
-                                </th>
-                            ))}
-                        </tr>
-                    ))}
-                </thead>
-                <tbody {...getTableBodyProps()}>
-                    {rows.map(row => {
-                    prepareRow(row);
-                    return <PlayerRow key={row.id} row={row} />;
-                    })}
-                </tbody>
-            </table>
-            {console.log(data)}
-        </div>
+        <form id='PlayerTableForm' onSubmit={handleFormSubmit}>
+            <div>
+                <TextField size='small' id="filled-search" label="Search Player" type="search" variant="filled" value={globalFilter || ''} onChange={handleSearchChange} />
+                <table className='player-table' {...getTableProps()}>
+                    <thead>
+                        {headerGroups.map(headerGroup => (
+                            <tr {...headerGroup.getHeaderGroupProps()}> 
+                                {headerGroup.headers.map(column => (
+                                    <th {...column.getHeaderProps(column.getSortByToggleProps())}>
+                                        {column.render('Header')}
+                                    </th>
+                                ))}
+                            </tr>
+                        ))}
+                    </thead>
+                    <tbody {...getTableBodyProps()}>
+                        {rows.map(row => {
+                        prepareRow(row);
+                        return <PlayerRow key={row.id} row={row} />;
+                        })}
+                    </tbody>
+                </table>
+            </div>
+        </form>    
     )
 }
 

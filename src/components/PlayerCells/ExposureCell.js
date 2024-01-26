@@ -34,7 +34,7 @@ function ExposureCell({cell, exposure}) {
 
     return (
         <td {...cell.getCellProps()} className='ownership-cell'>
-            <input type='text' name='exposure' value={exposureInput} onChange={handleChange} className='ownership-input'></input>
+            <input type='text' name={`players[${cell.row.original.id}][exposure]`} value={exposureInput} onChange={handleChange} className='ownership-input'></input>
             {!isMobile && <span style={{ paddingLeft: '5px' }}>%</span>}
         </td>
     )

@@ -12,9 +12,15 @@ function LockCell({cell, lock, setExclude, setLock}) {
     return (
         <td {...cell.getCellProps()} onClick={handleClick}>
             {lock ? (
-                <LockIcon color='primary' fontSize='small' />
+                <>
+                    <input type='hidden' value='true' name={`players[${cell.row.original.id}][lock]`} />
+                    <LockIcon color='primary' fontSize='small' />
+                </>
             ) : (
-                <LockOutlinedIcon color='primary' fontSize='small' />
+                <>
+                    <input type='hidden' value='false' name={`players[${cell.row.original.id}][lock]`} />
+                    <LockOutlinedIcon color='primary' fontSize='small' />
+                </>
             )}
         </td>
     )

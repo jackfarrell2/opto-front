@@ -2,14 +2,12 @@ import React from 'react'
 import { useQuery } from 'react-query'
 import config from '../config'
 import { PlayerTable } from './PlayerTable';
-import { Grid, CircularProgress, Box, Container } from '@mui/material';
+import { Grid, CircularProgress, Box, Container, Button } from '@mui/material';
 
 
 function SlateInfo({slate}) {
 
     const apiUrl = `${config.apiUrl}nba/get-slate/${slate.id}`
-
-
 
     const { data: players, isLoading: playersLoading } = useQuery(['players', slate.id], async () => {
         const response = await fetch(apiUrl)
@@ -37,10 +35,12 @@ function SlateInfo({slate}) {
                         <Container sx={{ maxHeight: '75vh', overflow: 'auto', mt: '2vh'}}>
                             <PlayerTable data={playerData} />
                         </Container>
+                        <Button variant='contained' form='PlayerTableForm' type='submit'>Optomize</Button>
                     </Grid>
                     <Grid item xs={3}>
                     </Grid>
                 </Grid>
+
             )}
         </Box>
     )

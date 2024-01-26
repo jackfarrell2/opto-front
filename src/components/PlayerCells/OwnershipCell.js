@@ -25,12 +25,14 @@ function OwnershipCell({cell, ownership}) {
         }
         const parsedValue = parseFloat(inputValue);
         const roundedValue = Math.round((parsedValue + Number.EPSILON) * 100) / 100
-        setOwnership(dotTrails ? roundedValue.toString() + '.' : roundedValue.toString())
+        const cleanValue = dotTrails ? roundedValue.toString() + '.' : roundedValue.toString()
+        cell.row.original.ownership = cleanValue
+        setOwnership(cleanValue)
     }
 
     return (
         <td {...cell.getCellProps()} className='ownership-cell'>
-            <input type='text' name='ownership' value={ownershipInput} onChange={handleChange} className='ownership-input'></input>
+            <input type='text' value={ownershipInput} onChange={handleChange} className='ownership-input' name={`players[${cell.row.original.id}][ownership]`}></input>
             {!isMobile && <span style={{ paddingLeft: '5px' }}>%</span>}
         </td>
     )

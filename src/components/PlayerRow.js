@@ -20,8 +20,8 @@ function PlayerRow({row}) {
             <StaticCell cell={row.cells[4]} value={row.original.salary}/> 
             <StaticCell cell={row.cells[5]} value={row.original.team}/> 
             <StaticCell cell={row.cells[6]} value={row.original.opponent}/>  
-            <OwnershipCell cell={row.cells[7]} ownership={'0'} />
-            <ExposureCell cell={row.cells[8]} exposure={'0'} />
+            <OwnershipCell cell={row.cells[7]} ownership={row.original.ownership} />
+            <ExposureCell cell={row.cells[8]} exposure={row.original.exposure} />
             <ProjectionCell cell={row.cells[9]} projection={projection} setProjection={setProjection} />
             <XValueCell cell={row.cells[10]} projection={projection} salary={row.original.salary}/>
         </tr>
