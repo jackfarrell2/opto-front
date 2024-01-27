@@ -18,7 +18,7 @@ function LockCell({cell, lock, setExclude, setLock}) {
                 </>
             ) : (
                 <>
-                    <input type='hidden' value='false' name={`players[${cell.row.original.id}][lock]`} />
+                    <input type='hidden' value='' name={`players[${cell.row.original.id}][lock]`} />
                     <LockOutlinedIcon color='primary' fontSize='small' />
                 </>
             )}

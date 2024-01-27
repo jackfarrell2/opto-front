@@ -13,12 +13,29 @@ import { ExposureCell } from './PlayerCells/ExposureCell'
 import config from '../config'
 import { useMutation } from 'react-query'
 
-function PlayerTable({ data, optomize }) { 
-    const apiUrl = `${config.apiUrl}nba/optomize/`
-    const optimizeMutation = useMutation(async (formData) => {
+function PlayerTable({ data }) { 
+
+    // Placeholder slate and user for now
+    const slateId = 8
+    const userId = 2
+
+    const apiUrl = `${config.apiUrl}nba/optimize/`
+
+    function formDataToObject(formData) {
+        const data = {};
+        formData.forEach((value, key) => {
+            data[key] = value;
+        });
+        return data;
+    }
+
+    const optimizeMutation = useMutation(async (requestData) => {
         const response = await fetch(apiUrl, {
             method: 'POST',
-            body: formData,
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(requestData),
         });
 
         if (!response.ok) {
@@ -136,41 +153,46 @@ function PlayerTable({ data, optomize }) {
     function handleFormSubmit(e) {
         e.preventDefault();
         const formData = new FormData(e.target);
-        const formDataObject = Object.fromEntries(formData);
-        const json = JSON.stringify(formDataObject);
         const timeout = globalFilter ? 1500 : 0;
         setGlobalFilter('');
         setTimeout(() => {
-            optimizeMutation.mutate(json);
+            const requestData = {
+                'slate-id': slateId,
+                'user-id': userId,
+                'players': formDataToObject(formData)
+            }
+            optimizeMutation.mutate(requestData);
 
         }, timeout)
     }
 
     return (
-        <form id='PlayerTableForm' onSubmit={handleFormSubmit}>
-            <div>
-                <TextField size='small' id="filled-search" label="Search Player" type="search" variant="filled" value={globalFilter || ''} onChange={handleSearchChange} />
-                <table className='player-table' {...getTableProps()}>
-                    <thead>
-                        {headerGroups.map(headerGroup => (
-                            <tr {...headerGroup.getHeaderGroupProps()}> 
-                                {headerGroup.headers.map(column => (
-                                    <th {...column.getHeaderProps(column.getSortByToggleProps())}>
-                                        {column.render('Header')}
-                                    </th>
-                                ))}
-                            </tr>
-                        ))}
-                    </thead>
-                    <tbody {...getTableBodyProps()}>
-                        {rows.map(row => {
-                        prepareRow(row);
-                        return <PlayerRow key={row.id} row={row} />;
-                        })}
-                    </tbody>
-                </table>
-            </div>
-        </form>    
+        <>
+            <TextField size='small' id="filled-search" label="Search Player" type="search" variant="filled" value={globalFilter || ''} onChange={handleSearchChange} />
+            <form id='PlayerTableForm' onSubmit={handleFormSubmit}>
+                <div>
+                    <table className='player-table' {...getTableProps()}>
+                        <thead>
+                            {headerGroups.map(headerGroup => (
+                                <tr {...headerGroup.getHeaderGroupProps()}> 
+                                    {headerGroup.headers.map(column => (
+                                        <th {...column.getHeaderProps(column.getSortByToggleProps())}>
+                                            {column.render('Header')}
+                                        </th>
+                                    ))}
+                                </tr>
+                            ))}
+                        </thead>
+                        <tbody {...getTableBodyProps()}>
+                            {rows.map(row => {
+                            prepareRow(row);
+                            return <PlayerRow key={row.id} row={row} />;
+                            })}
+                        </tbody>
+                    </table>
+                </div>
+            </form>   
+        </> 
     )
 }
 
