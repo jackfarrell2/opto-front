@@ -3,6 +3,7 @@ import { useQuery } from 'react-query'
 import config from '../config'
 import { PlayerTable } from './PlayerTable';
 import { Grid, CircularProgress, Box, Container, Button } from '@mui/material';
+import { SettingsPanel } from './SettingsPanel';
 
 
 function SlateInfo({slate, setOptimizedLineup, optimizedLineup}) {
@@ -31,13 +32,14 @@ function SlateInfo({slate, setOptimizedLineup, optimizedLineup}) {
                 </Grid>
             ) : (
                 <Grid container direction='row' justifyContent='center' alignItems='center'>
-                    <Grid item xs={9}>
+                    <Grid item xs={8}>
                         <Container sx={{ maxHeight: '75vh', overflow: 'auto', mt: '2vh'}}>
                             <PlayerTable data={playerData} setOptimizedLineup={setOptimizedLineup} optimizedLineup={optimizedLineup} />
                         </Container>
                         <Button variant='contained' form='PlayerTableForm' type='submit'>Optomize</Button>
                     </Grid>
-                    <Grid item xs={3}>
+                    <Grid item xs={4}>
+                        <SettingsPanel />
                     </Grid>
                 </Grid>
 
