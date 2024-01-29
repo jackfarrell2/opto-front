@@ -52,3 +52,9 @@
     text-align: center;
 }
 
+.lineup-card-cell {
+    max-width: 100px;
+    padding: 1px;
+    text-align: center;
+}
+

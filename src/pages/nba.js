@@ -6,7 +6,7 @@ import { SlateModal } from '../components/SlateModal'
 import { SlateInfo } from '../components/SlateInfo'
 import config from '../config'
 import { useQuery } from 'react-query'
-import { PlayerRow } from '../components/PlayerRow'
+import { LineupsDash } from '../components/LineupsDash'
 
 function Nba() {
     const [slateModal, setSlateModal] = React.useState(false)
@@ -26,6 +26,75 @@ function Nba() {
         return data
     });
 
+    // const testLineup = {
+    //     "PG": {
+    //         "name": "Ja Morant",
+    //         "salary": 3000,
+    //         "projection": 46.67,
+    //         "ownership": 0,
+    //         "team": "MEM",
+    //         "opponent": "CHI"
+    //     },
+    //     "SG": {
+    //         "name": "Marcus Smart",
+    //         "salary": 3000,
+    //         "projection": 28.31,
+    //         "ownership": 0,
+    //         "team": "MEM",
+    //         "opponent": "CHI"
+    //     },
+    //     "SF": {
+    //         "name": "Scottie Barnes",
+    //         "salary": 8300,
+    //         "projection": 45.56,
+    //         "ownership": 0,
+    //         "team": "TOR",
+    //         "opponent": "NYK"
+    //     },
+    //     "PF": {
+    //         "name": "Victor Wembanyama",
+    //         "salary": 8700,
+    //         "projection": 45.34,
+    //         "ownership": 0,
+    //         "team": "SAS",
+    //         "opponent": "WAS"
+    //     },
+    //     "C": {
+    //         "name": "Mitchell Robinson",
+    //         "salary": 3000,
+    //         "projection": 25.38,
+    //         "ownership": 0,
+    //         "team": "NYK",
+    //         "opponent": "TOR"
+    //     },
+    //     "G": {
+    //         "name": "Desmond Bane",
+    //         "salary": 3000,
+    //         "projection": 41.63,
+    //         "ownership": 0,
+    //         "team": "MEM",
+    //         "opponent": "CHI"
+    //     },
+    //     "F": {
+    //         "name": "Julius Randle",
+    //         "salary": 8700,
+    //         "projection": 44.21,
+    //         "ownership": 0,
+    //         "team": "NYK",
+    //         "opponent": "TOR"
+    //     },
+    //     "UTIL": {
+    //         "name": "Joel Embiid",
+    //         "salary": 11500,
+    //         "projection": 64.57,
+    //         "ownership": 0,
+    //         "team": "PHI",
+    //         "opponent": "CHA"
+    //     },
+    //     "total_salary": 49200,
+    //     "total_projection": 341.67
+    // }
+
     return (
         <Box sx={page}>
             <SlateModal openModal={slateModal} setSlateModal={setSlateModal} slates={slates} />
@@ -42,19 +111,8 @@ function Nba() {
                     <Divider /> 
                     {slate && <SlateInfo slate={slate} setOptimizedLineup={setOptimizedLineup} optimizedLineup={optimizedLineup} />}
                     {optimizedLineup && (
-                        <div>
-                            PG: {optimizedLineup['PG']['name']}
-                            SG: {optimizedLineup['SG']['name']}
-                            SF: {optimizedLineup['SF']['name']}
-                            PF: {optimizedLineup['PF']['name']}
-                            C: {optimizedLineup['C']['name']}
-                            G: {optimizedLineup['G']['name']}
-                            F: {optimizedLineup['F']['name']}
-                            UTIL: {optimizedLineup['UTIL']['name']}
-                            Salary: {optimizedLineup['total_salary']}
-                            Projection: {optimizedLineup['total_projection']}
-                        </div>
-                    )}
+                        <LineupsDash lineup={optimizedLineup} />
+                    )}        
                 </>
             )}
         </Box>
