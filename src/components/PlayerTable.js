@@ -13,7 +13,7 @@ import { ExposureCell } from './PlayerCells/ExposureCell'
 import config from '../config'
 import { useMutation } from 'react-query'
 
-function PlayerTable({ data }) { 
+function PlayerTable({ data, setOptimizedLineup, optimizedLineup }) { 
 
     // Placeholder slate and user for now
     const slateId = 8
@@ -43,6 +43,11 @@ function PlayerTable({ data }) {
         }
 
         return response.json();
+    },
+    {
+        onSuccess: (data) => {
+            setOptimizedLineup(data['lineup'])
+        },
     });
 
     const columns = React.useMemo(() => [
@@ -62,7 +67,7 @@ function PlayerTable({ data }) {
             Cell: StaticCell,
         },
         {
-            Header: 'Pos',
+            Header: 'Position',
             accessor: 'position',
             Cell: StaticCell,
         },
@@ -82,7 +87,7 @@ function PlayerTable({ data }) {
             Cell: StaticCell,
         },
         {
-            Header: 'Own',
+            Header: 'Ownership',
             accessor: 'ownership',
             Cell: OwnershipCell,
             sortType: (rowA, rowB, columnId) => {

@@ -5,7 +5,7 @@ import { PlayerTable } from './PlayerTable';
 import { Grid, CircularProgress, Box, Container, Button } from '@mui/material';
 
 
-function SlateInfo({slate}) {
+function SlateInfo({slate, setOptimizedLineup, optimizedLineup}) {
 
     const apiUrl = `${config.apiUrl}nba/get-slate/${slate.id}`
 
@@ -33,7 +33,7 @@ function SlateInfo({slate}) {
                 <Grid container direction='row' justifyContent='center' alignItems='center'>
                     <Grid item xs={9}>
                         <Container sx={{ maxHeight: '75vh', overflow: 'auto', mt: '2vh'}}>
-                            <PlayerTable data={playerData} />
+                            <PlayerTable data={playerData} setOptimizedLineup={setOptimizedLineup} optimizedLineup={optimizedLineup} />
                         </Container>
                         <Button variant='contained' form='PlayerTableForm' type='submit'>Optomize</Button>
                     </Grid>

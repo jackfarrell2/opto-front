@@ -11,6 +11,7 @@ import { PlayerRow } from '../components/PlayerRow'
 function Nba() {
     const [slateModal, setSlateModal] = React.useState(false)
     const [slate, setSlate] = React.useState('')
+    const [optimizedLineup, setOptimizedLineup] = React.useState('')
     const apiUrl = `${config.apiUrl}` 
 
     const { data: slates, isLoading: slatesLoading } = useQuery('slates', async () => {
@@ -39,17 +40,21 @@ function Nba() {
                 <>
                     <SecondNavbar setSlateModal={setSlateModal} slate={slate} slates={slates || []} setSlate={setSlate}></SecondNavbar>
                     <Divider /> 
-                    {slate && <SlateInfo slate={slate} />}
-                    {/* <table>
-                        <thead>
-                            <tr>
-                                <th>blah</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <PlayerRow />
-                        </tbody>
-                    </table> */}
+                    {slate && <SlateInfo slate={slate} setOptimizedLineup={setOptimizedLineup} optimizedLineup={optimizedLineup} />}
+                    {optimizedLineup && (
+                        <div>
+                            PG: {optimizedLineup['PG']['name']}
+                            SG: {optimizedLineup['SG']['name']}
+                            SF: {optimizedLineup['SF']['name']}
+                            PF: {optimizedLineup['PF']['name']}
+                            C: {optimizedLineup['C']['name']}
+                            G: {optimizedLineup['G']['name']}
+                            F: {optimizedLineup['F']['name']}
+                            UTIL: {optimizedLineup['UTIL']['name']}
+                            Salary: {optimizedLineup['total_salary']}
+                            Projection: {optimizedLineup['total_projection']}
+                        </div>
+                    )}
                 </>
             )}
         </Box>
