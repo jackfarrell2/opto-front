@@ -2,7 +2,7 @@ import React, { useContext } from "react";
 
 const UserContext = React.createContext();
 
-function UserProvider({setOpenModal, apiUrl, children}) {
+function UserProvider({ setOpenModal, apiUrl, children }) {
     const userUrl = `${apiUrl}users/`
     const [user, setUser] = React.useState(null);
     const [token, setToken] = React.useState(null);
@@ -12,8 +12,8 @@ function UserProvider({setOpenModal, apiUrl, children}) {
         const storedToken = localStorage.getItem('token');
 
         if (storedUser && storedToken) {
-        setUser(JSON.parse(storedUser));
-        setToken(storedToken);
+            setUser(JSON.parse(storedUser));
+            setToken(storedToken);
         }
     }, []);
 
@@ -26,11 +26,11 @@ function UserProvider({setOpenModal, apiUrl, children}) {
                 },
                 body: JSON.stringify(formData),
             });
-            
+
             if (!response.ok) {
-                    throw new Error(`HTTP error! Status: ${response.status}`);
-                }
-            
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+
             const data = await response.json();
             console.log('Sign In successful:', data);
             setUser(data.user);
@@ -38,6 +38,7 @@ function UserProvider({setOpenModal, apiUrl, children}) {
             setOpenModal('none');
             localStorage.setItem('user', JSON.stringify(data.user));
             localStorage.setItem('token', data.token);
+            window.location.reload();
         } catch (error) {
             console.error('Sign-in error:', error);
         }
@@ -56,7 +57,7 @@ function UserProvider({setOpenModal, apiUrl, children}) {
             if (!response.ok) {
                 throw new Error(`HTTP error! Status: ${response.status}`);
             }
-            
+
             const data = await response.json();
             console.log('Sign Up successful:', data);
             localStorage.setItem('user', JSON.stringify(data.user));
@@ -64,9 +65,10 @@ function UserProvider({setOpenModal, apiUrl, children}) {
             setUser(data.user);
             setToken(data.token);
             setOpenModal('none');
+            window.location.reload();
         } catch (error) {
             console.error('Sign-up error:', error);
-        }           
+        }
     };
 
     const signOut = () => {
@@ -74,7 +76,7 @@ function UserProvider({setOpenModal, apiUrl, children}) {
         localStorage.removeItem('token');
         setUser(null);
         setToken(null);
-        
+        window.location.reload();
     };
 
     function useUser() {

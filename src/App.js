@@ -48,7 +48,7 @@ function App() {
     <UserProvider apiUrl={apiUrl} setOpenModal={setOpenModal}>
       <ThemeProvider theme={theme}>
         <CssBaseline />
-        <SignInModal openModal={openModal} handleClose={handleClose} setOpenModal={setOpenModal}/>
+        <SignInModal openModal={openModal} handleClose={handleClose} setOpenModal={setOpenModal} />
         <Router>
           <Navbar handleOpen={handleOpen} />
           <Routes>

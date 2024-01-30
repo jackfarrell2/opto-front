@@ -7,19 +7,19 @@ import { XValueCell } from './PlayerCells/XValueCell'
 import { StaticCell } from './PlayerCells/StaticCell'
 import { RemoveCell } from './PlayerCells/RemoveCell'
 import { ProjectionCell } from './PlayerCells/ProjectionCell'
-import { OwnershipCell } from './PlayerCells/OwnershipCell' 
+import { OwnershipCell } from './PlayerCells/OwnershipCell'
 import { LockCell } from './PlayerCells/LockCell'
 import { ExposureCell } from './PlayerCells/ExposureCell'
 import config from '../config'
 import { useMutation } from 'react-query'
+import { UserContext } from './UserProvider'
 
-function PlayerTable({ data, setOptimizedLineup, optimizedLineup }) { 
+function PlayerTable({ data, setOptimizedLineup, slateId }) {
 
-    // Placeholder slate and user for now
-    const slateId = 8
-    const userId = 2
-
-    const apiUrl = `${config.apiUrl}nba/optimize/`
+    const { user, token } = React.useContext(UserContext)
+    console.log('slateId', slateId)
+    const userId = user.id
+    const apiUrl = userId ? `${config.apiUrl}nba/api/authenticated-optimize/` : `${config.apiUrl}nba/api/unauthenticated-optimize/`
 
     function formDataToObject(formData) {
         const data = {};
@@ -30,25 +30,27 @@ function PlayerTable({ data, setOptimizedLineup, optimizedLineup }) {
     }
 
     const optimizeMutation = useMutation(async (requestData) => {
+        console.log('requestData', Object.keys(requestData['players']).length)
         const response = await fetch(apiUrl, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
+                'Authorization': `Token ${token}`,
             },
             body: JSON.stringify(requestData),
         });
 
         if (!response.ok) {
-        throw new Error('Failed to optimize players');
+            throw new Error('Failed to optimize players');
         }
 
         return response.json();
     },
-    {
-        onSuccess: (data) => {
-            setOptimizedLineup(data['lineup'])
-        },
-    });
+        {
+            onSuccess: (data) => {
+                setOptimizedLineup(data['lineup'])
+            },
+        });
 
     const columns = React.useMemo(() => [
         {
@@ -109,12 +111,12 @@ function PlayerTable({ data, setOptimizedLineup, optimizedLineup }) {
         {
             Header: 'Proj',
             accessor: 'projection',
-            Cell: ProjectionCell, 
+            Cell: ProjectionCell,
             sortType: (rowA, rowB, columnId) => {
                 const valueA = rowA.original.projection;
                 const valueB = rowB.original.projection;
                 return valueA - valueB;
-            },  
+            },
         },
         {
             Header: 'Value',
@@ -140,9 +142,6 @@ function PlayerTable({ data, setOptimizedLineup, optimizedLineup }) {
 
     const { globalFilter } = state;
 
-    // I may choose to use this later instead of the handleSearchChange
-    // (e) => setGlobalFilter(e.target.value)
-
     function handleSearchChange(e) {
         const newFilterValue = e.target.value;
         const filteredRows = rows.filter(row => {
@@ -158,6 +157,7 @@ function PlayerTable({ data, setOptimizedLineup, optimizedLineup }) {
     function handleFormSubmit(e) {
         e.preventDefault();
         const formData = new FormData(e.target);
+        console.log('formData', formData)
         const timeout = globalFilter ? 1500 : 0;
         setGlobalFilter('');
         setTimeout(() => {
@@ -166,6 +166,13 @@ function PlayerTable({ data, setOptimizedLineup, optimizedLineup }) {
                 'user-id': userId,
                 'players': formDataToObject(formData)
             }
+
+            // Iterate over form fields and include only those with the selected slate ID
+            for (const [key, value] of formData.entries()) {
+                console.log('key', key)
+                console.log('value', value)
+            }
+
             optimizeMutation.mutate(requestData);
 
         }, timeout)
@@ -179,7 +186,7 @@ function PlayerTable({ data, setOptimizedLineup, optimizedLineup }) {
                     <table className='player-table' {...getTableProps()}>
                         <thead>
                             {headerGroups.map(headerGroup => (
-                                <tr {...headerGroup.getHeaderGroupProps()}> 
+                                <tr {...headerGroup.getHeaderGroupProps()}>
                                     {headerGroup.headers.map(column => (
                                         <th {...column.getHeaderProps(column.getSortByToggleProps())}>
                                             {column.render('Header')}
@@ -190,14 +197,14 @@ function PlayerTable({ data, setOptimizedLineup, optimizedLineup }) {
                         </thead>
                         <tbody {...getTableBodyProps()}>
                             {rows.map(row => {
-                            prepareRow(row);
-                            return <PlayerRow key={row.id} row={row} />;
+                                prepareRow(row);
+                                return <PlayerRow key={row.id} row={row} />;
                             })}
                         </tbody>
                     </table>
                 </div>
-            </form>   
-        </> 
+            </form>
+        </>
     )
 }
 

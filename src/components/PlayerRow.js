@@ -7,23 +7,23 @@ import { ProjectionCell } from './PlayerCells/ProjectionCell'
 import { XValueCell } from './PlayerCells/XValueCell'
 import { ExposureCell } from './PlayerCells/ExposureCell'
 
-function PlayerRow({row}) {
+function PlayerRow({ row }) {
     const [projection, setProjection] = React.useState(row.original.projection)
     const [lock, setLock] = React.useState(false)
     const [exclude, setExclude] = React.useState(false)
-    return(
+    return (
         <tr {...row.getRowProps()}>
             <RemoveCell cell={row.cells[0]} exclude={exclude} setExclude={setExclude} setLock={setLock} />
-            <LockCell cell={row.cells[1]} lock={lock} setExclude={setExclude} setLock={setLock}  />
-            <StaticCell cell={row.cells[2]} value={row.original.name} className='player-cell'/>
-            <StaticCell cell={row.cells[3]} value={row.original.position}/>
-            <StaticCell cell={row.cells[4]} value={row.original.salary}/> 
-            <StaticCell cell={row.cells[5]} value={row.original.team}/> 
-            <StaticCell cell={row.cells[6]} value={row.original.opponent}/>  
+            <LockCell cell={row.cells[1]} lock={lock} setExclude={setExclude} setLock={setLock} />
+            <StaticCell cell={row.cells[2]} value={row.original.name} className='player-cell' />
+            <StaticCell cell={row.cells[3]} value={row.original.position} />
+            <StaticCell cell={row.cells[4]} value={row.original.salary} />
+            <StaticCell cell={row.cells[5]} value={row.original.team} />
+            <StaticCell cell={row.cells[6]} value={row.original.opponent} />
             <OwnershipCell cell={row.cells[7]} ownership={row.original.ownership} />
             <ExposureCell cell={row.cells[8]} exposure={row.original.exposure} />
             <ProjectionCell cell={row.cells[9]} projection={projection} setProjection={setProjection} />
-            <XValueCell cell={row.cells[10]} projection={projection} salary={row.original.salary}/>
+            <XValueCell cell={row.cells[10]} projection={projection} salary={row.original.salary} />
         </tr>
     )
 }
