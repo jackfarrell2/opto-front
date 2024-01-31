@@ -36,29 +36,8 @@ function a11yProps(index) {
     };
 }
 
-const reducer = (state, action) => {
-    switch (action.type) {
-        case 'UPDATE_UNIQUES':
-            return { ...state, uniques: action.payload }
-        case 'UPDATE_NUM_LINEUPS':
-            return { ...state, numLineups: action.payload }
-        case 'UPDATE_MAX_PLAYERS':
-            return { ...state, maxTeamPlayers: action.payload }
-        case 'UPDATE_MIN_SALARY':
-            return { ...state, minSalary: action.payload }
-        case 'UPDATE_MAX_SALARY':
-            return { ...state, maxSalary: action.payload }
-        default:
-            return state
-    }
-
-}
-
-
-function SettingsPanel() {
+function SettingsPanel({ userSettings, dispatchSettings }) {
     const [tab, setTab] = React.useState(0)
-    const initualUserSettings = { 'uniques': 3, 'numLineups': 20, 'maxTeamPlayers': 6, 'minSalary': 45000, 'maxSalary': 50000 }
-    const [userSettings, dispatchSettings] = React.useReducer(reducer, initualUserSettings)
     const handleTabChange = (event, newValue) => {
         setTab(newValue);
     };

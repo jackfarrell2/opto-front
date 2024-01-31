@@ -14,23 +14,20 @@ import config from '../config'
 import { useMutation } from 'react-query'
 import { UserContext } from './UserProvider'
 
-function PlayerTable({ data, setOptimizedLineup, slateId }) {
-
+function PlayerTable({ data, setOptimizedLineup, slateId, userSettings }) {
     const { user, token } = React.useContext(UserContext)
-    console.log('slateId', slateId)
-    const userId = user.id
+    const userId = user ? user.id : null
     const apiUrl = userId ? `${config.apiUrl}nba/api/authenticated-optimize/` : `${config.apiUrl}nba/api/unauthenticated-optimize/`
 
     function formDataToObject(formData) {
-        const data = {};
+        const formDataObj = {};
         formData.forEach((value, key) => {
-            data[key] = value;
+            formDataObj[key] = value;
         });
-        return data;
+        return formDataObj;
     }
 
     const optimizeMutation = useMutation(async (requestData) => {
-        console.log('requestData', Object.keys(requestData['players']).length)
         const response = await fetch(apiUrl, {
             method: 'POST',
             headers: {
@@ -48,7 +45,7 @@ function PlayerTable({ data, setOptimizedLineup, slateId }) {
     },
         {
             onSuccess: (data) => {
-                setOptimizedLineup(data['lineup'])
+                setOptimizedLineup(data['lineups'][0])
             },
         });
 
@@ -157,20 +154,14 @@ function PlayerTable({ data, setOptimizedLineup, slateId }) {
     function handleFormSubmit(e) {
         e.preventDefault();
         const formData = new FormData(e.target);
-        console.log('formData', formData)
         const timeout = globalFilter ? 1500 : 0;
         setGlobalFilter('');
         setTimeout(() => {
             const requestData = {
                 'slate-id': slateId,
                 'user-id': userId,
-                'players': formDataToObject(formData)
-            }
-
-            // Iterate over form fields and include only those with the selected slate ID
-            for (const [key, value] of formData.entries()) {
-                console.log('key', key)
-                console.log('value', value)
+                'players': formDataToObject(formData),
+                'opto-settings': userSettings,
             }
 
             optimizeMutation.mutate(requestData);

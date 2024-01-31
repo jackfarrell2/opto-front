@@ -10,7 +10,7 @@ function LockCell({ cell, lock, setExclude, setLock }) {
         if (lockedData['count'] === 8 && !lock) {
             return
         }
-        if (lockedData['salary'] >= 50000 && !lock) {
+        if ((lockedData['salary'] + cell.row.original.salary) >= 50000 && !lock) {
             return
         }
         setLock(!lock)
