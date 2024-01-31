@@ -32,7 +32,6 @@ function UserProvider({ setOpenModal, apiUrl, children }) {
             }
 
             const data = await response.json();
-            console.log('Sign In successful:', data);
             setUser(data.user);
             setToken(data.token);
             setOpenModal('none');
@@ -59,7 +58,6 @@ function UserProvider({ setOpenModal, apiUrl, children }) {
             }
 
             const data = await response.json();
-            console.log('Sign Up successful:', data);
             localStorage.setItem('user', JSON.stringify(data.user));
             localStorage.setItem('token', data.token);
             setUser(data.user);

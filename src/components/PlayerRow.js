@@ -9,8 +9,9 @@ import { ExposureCell } from './PlayerCells/ExposureCell'
 
 function PlayerRow({ row }) {
     const [projection, setProjection] = React.useState(row.original.projection)
-    const [lock, setLock] = React.useState(false)
-    const [exclude, setExclude] = React.useState(false)
+    const [lock, setLock] = React.useState(row.original.lock)
+    const [exclude, setExclude] = React.useState(row.original.remove)
+
     return (
         <tr {...row.getRowProps()}>
             <RemoveCell cell={row.cells[0]} exclude={exclude} setExclude={setExclude} setLock={setLock} />

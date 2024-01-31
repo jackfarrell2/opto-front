@@ -26,7 +26,6 @@ const reducer = (state, action) => {
 
 }
 
-
 function SlateInfo({ slate, setOptimizedLineup, optimizedLineup }) {
     const { token } = React.useContext(UserContext)
     const apiUrl = token ? `${config.apiUrl}nba/api/authenticated-slate-info/${slate.id}` : `${config.apiUrl}nba/api/unauthenticated-slate-info/${slate.id}`

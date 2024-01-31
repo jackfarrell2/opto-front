@@ -29,7 +29,6 @@ function SlateModal({openModal, setSlateModal, slates}) {
         {
             onSuccess: () => {
                 queryClient.invalidateQueries('slates');
-                console.log('Slate Added')
                 setSlateModal(false)
                 window.location.reload(true);
             },
