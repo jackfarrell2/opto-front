@@ -14,7 +14,7 @@ import config from '../config'
 import { useMutation } from 'react-query'
 import { UserContext } from './UserProvider'
 
-function PlayerTable({ data, setOptimizedLineup, slateId, userSettings }) {
+function PlayerTable({ data, setOptimizedLineup, slateId }) {
     const { user, token } = React.useContext(UserContext)
     const userId = user ? user.id : null
     const apiUrl = userId ? `${config.apiUrl}nba/api/authenticated-optimize/` : `${config.apiUrl}nba/api/unauthenticated-optimize/`
@@ -153,6 +153,12 @@ function PlayerTable({ data, setOptimizedLineup, slateId, userSettings }) {
 
     function handleFormSubmit(e) {
         e.preventDefault();
+        const uniquesPerLineup = parseInt(localStorage.getItem('uniquePlayers')) || 3
+        const maxPlayersPerTeam = parseInt(localStorage.getItem('maxPlayersPerTeam')) || 5
+        const minSalary = parseInt(localStorage.getItem('min-salary')) || 45000
+        const maxSalary = parseInt(localStorage.getItem('max-salary')) || 50000
+        const numLineups = parseInt(localStorage.getItem('lineupCount')) || 20
+        const optoSettings = { 'uniques': uniquesPerLineup, 'maxTeamPlayers': maxPlayersPerTeam, 'minSalary': minSalary, 'maxSalary': maxSalary, 'numLineups': numLineups }
         const formData = new FormData(e.target);
         const timeout = globalFilter ? 1500 : 0;
         setGlobalFilter('');
@@ -161,7 +167,7 @@ function PlayerTable({ data, setOptimizedLineup, slateId, userSettings }) {
                 'slate-id': slateId,
                 'user-id': userId,
                 'players': formDataToObject(formData),
-                'opto-settings': userSettings,
+                'opto-settings': optoSettings,
             }
 
             optimizeMutation.mutate(requestData);

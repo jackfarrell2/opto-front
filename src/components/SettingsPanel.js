@@ -36,19 +36,26 @@ function a11yProps(index) {
     };
 }
 
-function SettingsPanel({ userSettings, dispatchSettings }) {
+function SettingsPanel() {
+    const [lineupCount, setLineupCount] = React.useState(20)
+    const minSalary = parseInt(localStorage.getItem('min-salary')) || 45000
+    const maxSalary = parseInt(localStorage.getItem('max-salary')) || 50000
     const [tab, setTab] = React.useState(0)
     const handleTabChange = (event, newValue) => {
         setTab(newValue);
     };
 
-    const ready = (userSettings['numLineups'] > 0 && userSettings['numLineups'] <= 150 && userSettings['minSalary'] >= 40000 && userSettings['minSalary'] <= 50000 && userSettings['maxSalary'] >= 40000 && userSettings['maxSalary'] <= 50000) ? true : false
+    const ready = (lineupCount > 0 && lineupCount <= 150 && minSalary >= 40000 && minSalary <= 50000 && maxSalary >= 40000 && maxSalary <= 50000) ? true : false
+
+    React.useEffect(() => {
+        localStorage.setItem('numLineups', lineupCount.toString())
+    }, [lineupCount])
 
 
     function handleTotalLineupsChange(e) {
         const inputValue = e.target.value;
         if (inputValue === '') {
-            dispatchSettings({ type: 'UPDATE_NUM_LINEUPS', payload: inputValue });
+            setLineupCount('');
             return;
         }
         const newValue = parseInt(inputValue, 10);
@@ -59,9 +66,9 @@ function SettingsPanel({ userSettings, dispatchSettings }) {
         }
 
         if (newValue >= 150) {
-            dispatchSettings({ type: 'UPDATE_NUM_LINEUPS', payload: 150 });
+            setLineupCount(150);
         } else {
-            dispatchSettings({ type: 'UPDATE_NUM_LINEUPS', payload: newValue });
+            setLineupCount(newValue);
         }
     }
 
@@ -79,7 +86,7 @@ function SettingsPanel({ userSettings, dispatchSettings }) {
                                 </Tabs>
                             </Box>
                             <CustomTabPanel sx={{ width: '100%' }} value={tab} index={0}>
-                                <SimpleSettings userSettings={userSettings} dispatchSettings={dispatchSettings} />
+                                <SimpleSettings />
                             </CustomTabPanel>
                             <CustomTabPanel sx={{ width: '100%' }} value={tab} index={1}>
                             </CustomTabPanel>
@@ -90,7 +97,7 @@ function SettingsPanel({ userSettings, dispatchSettings }) {
             <Grid item style={{ textAlign: 'center', display: 'flex', justifyContent: 'center', alignItems: 'center' }} xs={4}>
                 <Grid container direction='column' justifyContent='center' alignItems='center' spacing={2}>
                     <Grid item xs={6}>
-                        {userSettings && (<TextField sx={{ width: '10vh', textAlign: 'center' }} onChange={handleTotalLineupsChange} id="min-salary" label="Lineups" value={userSettings['numLineups']} variant="standard" inputProps={{ style: { textAlign: 'center' } }} />)}
+                        <TextField sx={{ width: '10vh', textAlign: 'center' }} onChange={handleTotalLineupsChange} id="min-salary" label="Lineups" value={lineupCount} variant="standard" inputProps={{ style: { textAlign: 'center' } }} />
                     </Grid>
                     <Grid item xs={6}>
                         <Button variant='contained' form='PlayerTableForm' color='primary' disabled={!ready} type='submit'>Optimize</Button>

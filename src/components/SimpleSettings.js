@@ -1,93 +1,68 @@
 import React from 'react'
-import { Grid, Typography, IconButton, TextField } from '@mui/material'
-import RemoveIcon from '@mui/icons-material/Remove';
-import AddIcon from '@mui/icons-material/Add';
+import { Grid, CircularProgress } from '@mui/material'
 import { LockedData } from './LockedData';
+import { UniquePlayers } from './UniquePlayers';
+import { MaxPlayersPerTeam } from './MaxPlayersPerTeam';
+import { SalaryField } from './SalaryField';
+import config from '../config'
+import { UserContext } from './UserProvider'
+import { useQuery } from 'react-query'
 
-function SimpleSettings({ userSettings, dispatchSettings }) {
+const apiUrl = `${config.apiUrl}nba/api/user-opto-settings/`
 
-    function handleUniquesChange(change) {
-        if (change === 'add') {
-            if (userSettings['uniques'] + 1 > 8) return console.log('Max uniques is 8')
-            dispatchSettings({ type: 'UPDATE_UNIQUES', payload: userSettings['uniques'] + 1 })
-        } else if (change === 'subtract') {
-            if (userSettings['uniques'] - 1 < 1) return console.log('Min uniques is 1')
-            dispatchSettings({ type: 'UPDATE_UNIQUES', payload: userSettings['uniques'] - 1 })
+function SimpleSettings() {
+    const { user, token } = React.useContext(UserContext)
+
+    const [uniques, setUniques] = React.useState(3)
+    const [playersPerTeam, setPlayersPerTeam] = React.useState(5)
+    const [minSalary, setMinSalary] = React.useState(45000)
+    const [maxSalary, setMaxSalary] = React.useState(50000)
+
+    const { data, isLoading: settingsLoading } = useQuery('settings', async () => {
+        if (!user) {
+            return
         }
-    }
-
-    function handleMaxPlayersChange(change) {
-        if (change === 'add') {
-            if (userSettings['maxTeamPlayers'] + 1 > 8) return console.log('Max players per team is 8')
-            dispatchSettings({ type: 'UPDATE_MAX_PLAYERS', payload: userSettings['maxTeamPlayers'] + 1 })
-        } else if (change === 'subtract') {
-            if (userSettings['maxTeamPlayers'] - 1 < 1) return console.log('Min players per team is 1')
-            dispatchSettings({ type: 'UPDATE_MAX_PLAYERS', payload: userSettings['maxTeamPlayers'] - 1 })
-        }
-    }
-
-    function handleSalaryChange(event, change) {
-        if (isNaN(event.target.value)) return console.log('Salary must be a number')
-        if (event.target.value > 50000) {
-            if (change === 'min') {
-                dispatchSettings({ type: 'UPDATE_MIN_SALARY', payload: 50000 })
-                return console.log('Min salary is 50000')
-            } else if (change === 'max') {
-                dispatchSettings({ type: 'UPDATE_MAX_SALARY', payload: 50000 })
-                return console.log('Max salary is 50000')
+        const response = await fetch(apiUrl, {
+            headers: {
+                'Authorization': `Token ${token}`,
             }
+        })
+        if (!response.ok) {
+            throw new Error('Failed to fetch players')
         }
-        if (change === 'min') {
-            dispatchSettings({ type: 'UPDATE_MIN_SALARY', payload: event.target.value })
-        } else if (change === 'max') {
-            dispatchSettings({ type: 'UPDATE_MAX_SALARY', payload: event.target.value })
+        const data = await response.json()
+        return data
+    });
+
+    React.useEffect(() => {
+        if (data) {
+            setUniques(data['uniques']);
+            setPlayersPerTeam(data['max-players-per-team']);
+            setMinSalary(data['min-salary']);
+            setMaxSalary(data['max-salary']);
         }
-    }
+    }, [data]);
+
+
 
     return (
-        <Grid container direction='column' justifyContent='center' alignItems='center' spacing={2}>
-            <Grid item>
-                <LockedData />
-            </Grid>
-            <Grid item>
-                <Grid container direction='row' justifyContent='center' alignItems='center'>
+        <>
+            {user ? (
+                <Grid container direction='column' justifyContent='center' alignItems='center' spacing={2}>
                     <Grid item>
-                        <Typography variant='body1'>Unique Players Per Lineup: </Typography>
-                    </Grid>
-                    <Grid item>
-                        <IconButton onClick={() => handleUniquesChange('subtract')}><RemoveIcon /></IconButton>
-                    </Grid>
-                    <Grid item>
-                        <Typography variant='body1'>{userSettings['uniques']}</Typography>
-                    </Grid>
-                    <Grid item>
-                        <IconButton onClick={() => handleUniquesChange('add')}><AddIcon /></IconButton>
+                        <CircularProgress size={70} />
                     </Grid>
                 </Grid>
-            </Grid>
-            <Grid item>
-                <Grid container direction='row' justifyContent='center' alignItems='center'>
-                    <Grid item>
-                        <Typography variant='body1'>Maximum Players Per Team: </Typography>
-                    </Grid>
-                    <Grid item>
-                        <IconButton onClick={() => handleMaxPlayersChange('subtract')}><RemoveIcon /></IconButton>
-                    </Grid>
-                    <Grid item>
-                        <Typography variant='body1'>{userSettings['maxTeamPlayers']}</Typography>
-                    </Grid>
-                    <Grid item>
-                        <IconButton onClick={() => handleMaxPlayersChange('add')}><AddIcon /></IconButton>
-                    </Grid>
+            ) : (
+                <Grid container direction='column' justifyContent='center' alignItems='center' spacing={2}>
+                    <Grid item><LockedData /></Grid>
+                    <Grid item><UniquePlayers uniques={uniques} setUniques={setUniques} /></Grid>
+                    <Grid item><MaxPlayersPerTeam playersPerTeam={playersPerTeam} setPlayersPerTeam={setPlayersPerTeam} /></Grid>
+                    <Grid item><SalaryField variant='min' salary={minSalary} setSalary={setMinSalary} /></Grid>
+                    <Grid item><SalaryField variant='max' salary={maxSalary} setSalary={setMaxSalary} /></Grid>
                 </Grid>
-            </Grid>
-            <Grid item>
-                {userSettings && <TextField id="min-salary" value={userSettings['minSalary']} onChange={(e) => handleSalaryChange(e, 'min')} label="Minimum Salary" variant="filled" />}
-            </Grid>
-            <Grid item>
-                {userSettings && <TextField id="max-salary" value={userSettings['maxSalary']} onChange={(e) => handleSalaryChange(e, 'max')} label="Maximum Salary" variant="filled" />}
-            </Grid>
-        </Grid>
+            )}
+        </>
     )
 }
 
