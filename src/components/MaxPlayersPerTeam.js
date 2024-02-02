@@ -4,13 +4,9 @@ import IconButton from '@mui/material/IconButton';
 import RemoveIcon from '@mui/icons-material/Remove';
 import AddIcon from '@mui/icons-material/Add';
 
-function MaxPlayersPerTeam({ playersPerTeam, setPlayersPerTeam }) {
-
-
-    // React.useEffect(() => {
-    //     localStorage.setItem('maxPlayersPerTeam', players.toString())
-    // }, [players])
-
+function MaxPlayersPerTeam({ userSettings, setUserSettings }) {
+    const playersPerTeam = userSettings['max-players-per-team']
+    const setPlayersPerTeam = (value) => setUserSettings({ ...userSettings, 'max-players-per-team': value })
 
     function handleChange(change) {
         if (change === 'add') {

@@ -14,40 +14,35 @@ import config from '../config'
 import { useMutation } from 'react-query'
 import { UserContext } from './UserProvider'
 
-function PlayerTable({ data, setOptimizedLineup, slateId }) {
+function PlayerTable({ data, setOptimizedLineup, slateId, handleOptimize }) {
+    console.log('playerTable is rendering')
+    // const [userSettings] = React.useContext(UserSettingsContext)
     const { user, token } = React.useContext(UserContext)
     const userId = user ? user.id : null
     const apiUrl = userId ? `${config.apiUrl}nba/api/authenticated-optimize/` : `${config.apiUrl}nba/api/unauthenticated-optimize/`
 
-    function formDataToObject(formData) {
-        const formDataObj = {};
-        formData.forEach((value, key) => {
-            formDataObj[key] = value;
-        });
-        return formDataObj;
-    }
 
-    const optimizeMutation = useMutation(async (requestData) => {
-        const response = await fetch(apiUrl, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Token ${token}`,
-            },
-            body: JSON.stringify(requestData),
-        });
+    // const optimizeMutation = useMutation(async (requestData) => {
+    //     const response = await fetch(apiUrl, {
+    //         method: 'POST',
+    //         headers: {
+    //             'Content-Type': 'application/json',
+    //             'Authorization': `Token ${token}`,
+    //         },
+    //         body: JSON.stringify(requestData),
+    //     });
 
-        if (!response.ok) {
-            throw new Error('Failed to optimize players');
-        }
+    //     if (!response.ok) {
+    //         throw new Error('Failed to optimize players');
+    //     }
 
-        return response.json();
-    },
-        {
-            onSuccess: (data) => {
-                setOptimizedLineup(data['lineups'][0])
-            },
-        });
+    //     return response.json();
+    // },
+    //     {
+    //         onSuccess: (data) => {
+    //             setOptimizedLineup(data['lineups'][0])
+    //         },
+    //     });
 
     const columns = React.useMemo(() => [
         {
@@ -127,15 +122,17 @@ function PlayerTable({ data, setOptimizedLineup, slateId }) {
         },
     ], [])
 
+    const tableInstance = useTable({ columns, data }, useGlobalFilter, useSortBy);
+
     const {
-        getTableProps,
-        getTableBodyProps,
-        headerGroups,
-        rows,
-        prepareRow,
-        state,
-        setGlobalFilter,
-    } = useTable({ columns, data }, useGlobalFilter, useSortBy)
+    getTableProps,
+    getTableBodyProps,
+    headerGroups,
+    rows,
+    prepareRow,
+    state,
+    setGlobalFilter,
+    } = React.useMemo(() => tableInstance, [tableInstance]);
 
     const { globalFilter } = state;
 
@@ -151,27 +148,28 @@ function PlayerTable({ data, setOptimizedLineup, slateId }) {
         }
     }
 
+    function formDataToObject(formData) {
+        const formDataObj = {};
+        formData.forEach((value, key) => {
+            formDataObj[key] = value;
+        });
+        return formDataObj;
+    }
+
     function handleFormSubmit(e) {
         e.preventDefault();
-        const uniquesPerLineup = parseInt(localStorage.getItem('uniquePlayers')) || 3
-        const maxPlayersPerTeam = parseInt(localStorage.getItem('maxPlayersPerTeam')) || 5
-        const minSalary = parseInt(localStorage.getItem('min-salary')) || 45000
-        const maxSalary = parseInt(localStorage.getItem('max-salary')) || 50000
-        const numLineups = parseInt(localStorage.getItem('lineupCount')) || 20
-        const optoSettings = { 'uniques': uniquesPerLineup, 'maxTeamPlayers': maxPlayersPerTeam, 'minSalary': minSalary, 'maxSalary': maxSalary, 'numLineups': numLineups }
+        // const uniquesPerLineup = parseInt(localStorage.getItem('uniquePlayers')) || 3
+        // const maxPlayersPerTeam = parseInt(localStorage.getItem('maxPlayersPerTeam')) || 5
+        // const minSalary = parseInt(localStorage.getItem('min-salary')) || 45000
+        // const maxSalary = parseInt(localStorage.getItem('max-salary')) || 50000
+        // const numLineups = parseInt(localStorage.getItem('lineupCount')) || 20
+        // const optoSettings = { 'uniques': uniquesPerLineup, 'maxTeamPlayers': maxPlayersPerTeam, 'minSalary': minSalary, 'maxSalary': maxSalary, 'numLineups': numLineups }
         const formData = new FormData(e.target);
         const timeout = globalFilter ? 1500 : 0;
         setGlobalFilter('');
         setTimeout(() => {
-            const requestData = {
-                'slate-id': slateId,
-                'user-id': userId,
-                'players': formDataToObject(formData),
-                'opto-settings': optoSettings,
-            }
-
-            optimizeMutation.mutate(requestData);
-
+            const formDataObj = formDataToObject(formData);
+            handleOptimize(formDataObj)
         }, timeout)
     }
 

@@ -4,29 +4,28 @@ import IconButton from '@mui/material/IconButton';
 import RemoveIcon from '@mui/icons-material/Remove';
 import AddIcon from '@mui/icons-material/Add';
 
-function UniquePlayers({ uniques, setUniques }) {
-    const initialRender = React.useRef(true)
-    localStorage.setItem('uniquePlayers', uniques)
-    const [storedValue, setStoredValue] = React.useState(uniques)
+function UniquePlayers({ userSettings, setUserSettings }) {
+    const { uniques } = userSettings
+    const setUniques = (value) => setUserSettings({ ...userSettings, 'uniques': value })
+    // const initialRender = React.useRef(true)
+    // const [storedValue, setStoredValue] = React.useState(playerSettings['uniques'])
 
-    React.useEffect(() => {
-        if (initialRender.current) {
-            initialRender.current = false
-            return
-        }
+    // React.useEffect(() => {
+    //     if (initialRender.current) {
+    //         initialRender.current = false
+    //         return
+    //     }
 
-        const timeOutId = setTimeout(() => setStoredValue(parseInt(uniques)), 1500);
-        return () => clearTimeout(timeOutId);
-    }, [uniques])
+    //     const timeOutId = setTimeout(() => setStoredValue(parseInt(uniques)), 1500);
+    //     return () => clearTimeout(timeOutId);
+    // }, [uniques])
 
-    React.useEffect(() => {
-        if (initialRender.current) {
-            return;
-        }
-        localStorage.setItem('uniquePlayers', storedValue.toString())
-        console.log('storing', storedValue)
-        console.log('putting')
-    }, [storedValue])
+    // React.useEffect(() => {
+    //     if (initialRender.current) {
+    //         return;
+    //     }
+    //     console.log('putting')
+    // }, [storedValue])
 
 
     // React.useEffect(() => {

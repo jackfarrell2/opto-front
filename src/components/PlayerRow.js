@@ -7,7 +7,7 @@ import { ProjectionCell } from './PlayerCells/ProjectionCell'
 import { XValueCell } from './PlayerCells/XValueCell'
 import { ExposureCell } from './PlayerCells/ExposureCell'
 
-function PlayerRow({ row }) {
+const PlayerRow = React.memo(function PlayerRow({ row }) {
     const [projection, setProjection] = React.useState(row.original.projection)
     const [lock, setLock] = React.useState(row.original.lock)
     const [exclude, setExclude] = React.useState(row.original.remove)
@@ -26,7 +26,7 @@ function PlayerRow({ row }) {
             <ProjectionCell cell={row.cells[9]} projection={projection} setProjection={setProjection} />
             <XValueCell cell={row.cells[10]} projection={projection} salary={row.original.salary} />
         </tr>
-    )
-}
+    );
+});
 
 export { PlayerRow }

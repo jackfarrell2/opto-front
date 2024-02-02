@@ -2,9 +2,11 @@ import React from 'react'
 import { TextField } from '@mui/material'
 
 
-function SalaryField({ variant, salary, setSalary }) {
+function SalaryField({ variant, userSettings, setUserSettings }) {
     // const localStorageValue = `${variant}-salary`
     // const initialSalary = parseInt(localStorage.getItem(localStorageValue)) || (variant === 'min' ? 45000 : 50000)
+    const salary = userSettings[`${variant}-salary`]
+    const setSalary = (value) => setUserSettings({ ...userSettings, [`${variant}-salary`]: value })
     const label = `${variant.charAt(0).toUpperCase() + variant.slice(1)}imum Salary`
 
     // React.useEffect(() => {

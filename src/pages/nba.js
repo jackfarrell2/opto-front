@@ -24,6 +24,9 @@ function Nba() {
             setSlate(data[0])
         }
         return data
+    },
+    {
+        staleTime: Infinity
     });
 
     return (
