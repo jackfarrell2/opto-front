@@ -47,11 +47,6 @@ function SettingsPanel() {
 
     const ready = (lineupCount > 0 && lineupCount <= 150 && minSalary >= 40000 && minSalary <= 50000 && maxSalary >= 40000 && maxSalary <= 50000) ? true : false
 
-    React.useEffect(() => {
-        localStorage.setItem('numLineups', lineupCount.toString())
-    }, [lineupCount])
-
-
     function handleTotalLineupsChange(e) {
         const inputValue = e.target.value;
         if (inputValue === '') {

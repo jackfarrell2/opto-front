@@ -16,8 +16,9 @@ function SlateInfo({ slate, setOptimizedLineup, optimizedLineup }) {
     const optoApiUrl = userId ? `${config.apiUrl}nba/api/authenticated-optimize/` : `${config.apiUrl}nba/api/unauthenticated-optimize/`
     const apiUrl = token ? `${config.apiUrl}nba/api/authenticated-slate-info/${slate.id}` : `${config.apiUrl}nba/api/unauthenticated-slate-info/${slate.id}`
     const [lockedData, setLockedData] = React.useState({ 'count': 0, 'salary': 0 })
-    const [userSettings, setUserSettings] = React.useState({'uniques': 3, 'min-salary': 45000, 'max-salary': 50000, 'max-players-per-team': 5})
+    const [userSettings, setUserSettings] = React.useState({ 'uniques': 3, 'min-salary': 45000, 'max-salary': 50000, 'max-players-per-team': 5 })
 
+    // Fetch slate information
     const { data, isLoading: playersLoading } = useQuery(['players', slate.id], async () => {
         const response = await fetch(apiUrl, {
             headers: {
@@ -30,11 +31,13 @@ function SlateInfo({ slate, setOptimizedLineup, optimizedLineup }) {
         const data = await response.json()
         return data
     },
-    {
-        staleTime: Infinity
-    });
+        {
+            staleTime: Infinity
+        });
 
-     const optimizeMutation = useMutation(async (requestData) => {
+
+    // Submit form / optimize players
+    const optimizeMutation = useMutation(async (requestData) => {
         const response = await fetch(optoApiUrl, {
             method: 'POST',
             headers: {
@@ -57,36 +60,29 @@ function SlateInfo({ slate, setOptimizedLineup, optimizedLineup }) {
         });
 
     const handleOptimize = React.useMemo(() => {
-    return (formData) => {
-        const formDataObj = formData
-        const optoSettings = { 
-            'uniques': userSettings['uniques'], 
-            'maxTeamPlayers': userSettings['max-players-per-team'], 
-            'minSalary': userSettings['min-salary'], 
-            'maxSalary': userSettings['max-salary'], 
-            'numLineups': 20 
+        return (formData) => {
+            const formDataObj = formData
+            const optoSettings = {
+                'uniques': userSettings['uniques'],
+                'maxTeamPlayers': userSettings['max-players-per-team'],
+                'minSalary': userSettings['min-salary'],
+                'maxSalary': userSettings['max-salary'],
+                'numLineups': 20
+            }
+            const requestData = {
+                'slate-id': slate.id,
+                'user-id': userId,
+                'players': formDataObj,
+                'opto-settings': optoSettings,
+            }
+            optimizeMutation.mutate(requestData)
         }
-        const requestData = {
-            'slate-id': slate.id,
-            'user-id': userId,
-            'players': formDataObj,
-            'opto-settings': optoSettings,
-        }
-        optimizeMutation.mutate(requestData)
-    }
-}, [slate.id, userId, userSettings, optimizeMutation]);
+    }, [slate.id, userId, userSettings, optimizeMutation]);
 
     React.useEffect(() => {
         if (data?.['user-locks'] !== undefined) {
             setLockedData(data?.['user-locks'])
         }
-        // if (data?.['user-opto-defaults'] !== undefined) {
-        //     console.log('Setting defaults', data?.['user-opto-defaults'])
-        //     localStorage.setItem('uniquePlayers', data?.['user-opto-defaults']['uniques'])
-        //     localStorage.setItem('min-salary', data?.['user-opto-defaults']['minSalary'])
-        //     localStorage.setItem('max-salary', data?.['user-opto-defaults']['maxSalary'])
-        //     localStorage.setItem('maxPlayersPerTeam', data?.['user-opto-defaults']['maxTeamPlayers'])
-        // }
     }, [data])
 
     const playerData = React.useMemo(() => data?.players, [data])

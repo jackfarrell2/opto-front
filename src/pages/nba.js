@@ -14,6 +14,7 @@ function Nba() {
     const [optimizedLineup, setOptimizedLineup] = React.useState('')
     const apiUrl = `${config.apiUrl}`
 
+    // Fetch slates
     const { data: slates, isLoading: slatesLoading } = useQuery('slates', async () => {
         const response = await fetch(`${apiUrl}nba/slates`)
         if (!response.ok) {
@@ -21,13 +22,24 @@ function Nba() {
         }
         const data = await response.json()
         if (data.length > 0) {
-            setSlate(data[0])
+            const lastSlate = localStorage.getItem('lastSlate');
+            if (lastSlate) {
+                const slate = data.find(slate => slate.id === lastSlate)
+                if (slate) {
+                    setSlate(slate)
+                } else {
+                    setSlate(data[0])
+                }
+            } else {
+                setSlate(data[0])
+            }
         }
         return data
     },
-    {
-        staleTime: Infinity
-    });
+        {
+            // Fetch once
+            staleTime: Infinity
+        });
 
     return (
         <Box sx={page}>

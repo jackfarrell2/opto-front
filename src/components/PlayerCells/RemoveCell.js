@@ -3,11 +3,11 @@ import RemoveCircleIcon from '@mui/icons-material/RemoveCircle';
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 
 
-function RemoveCell({cell, exclude, setExclude, setLock}) {
-    
+function RemoveCell({ cell, playerSettings, setPlayerSettings }) {
+    const exclude = playerSettings['remove']
+
     function handleClick() {
-        setExclude(!exclude)
-        setLock(false)
+        setPlayerSettings({ ...playerSettings, 'remove': !exclude, 'lock': false })
     }
 
     return (

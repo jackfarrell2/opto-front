@@ -1,7 +1,9 @@
 import '../../styles/PlayerTable.css';
 
-function ProjectionCell({ cell, projection, setProjection }) {
+function ProjectionCell({ cell, playerSettings, setPlayerSettings }) {
 
+  const projection = playerSettings['projection']
+  const setProjection = (value) => setPlayerSettings({ ...playerSettings, 'projection': value })
   function handleChange(e) {
     // Validate input
     const inputValue = e.target.value;

@@ -2,8 +2,9 @@ import React from 'react';
 import '../../styles/PlayerTable.css';
 import { useMediaQuery } from '@mui/material';
 
-function ExposureCell({cell, exposure}) {
-    const [exposureInput, setExposure] = React.useState(exposure)
+function ExposureCell({ cell, playerSettings, setPlayerSettings }) {
+    const exposure = playerSettings['exposure']
+    const setExposure = (value) => setPlayerSettings({ ...playerSettings, 'exposure': value })
     const isMobile = useMediaQuery((theme) => theme.breakpoints.down('md'));
 
     function handleChange(e) {
@@ -11,17 +12,17 @@ function ExposureCell({cell, exposure}) {
         const inputValue = e.target.value;
         let dotTrails = false
         if (inputValue === '') {
-        setExposure('0');
-        return;
+            setExposure('0');
+            return;
         }
         if (isNaN(inputValue)) {
-        return;
+            return;
         }
         if (inputValue.endsWith('.')) {
-        dotTrails = true
+            dotTrails = true
         }
         if (inputValue > 100 || inputValue < 0) {
-        return;
+            return;
         }
         const parsedValue = parseFloat(inputValue);
         const roundedValue = Math.round((parsedValue + Number.EPSILON) * 100) / 100
@@ -34,7 +35,7 @@ function ExposureCell({cell, exposure}) {
 
     return (
         <td {...cell.getCellProps()} className='ownership-cell'>
-            <input type='text' name={`players[${cell.row.original.id}][exposure]`} value={exposureInput} onChange={handleChange} className='ownership-input'></input>
+            <input type='text' name={`players[${cell.row.original.id}][exposure]`} value={exposure} onChange={handleChange} className='ownership-input'></input>
             {!isMobile && <span style={{ paddingLeft: '5px' }}>%</span>}
         </td>
     )

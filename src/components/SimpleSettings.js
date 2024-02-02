@@ -15,7 +15,7 @@ function SimpleSettings() {
     const { user, token } = React.useContext(UserContext)
     const [userSettings, setUserSettings] = React.useContext(UserSettingsContext)
 
-    const { data, isLoading: settingsLoading } = useQuery('settings', async () => {
+    const { data } = useQuery('settings', async () => {
         if (!user) {
             return
         }
@@ -28,25 +28,15 @@ function SimpleSettings() {
             throw new Error('Failed to fetch players')
         }
         const data = await response.json()
+        setUserSettings({ ...data })
         return data
     }, {
         staleTime: Infinity
     });
 
-    // React.useEffect(() => {
-    //     if (data) {
-    //         setUniques(data['uniques']);
-    //         setPlayersPerTeam(data['max-players-per-team']);
-    //         setMinSalary(data['min-salary']);
-    //         setMaxSalary(data['max-salary']);
-    //     }
-    // }, [data]);
-
-
-
     return (
         <>
-            {settingsLoading ? (
+            {(!data && user) ? (
                 <Grid container direction='column' justifyContent='center' alignItems='center' spacing={2}>
                     <Grid item>
                         <CircularProgress size={70} />

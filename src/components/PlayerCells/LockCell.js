@@ -3,7 +3,8 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import LockIcon from '@mui/icons-material/Lock';
 import { LockedContext } from '../SlateInfo';
 
-function LockCell({ cell, lock, setExclude, setLock }) {
+function LockCell({ cell, playerSettings, setPlayerSettings }) {
+    const lock = playerSettings['lock']
     const [lockedData, setLockedData] = React.useContext(LockedContext)
 
     function handleClick() {
@@ -13,8 +14,7 @@ function LockCell({ cell, lock, setExclude, setLock }) {
         if ((lockedData['salary'] + cell.row.original.salary) >= 50000 && !lock) {
             return
         }
-        setLock(!lock)
-        setExclude(false)
+        setPlayerSettings({ ...playerSettings, 'lock': !lock, 'remove': false })
         const lockedDataBuffer = { ...lockedData }
         if (!lock) {
             lockedDataBuffer['count'] += 1

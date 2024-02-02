@@ -2,11 +2,12 @@ import React from 'react'
 import { Select, MenuItem } from '@mui/material'
 import { slateSelector, slateSelectorDropdown } from '../styles/classes'
 
-function SlateSelector({slates, slate, handleSlateChange}) {
+function SlateSelector({ slates, slate, handleSlateChange }) {
 
     function handleChange(event) {
         const selectedSlateName = event.target.value
         const selectedSlate = slates.find(slate => slate.name === selectedSlateName)
+        localStorage.setItem('lastSlate', selectedSlate.id)
 
         if (selectedSlate) {
             const updatedSlate = {
