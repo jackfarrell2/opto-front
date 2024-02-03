@@ -4,6 +4,9 @@ import { slateSelector, slateSelectorDropdown } from '../styles/classes'
 
 function SlateSelector({ slates, slate, handleSlateChange }) {
 
+
+    console.log('slates are', slates)
+
     function handleChange(event) {
         const selectedSlateName = event.target.value
         const selectedSlate = slates.find(slate => slate.name === selectedSlateName)

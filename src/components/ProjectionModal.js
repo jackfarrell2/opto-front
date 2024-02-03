@@ -1,11 +1,13 @@
 import React from 'react'
 import { Modal, Box, useMediaQuery } from '@mui/material'
 import { signInModal, mobileSignInModal } from '../styles/classes'
-import { SlateForm } from './SlateForm'
 import { useMutation, useQueryClient } from 'react-query'
 import config from '../config'
+import { ProjectionForm } from './ProjectionForm'
+import { UserContext } from './UserProvider'
 
-function SlateModal({ openModal, setSlateModal, slates }) {
+function ProjectionModal({ openProjectionModal, setOpenProjectionModal, slate, slates }) {
+    const { token } = React.useContext(UserContext)
     const isMobile = useMediaQuery((theme) => theme.breakpoints.down('md'));
     const apiUrl = `${config.apiUrl}`;
     const queryClient = useQueryClient();
@@ -15,8 +17,12 @@ function SlateModal({ openModal, setSlateModal, slates }) {
             const formData = new FormData();
             formData.append('file', file);
 
-            const response = await fetch(`${apiUrl}nba/add-slate/`, {
+            const response = await fetch(`${apiUrl}nba/upload-projections/`, {
                 method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Token ${token}`,
+                },
                 body: formData,
             });
 
@@ -28,9 +34,10 @@ function SlateModal({ openModal, setSlateModal, slates }) {
         },
         {
             onSuccess: () => {
-                queryClient.invalidateQueries('slates');
-                setSlateModal(false)
-                window.location.reload(true);
+                // queryClient.invalidateQueries('slates');
+                // setSlateModal(false)
+                // window.location.reload(true);
+                console.log('Success')
             },
         }
     );
@@ -44,16 +51,16 @@ function SlateModal({ openModal, setSlateModal, slates }) {
     }
 
     return (
-        <Modal open={openModal}
-            onClose={() => setSlateModal(false)}
+        <Modal open={openProjectionModal}
+            onClose={() => setOpenProjectionModal(false)}
             aria-labelledby='modal-modal-upload'
             aria-describedby='modal-modal-upload-slate-form'
         >
             <Box sx={isMobile ? (mobileSignInModal) : (signInModal)}>
-                <SlateForm setSlateModal={setSlateModal} slates={slates} handleSubmit={handleSubmit} loading={mutation.isLoading} />
+                <ProjectionForm setOpenProjectionModal={setOpenProjectionModal} slates={slates} slate={slate} />
             </Box>
         </Modal>
     )
 }
 
-export { SlateModal }
+export { ProjectionModal }

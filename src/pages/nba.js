@@ -55,7 +55,7 @@ function Nba() {
                 <>
                     <SecondNavbar setSlateModal={setSlateModal} slate={slate} slates={slates || []} setSlate={setSlate}></SecondNavbar>
                     <Divider />
-                    {slate && <SlateInfo key={slate.id} slate={slate} setOptimizedLineup={setOptimizedLineup} optimizedLineup={optimizedLineup} />}
+                    {slate && <SlateInfo sx={{ bc: 'red' }} key={slate.id} slate={slate} setOptimizedLineup={setOptimizedLineup} optimizedLineup={optimizedLineup} />}
                     {optimizedLineup && (
                         <LineupsDash lineup={optimizedLineup} />
                     )}

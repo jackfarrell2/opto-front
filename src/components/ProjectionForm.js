@@ -4,6 +4,7 @@ import { Button, Grid, TextField, Typography, CircularProgress } from '@mui/mate
 import { useTheme } from '@mui/material/styles';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import { styled } from '@mui/material/styles';
+import { SlateSelector } from './SlateSelector';
 
 
 const VisuallyHiddenInput = styled('input')({
@@ -18,9 +19,10 @@ const VisuallyHiddenInput = styled('input')({
     width: 1,
 });
 
-function SlateForm({ setSlateModal, handleSubmit, loading }) {
+function ProjectionForm({ setOpenProjectionModal, handleSubmit, loading, slates, slate }) {
     const theme = useTheme()
     const [selectedFile, setSelectedFile] = React.useState(null)
+    const [selectedSlate, setSelectedSlate] = React.useState(slate)
 
     const handleFileChange = (event) => {
         const file = event.target.files[0];
@@ -29,12 +31,12 @@ function SlateForm({ setSlateModal, handleSubmit, loading }) {
 
     return (
         <>
-            <Button onClick={() => setSlateModal(false)} sx={{ color: theme.palette.primary.main }}>
+            <Button onClick={() => setOpenProjectionModal(false)} sx={{ color: theme.palette.primary.main }}>
                 <CloseIcon sx={{ color: theme.palette.primary.main }} />
             </Button>
             <Grid container direction='column' justifyContent='center' alignItems='center' spacing={8}>
                 <Grid item>
-                    <Typography variant='h5'>Add a Slate</Typography>
+                    <Typography variant='h5'>Upload Projections</Typography>
                 </Grid>
                 {loading ? (
                     <Grid item sx={{ mb: 10 }}>
@@ -42,6 +44,16 @@ function SlateForm({ setSlateModal, handleSubmit, loading }) {
                     </Grid>
                 ) : (
                     <>
+                        <Grid item>
+                            <Grid container direction='row' justifyContent='center' alignItems='center' spacing={2}>
+                                <Grid item>
+                                    <Typography variant='body2'>Select a slate:</Typography>
+                                </Grid>
+                                <Grid item>
+                                    <SlateSelector slates={slates} slate={selectedSlate} handleSlateChange={setSelectedSlate} />
+                                </Grid>
+                            </Grid>
+                        </Grid>
                         <Grid item>
                             <Grid container direction='row' justifyContent='center' alignItems='center' spacing={2}>
                                 <Grid item>
@@ -65,9 +77,6 @@ function SlateForm({ setSlateModal, handleSubmit, loading }) {
                         <Grid item>
                             <Button variant='contained' onClick={() => handleSubmit(selectedFile)}>Submit</Button>
                         </Grid>
-                        <Grid item>
-                            <Button variant='text' size='small' sx={{ textDecoration: 'underline' }}>Want to delete a slate?</Button>
-                        </Grid>
                     </>
                 )
                 }
@@ -76,4 +85,4 @@ function SlateForm({ setSlateModal, handleSubmit, loading }) {
     )
 }
 
-export { SlateForm }
+export { ProjectionForm }
