@@ -19,10 +19,8 @@ const VisuallyHiddenInput = styled('input')({
     width: 1,
 });
 
-function ProjectionForm({ setOpenProjectionModal, handleSubmit, loading, slates, slate }) {
+function ProjectionForm({ setOpenProjectionModal, handleSubmit, loading, slates, slate, setSelectedFile, selectedFile, setSelectedSlate, selectedSlate}) {
     const theme = useTheme()
-    const [selectedFile, setSelectedFile] = React.useState(null)
-    const [selectedSlate, setSelectedSlate] = React.useState(slate)
 
     const handleFileChange = (event) => {
         const file = event.target.files[0];

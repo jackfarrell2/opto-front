@@ -11,11 +11,17 @@ function ProjectionModal({ openProjectionModal, setOpenProjectionModal, slate, s
     const isMobile = useMediaQuery((theme) => theme.breakpoints.down('md'));
     const apiUrl = `${config.apiUrl}`;
     const queryClient = useQueryClient();
+    const [selectedFile, setSelectedFile] = React.useState(null)
+    const [selectedSlate, setSelectedSlate] = React.useState(slate)
+
+    console.log('slate is', slate)
+    console.log('selected slate is', selectedSlate)
 
     const mutation = useMutation(
         async (file) => {
             const formData = new FormData();
             formData.append('file', file);
+            formData.append('slate', selectedSlate.id);
 
             const response = await fetch(`${apiUrl}nba/upload-projections/`, {
                 method: 'POST',
@@ -57,7 +63,7 @@ function ProjectionModal({ openProjectionModal, setOpenProjectionModal, slate, s
             aria-describedby='modal-modal-upload-slate-form'
         >
             <Box sx={isMobile ? (mobileSignInModal) : (signInModal)}>
-                <ProjectionForm setOpenProjectionModal={setOpenProjectionModal} slates={slates} slate={slate} />
+                <ProjectionForm setOpenProjectionModal={setOpenProjectionModal} slates={slates} slate={slate} selectedFile={selectedFile} selectedSlate={selectedSlate} setSelectedFile={setSelectedFile} setSelectedSlate={setSelectedSlate} />
             </Box>
         </Modal>
     )
