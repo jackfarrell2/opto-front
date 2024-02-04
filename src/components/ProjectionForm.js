@@ -5,6 +5,7 @@ import { useTheme } from '@mui/material/styles';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import { styled } from '@mui/material/styles';
 import { SlateSelector } from './SlateSelector';
+import { UserContext } from './UserProvider';
 
 
 const VisuallyHiddenInput = styled('input')({
@@ -19,7 +20,8 @@ const VisuallyHiddenInput = styled('input')({
     width: 1,
 });
 
-function ProjectionForm({ setOpenProjectionModal, handleSubmit, loading, slates, slate, setSelectedFile, selectedFile, setSelectedSlate, selectedSlate}) {
+function ProjectionForm({ setOpenProjectionModal, handleSubmit, loading, slates, setSelectedFile, selectedFile, setSelectedSlate, selectedSlate }) {
+    const { user } = React.useContext(UserContext)
     const theme = useTheme()
 
     const handleFileChange = (event) => {
@@ -73,7 +75,7 @@ function ProjectionForm({ setOpenProjectionModal, handleSubmit, loading, slates,
                             </Grid>
                         </Grid>
                         <Grid item>
-                            <Button variant='contained' onClick={() => handleSubmit(selectedFile)}>Submit</Button>
+                            <Button disabled={!user} variant='contained' onClick={() => handleSubmit(selectedFile)}>Submit</Button>
                         </Grid>
                     </>
                 )

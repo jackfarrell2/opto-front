@@ -1,7 +1,7 @@
 import React from 'react'
 import { Modal, Box, useMediaQuery } from '@mui/material'
 import { signInModal, mobileSignInModal } from '../styles/classes'
-import { useMutation, useQueryClient } from 'react-query'
+import { useMutation } from 'react-query'
 import config from '../config'
 import { ProjectionForm } from './ProjectionForm'
 import { UserContext } from './UserProvider'
@@ -10,12 +10,8 @@ function ProjectionModal({ openProjectionModal, setOpenProjectionModal, slate, s
     const { token } = React.useContext(UserContext)
     const isMobile = useMediaQuery((theme) => theme.breakpoints.down('md'));
     const apiUrl = `${config.apiUrl}`;
-    const queryClient = useQueryClient();
     const [selectedFile, setSelectedFile] = React.useState(null)
     const [selectedSlate, setSelectedSlate] = React.useState(slate)
-
-    console.log('slate is', slate)
-    console.log('selected slate is', selectedSlate)
 
     const mutation = useMutation(
         async (file) => {
@@ -23,7 +19,7 @@ function ProjectionModal({ openProjectionModal, setOpenProjectionModal, slate, s
             formData.append('file', file);
             formData.append('slate', selectedSlate.id);
 
-            const response = await fetch(`${apiUrl}nba/upload-projections/`, {
+            const response = await fetch(`${apiUrl}nba/api/upload-projections/`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -33,14 +29,13 @@ function ProjectionModal({ openProjectionModal, setOpenProjectionModal, slate, s
             });
 
             if (!response.ok) {
-                throw new Error('Failed to add slate');
+                throw new Error('Failed to upload projections');
             }
 
             return response.json();
         },
         {
             onSuccess: () => {
-                // queryClient.invalidateQueries('slates');
                 // setSlateModal(false)
                 // window.location.reload(true);
                 console.log('Success')
@@ -63,7 +58,7 @@ function ProjectionModal({ openProjectionModal, setOpenProjectionModal, slate, s
             aria-describedby='modal-modal-upload-slate-form'
         >
             <Box sx={isMobile ? (mobileSignInModal) : (signInModal)}>
-                <ProjectionForm setOpenProjectionModal={setOpenProjectionModal} slates={slates} slate={slate} selectedFile={selectedFile} selectedSlate={selectedSlate} setSelectedFile={setSelectedFile} setSelectedSlate={setSelectedSlate} />
+                <ProjectionForm setOpenProjectionModal={setOpenProjectionModal} handleSubmit={handleSubmit} slates={slates} slate={slate} selectedFile={selectedFile} selectedSlate={selectedSlate} setSelectedFile={setSelectedFile} setSelectedSlate={setSelectedSlate} />
             </Box>
         </Modal>
     )
