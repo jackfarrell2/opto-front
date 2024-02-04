@@ -15,10 +15,9 @@ function ProjectionModal({ openProjectionModal, setOpenProjectionModal, slate, s
 
     const mutation = useMutation(
         async (file) => {
+
             const formData = new FormData();
             formData.append('file', file);
-            formData.append('slate', selectedSlate.id);
-
             const response = await fetch(`${apiUrl}nba/api/upload-projections/`, {
                 method: 'POST',
                 headers: {
