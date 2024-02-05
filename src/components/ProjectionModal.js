@@ -18,10 +18,10 @@ function ProjectionModal({ openProjectionModal, setOpenProjectionModal, slate, s
 
             const formData = new FormData();
             formData.append('file', file);
+            formData.append('slate', selectedSlate.id);
             const response = await fetch(`${apiUrl}nba/api/upload-projections/`, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
                     'Authorization': `Token ${token}`,
                 },
                 body: formData,
@@ -35,9 +35,9 @@ function ProjectionModal({ openProjectionModal, setOpenProjectionModal, slate, s
         },
         {
             onSuccess: () => {
-                // setSlateModal(false)
+                console.log('Projections uploaded successfully');
+                // setOpenProjectionModal(false)
                 // window.location.reload(true);
-                console.log('Success')
             },
         }
     );

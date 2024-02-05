@@ -13,7 +13,6 @@ import { ExposureCell } from './PlayerCells/ExposureCell'
 
 
 function PlayerTable({ data, handleOptimize }) {
-
     // Define columns
     const columns = React.useMemo(() => [
         {
@@ -141,6 +140,7 @@ function PlayerTable({ data, handleOptimize }) {
             handleOptimize(formDataObj)
         }, timeout)
     }
+
 
     return (
         <>

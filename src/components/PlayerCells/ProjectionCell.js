@@ -1,15 +1,15 @@
 import '../../styles/PlayerTable.css';
 
 function ProjectionCell({ cell, playerSettings, setPlayerSettings }) {
-
-  const projection = playerSettings['projection']
+  const projection = playerSettings['projection']['projection']
+  const custom = playerSettings['projection']['custom']
   const setProjection = (value) => setPlayerSettings({ ...playerSettings, 'projection': value })
   function handleChange(e) {
     // Validate input
     const inputValue = e.target.value;
     let dotTrails = false
     if (inputValue === '') {
-      setProjection('0');
+      setProjection({ 'projection': '0', 'custom': true });
       return;
     }
     if (isNaN(inputValue)) {
@@ -25,7 +25,7 @@ function ProjectionCell({ cell, playerSettings, setPlayerSettings }) {
     const roundedValue = Math.round((parsedValue + Number.EPSILON) * 100) / 100
     const cleanValue = dotTrails ? roundedValue.toString() + '.' : roundedValue.toString()
     cell.row.original.projection = cleanValue
-    setProjection(cleanValue)
+    setProjection({ 'projection': cleanValue, 'custom': true })
   }
 
   return (
@@ -36,6 +36,7 @@ function ProjectionCell({ cell, playerSettings, setPlayerSettings }) {
         value={projection}
         onChange={handleChange}
         className='projection-input'
+        style={custom ? { backgroundColor: 'lightgreen' } : { backgroundColor: 'white' }}
       />
     </td>
   );

@@ -31,7 +31,6 @@ const PlayerRow = React.memo(function PlayerRow({ row }) {
     }, [setStoredValueMeta, playerSettings, token]);
 
 
-
     return (
         <tr {...row.getRowProps()}>
             <RemoveCell cell={row.cells[0]} playerSettings={playerSettings} setPlayerSettings={setPlayerSettings} />
@@ -44,7 +43,7 @@ const PlayerRow = React.memo(function PlayerRow({ row }) {
             <OwnershipCell cell={row.cells[7]} playerSettings={playerSettings} setPlayerSettings={setPlayerSettings} />
             <ExposureCell cell={row.cells[8]} playerSettings={playerSettings} setPlayerSettings={setPlayerSettings} />
             <ProjectionCell cell={row.cells[9]} playerSettings={playerSettings} setPlayerSettings={setPlayerSettings} />
-            <XValueCell cell={row.cells[10]} projection={playerSettings['projection']} salary={row.original.salary} />
+            <XValueCell cell={row.cells[10]} projection={playerSettings['projection']['projection']} salary={row.original.salary} />
         </tr>
     );
 });
