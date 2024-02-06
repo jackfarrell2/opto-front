@@ -43,7 +43,7 @@ function Nba() {
 
     return (
         <Box sx={page}>
-            <SlateModal openModal={slateModal} setSlateModal={setSlateModal} slates={slates} />
+            {slate && (<SlateModal slate={slate} openModal={slateModal} setSlateModal={setSlateModal} slates={slates} />)}
             <Divider />
             {(slatesLoading || !slate) ? (
                 <Grid container justifyContent="center" alignItems="center" sx={{ height: '75vh' }}>

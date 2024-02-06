@@ -53,11 +53,15 @@ function ProjectionResponse({ data, setUploaded, setOpenProjectionModal }) {
             </Grid>
             {(assumedPlayersCount > 0) && (
                 <>
-                    <Grid item>
+                    <Grid item sx={{ overflow: 'auto', }}>
                         <Typography sx={{ fontSize: '2vh' }}><span style={{ color: 'red' }}>Warning!</span> The following name mappings have been assumed.</Typography>
                     </Grid>
                     <Grid item>
-                        <Grid container direction='column' justifyContent='flex-start' alignItems='center' spacing={1}>
+                        <Grid container direction='column' justifyContent='flex-start' alignItems='center' spacing={1} style={{
+                            maxHeight: '300px', // Set a maximum height for the div
+                            overflowY: 'auto',  // Add a vertical scrollbar when content overflows
+                            border: '1px solid #ccc', // Optional: Add border for visibility
+                        }}>
                             {assumedPlayersList}
                         </Grid>
                     </Grid>
@@ -72,7 +76,11 @@ function ProjectionResponse({ data, setUploaded, setOpenProjectionModal }) {
                         <Typography sx={{ fontSize: '2vh' }}><span style={{ color: 'red' }}>Warning!</span> The following players were not found.</Typography>
                     </Grid>
                     <Grid item>
-                        <Grid container direction='column' justifyContent='flex-start' alignItems='center' spacing={1}>
+                        <Grid container direction='column' justifyContent='flex-start' alignItems='center' spacing={1} style={{
+                            maxHeight: '300px', // Set a maximum height for the div
+                            overflowY: 'auto',  // Add a vertical scrollbar when content overflows
+                            border: '1px solid #ccc', // Optional: Add border for visibility
+                        }}>
                             {unfoundPlayers.map((player) => (
                                 <Grid key={player} item>
                                     <Typography sx={{ fontSize: '2vh' }}>{player}</Typography>

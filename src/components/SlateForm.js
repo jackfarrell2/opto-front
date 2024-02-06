@@ -4,7 +4,7 @@ import { Button, Grid, TextField, Typography, CircularProgress } from '@mui/mate
 import { useTheme } from '@mui/material/styles';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import { styled } from '@mui/material/styles';
-
+import { SlateSelector } from './SlateSelector'
 
 const VisuallyHiddenInput = styled('input')({
     clip: 'rect(0 0 0 0)',
@@ -18,15 +18,20 @@ const VisuallyHiddenInput = styled('input')({
     width: 1,
 });
 
-function SlateForm({ setSlateModal, handleSubmit, loading }) {
+function SlateForm({ setSlateModal, handleSubmit, loading, onlyProjections, setOnlyProjections, slates, slate }) {
     const theme = useTheme()
-    const [selectedFile, setSelectedFile] = React.useState(null)
+    const [firstSelectedFile, setFirstSelectedFile] = React.useState(null)
+    const [secondSelectedFile, setSecondSelectedFile] = React.useState(null)
+    const [selectedSlate, setSelectedSlate] = React.useState(slate)
 
-    const handleFileChange = (event) => {
+    const handleFileChange = (event, index) => {
         const file = event.target.files[0];
-        setSelectedFile(file);
+        if (index === 0) {
+            setFirstSelectedFile(file);
+        } else if (index === 1) {
+            setSecondSelectedFile(file);
+        }
     }
-
     return (
         <>
             <Button onClick={() => setSlateModal(false)} sx={{ color: theme.palette.primary.main }}>
@@ -42,6 +47,32 @@ function SlateForm({ setSlateModal, handleSubmit, loading }) {
                     </Grid>
                 ) : (
                     <>
+                        {!onlyProjections ? (
+                            <Grid item>
+                                <Grid container direction='row' justifyContent='center' alignItems='center' spacing={2}>
+                                    <Grid item>
+                                        <Button sx={{
+                                            bgcolor: '#ffc107',
+                                            color: 'primary.main',
+                                            '&:hover': {
+                                                bgcolor: '#ffc107',
+                                                color: 'primary.main',
+                                            },
+                                        }} component='label' variant='contained' startIcon={<CloudUploadIcon />}>
+                                            Upload Lines
+                                            <VisuallyHiddenInput type='file' onChange={(e) => handleFileChange(e, 0)} />
+                                        </Button>
+                                    </Grid>
+                                    <Grid item>
+                                        <TextField id="standard-basic" value={firstSelectedFile ? firstSelectedFile.name : ''} variant="standard" />
+                                    </Grid>
+                                </Grid>
+                            </Grid>
+                        ) : (
+                            <Grid item>
+                                <SlateSelector slates={slates} slate={selectedSlate} handleSlateChange={setSelectedSlate} />
+                            </Grid>
+                        )}
                         <Grid item>
                             <Grid container direction='row' justifyContent='center' alignItems='center' spacing={2}>
                                 <Grid item>
@@ -53,20 +84,20 @@ function SlateForm({ setSlateModal, handleSubmit, loading }) {
                                             color: 'primary.main',
                                         },
                                     }} component='label' variant='contained' startIcon={<CloudUploadIcon />}>
-                                        Upload CSV
-                                        <VisuallyHiddenInput type='file' onChange={handleFileChange} />
+                                        Upload Projections
+                                        <VisuallyHiddenInput type='file' onChange={(e) => handleFileChange(e, 1)} />
                                     </Button>
                                 </Grid>
                                 <Grid item>
-                                    <TextField id="standard-basic" value={selectedFile ? selectedFile.name : ''} variant="standard" />
+                                    <TextField id="standard-basic" value={secondSelectedFile ? secondSelectedFile.name : ''} variant="standard" />
                                 </Grid>
                             </Grid>
                         </Grid>
                         <Grid item>
-                            <Button variant='contained' onClick={() => handleSubmit(selectedFile)}>Submit</Button>
+                            <Button disabled={!onlyProjections ? (!firstSelectedFile || !secondSelectedFile) : (!secondSelectedFile)} variant='contained' onClick={() => handleSubmit(firstSelectedFile, secondSelectedFile)}>Submit</Button>
                         </Grid>
                         <Grid item>
-                            <Button variant='text' size='small' sx={{ textDecoration: 'underline' }}>Want to delete a slate?</Button>
+                            <Button onClick={() => setOnlyProjections(!onlyProjections)} variant='text' size='small' sx={{ textDecoration: 'underline' }}>Want to only update default projections?</Button>
                         </Grid>
                     </>
                 )

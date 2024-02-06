@@ -3,7 +3,6 @@ import { Select, MenuItem } from '@mui/material'
 import { slateSelector, slateSelectorDropdown } from '../styles/classes'
 
 function SlateSelector({ slates, slate, handleSlateChange }) {
-
     function handleChange(event) {
         const selectedSlateName = event.target.value
         const selectedSlate = slates.find(slate => slate.name === selectedSlateName)

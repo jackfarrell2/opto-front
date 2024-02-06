@@ -80,12 +80,10 @@ function ProjectionModal({ openProjectionModal, setOpenProjectionModal, slate, s
         async (projections) => {
             const formData = new FormData();
             const pasteProjections = {}
-            console.log('projections', projections)
             projections.forEach((projection) => {
                 if (projection[0].value && projection[1].value)
                     pasteProjections[projection[0].value] = projection[1].value
             })
-            console.log('pasteProjections', pasteProjections)
             formData.append('paste-projections', JSON.stringify(pasteProjections));
             formData.append('slate', selectedSlate.id);
             formData.append('method', 'paste');

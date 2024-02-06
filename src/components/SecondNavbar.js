@@ -5,11 +5,16 @@ import { SlateSelector } from "./SlateSelector";
 import AddIcon from '@mui/icons-material/Add';
 import { useTheme } from '@mui/material/styles';
 import { ProjectionModal } from "./ProjectionModal";
+import { UserContext } from "./UserProvider"
 
 function SecondNavbar({ setSlateModal, slate, slates, setSlate, setSlates }) {
+    const { user } = React.useContext(UserContext)
+    let userStaff = false
+    if (user) {
+        userStaff = user.isStaff
+    }
     const theme = useTheme()
     const [openProjectionModal, setOpenProjectionModal] = React.useState(false)
-
     return (
         <AppBar position='static' sx={secondaryNav}>
             <Toolbar>
@@ -21,7 +26,7 @@ function SecondNavbar({ setSlateModal, slate, slates, setSlate, setSlates }) {
                                 <SlateSelector slates={slates} slate={slate} handleSlateChange={(newSlate) => setSlate(newSlate)} />
                             </Grid>
                             <Grid item>
-                                <IconButton sx={{ color: theme.palette.primary.main }} onClick={() => setSlateModal(true)}><AddIcon /></IconButton>
+                                {userStaff && (<IconButton sx={{ color: theme.palette.primary.main }} onClick={() => setSlateModal(true)}><AddIcon /></IconButton>)}
                             </Grid>
                         </Grid>
                     </Grid>

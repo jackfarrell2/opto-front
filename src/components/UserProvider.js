@@ -32,6 +32,7 @@ function UserProvider({ setOpenModal, apiUrl, children }) {
             }
 
             const data = await response.json();
+
             setUser(data.user);
             setToken(data.token);
             setOpenModal('none');
