@@ -26,7 +26,7 @@ function SecondNavbar({ setSlateModal, slate, slates, setSlate, setSlates }) {
                         </Grid>
                     </Grid>
                     <Grid item>
-                        <Button onClick={() => setOpenProjectionModal(!openProjectionModal)} variant='outlined' color='primary'>Upload Projections</Button>
+                        <Button onClick={() => setOpenProjectionModal(!openProjectionModal)} variant='outlined' color='primary'>Bulk Upload Projections</Button>
                     </Grid>
                 </Grid>
             </Toolbar>

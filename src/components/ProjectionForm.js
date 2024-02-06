@@ -5,7 +5,7 @@ import { useTheme } from '@mui/material/styles';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import { styled } from '@mui/material/styles';
 import { SlateSelector } from './SlateSelector';
-import { UserContext } from './UserProvider';
+import { SpreadsheetInput } from './SpreadsheetInput';
 
 
 const VisuallyHiddenInput = styled('input')({
@@ -20,14 +20,20 @@ const VisuallyHiddenInput = styled('input')({
     width: 1,
 });
 
-function ProjectionForm({ setOpenProjectionModal, handleSubmit, loading, slates, setSelectedFile, selectedFile, setSelectedSlate, selectedSlate }) {
-    const { user } = React.useContext(UserContext)
+function ProjectionForm({ handlePasteSubmit, fileMethod, handleMethodChange, error, setOpenProjectionModal, handleSubmit, loading, slates, setSelectedFile, selectedFile, setSelectedSlate, selectedSlate }) {
     const theme = useTheme()
 
     const handleFileChange = (event) => {
         const file = event.target.files[0];
         setSelectedFile(file);
     }
+
+    const [projections, setProjections] = React.useState([
+        [{ value: "" }, { value: "" }],
+        [{ value: "" }, { value: "" }],
+        [{ value: "" }, { value: "" }],
+        [{ value: "" }, { value: "" }],
+    ]);
 
     return (
         <>
@@ -52,31 +58,81 @@ function ProjectionForm({ setOpenProjectionModal, handleSubmit, loading, slates,
                                 <Grid item>
                                     <SlateSelector slates={slates} slate={selectedSlate} handleSlateChange={setSelectedSlate} />
                                 </Grid>
+
                             </Grid>
                         </Grid>
-                        <Grid item>
-                            <Grid container direction='row' justifyContent='center' alignItems='center' spacing={2}>
+                        {fileMethod && (
+                            <>
                                 <Grid item>
-                                    <Button sx={{
-                                        bgcolor: '#ffc107',
-                                        color: 'primary.main',
-                                        '&:hover': {
-                                            bgcolor: '#ffc107',
-                                            color: 'primary.main',
-                                        },
-                                    }} component='label' variant='contained' startIcon={<CloudUploadIcon />}>
-                                        Upload CSV
-                                        <VisuallyHiddenInput type='file' onChange={handleFileChange} />
-                                    </Button>
+                                    <Typography sx={{ fontSize: '1.75vh', margin: '1vh' }}>Upload a CSV or XLSX with 2 columns titled "Player" and "Projection"</Typography>
                                 </Grid>
                                 <Grid item>
-                                    <TextField id="standard-basic" value={selectedFile ? selectedFile.name : ''} variant="standard" />
+                                    <Grid container direction='row' justifyContent='center' alignItems='center' spacing={2}>
+                                        <Grid item>
+                                            <Button sx={{
+                                                bgcolor: '#ffc107',
+                                                color: 'primary.main',
+                                                '&:hover': {
+                                                    bgcolor: '#ffc107',
+                                                    color: 'primary.main',
+                                                },
+                                            }} component='label' variant='contained' startIcon={<CloudUploadIcon />}>
+                                                Upload CSV / XLSX
+                                                <VisuallyHiddenInput type='file' onChange={handleFileChange} />
+                                            </Button>
+                                        </Grid>
+                                        <Grid item>
+                                            <TextField id="standard-basic" value={selectedFile ? selectedFile.name : ''} variant="standard" />
+                                        </Grid>
+                                    </Grid>
                                 </Grid>
-                            </Grid>
-                        </Grid>
-                        <Grid item>
-                            <Button disabled={!user} variant='contained' onClick={() => handleSubmit(selectedFile)}>Submit</Button>
-                        </Grid>
+                                <Grid item>
+                                    <Grid container direction='column' justifyContent='center' alignItems='center' spacing={2}>
+                                        <Grid item>
+                                            <Button variant='contained' onClick={() => handleSubmit(selectedFile)}>Submit</Button>
+                                        </Grid>
+                                        {error && (
+                                            <Grid item>
+                                                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', margin: '2vh' }}>
+                                                    <Typography sx={{ color: 'red', fontSize: '1.75vh' }}>{error}</Typography>
+                                                </div>
+                                            </Grid>
+                                        )}
+                                    </Grid>
+                                </Grid>
+                                <Grid item>
+                                    <Button onClick={handleMethodChange} variant='text' size='small' sx={{ textDecoration: 'underline' }}>Want to copy and paste data instead?</Button>
+                                </Grid>
+                            </>
+                        )}
+                        {!fileMethod && (
+                            <>
+                                <Grid item>
+                                    <Typography sx={{ fontSize: '1.75vh', margin: '1vh' }}>Copy and paste your data in the table below. The table will grow accordingly.</Typography>
+                                </Grid>
+                                <Grid item >
+                                    <SpreadsheetInput projections={projections} setProjections={setProjections} />
+                                </Grid>
+                                <Grid item>
+                                    <Grid container direction='column' justifyContent='center' alignItems='center' spacing={2}>
+                                        <Grid item>
+                                            <Button variant='contained' onClick={() => handlePasteSubmit(projections)}>Submit</Button>
+                                        </Grid>
+                                        {error && (
+                                            <Grid item>
+                                                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', margin: '2vh' }}>
+                                                    <Typography sx={{ color: 'red', fontSize: '1.75vh' }}>{error}</Typography>
+                                                </div>
+                                            </Grid>
+                                        )}
+                                    </Grid>
+                                </Grid>
+                                <Grid item>
+                                    <Button onClick={handleMethodChange} variant='text' size='small' sx={{ textDecoration: 'underline' }}>Want to upload a file instead?</Button>
+                                </Grid>
+                            </>
+
+                        )}
                     </>
                 )
                 }
