@@ -16,7 +16,7 @@ function SlateInfo({ slate, setOptimizedLineup, optimizedLineup }) {
     const optoApiUrl = userId ? `${config.apiUrl}nba/api/authenticated-optimize/` : `${config.apiUrl}nba/api/unauthenticated-optimize/`
     const apiUrl = token ? `${config.apiUrl}nba/api/authenticated-slate-info/${slate.id}` : `${config.apiUrl}nba/api/unauthenticated-slate-info/${slate.id}`
     const [lockedData, setLockedData] = React.useState({ 'count': 0, 'salary': 0 })
-    const [userSettings, setUserSettings] = React.useState({ 'uniques': 3, 'min-salary': 45000, 'max-salary': 50000, 'max-players-per-team': 5 })
+    const [userSettings, setUserSettings] = React.useState({ 'uniques': 3, 'min-salary': 45000, 'max-salary': 50000, 'max-players-per-team': 5, 'num-lineups': 20 })
 
     // Fetch slate information
     const { data, isLoading: playersLoading } = useQuery(['players', slate.id], async () => {
@@ -67,7 +67,7 @@ function SlateInfo({ slate, setOptimizedLineup, optimizedLineup }) {
                 'maxTeamPlayers': userSettings['max-players-per-team'],
                 'minSalary': userSettings['min-salary'],
                 'maxSalary': userSettings['max-salary'],
-                'numLineups': 20
+                'numLineups': userSettings['num-lineups']
             }
             const requestData = {
                 'slate-id': slate.id,

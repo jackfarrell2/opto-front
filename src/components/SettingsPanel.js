@@ -36,8 +36,8 @@ function a11yProps(index) {
     };
 }
 
-function SettingsPanel() {
-    const [lineupCount, setLineupCount] = React.useState(20)
+function SettingsPanel({ userSettings, setUserSettings }) {
+    const [lineupCount, setLineupCount] = React.useState(userSettings['num-lineups'] || 20)
     const minSalary = parseInt(localStorage.getItem('min-salary')) || 45000
     const maxSalary = parseInt(localStorage.getItem('max-salary')) || 50000
     const [tab, setTab] = React.useState(0)
