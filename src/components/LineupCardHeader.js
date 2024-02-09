@@ -1,6 +1,6 @@
 import { Grid, Typography } from "@mui/material"
 
-function LineupCardHeader({number, projection, salary}) {
+function LineupCardHeader({ number, projection, salary }) {
     return (
         <Grid container direction='row' alignItems='center' justifyContent='space-between'>
             <Grid item xs={4}>

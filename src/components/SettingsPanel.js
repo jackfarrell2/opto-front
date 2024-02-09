@@ -2,7 +2,7 @@ import React from 'react'
 import { Grid, Button, Tabs, Tab, Box, Typography, TextField } from '@mui/material'
 import PropTypes from 'prop-types'
 import { SimpleSettings } from './SimpleSettings';
-
+import { UserSettingsContext } from './SlateInfo'
 function CustomTabPanel(props) {
     const { children, value, index, ...other } = props;
 
@@ -36,10 +36,11 @@ function a11yProps(index) {
     };
 }
 
-function SettingsPanel({ userSettings, setUserSettings }) {
-    const [lineupCount, setLineupCount] = React.useState(userSettings['num-lineups'] || 20)
-    const minSalary = parseInt(localStorage.getItem('min-salary')) || 45000
-    const maxSalary = parseInt(localStorage.getItem('max-salary')) || 50000
+function SettingsPanel() {
+    const [userSettings, setUserSettings] = React.useContext(UserSettingsContext)
+    const lineupCount = userSettings['num-lineups']
+    const minSalary = userSettings['min-salary']
+    const maxSalary = userSettings['max-salary']
     const [tab, setTab] = React.useState(0)
     const handleTabChange = (event, newValue) => {
         setTab(newValue);
@@ -50,7 +51,7 @@ function SettingsPanel({ userSettings, setUserSettings }) {
     function handleTotalLineupsChange(e) {
         const inputValue = e.target.value;
         if (inputValue === '') {
-            setLineupCount('');
+            setUserSettings({ ...userSettings, 'num-lineups': '' });
             return;
         }
         const newValue = parseInt(inputValue, 10);
@@ -61,9 +62,9 @@ function SettingsPanel({ userSettings, setUserSettings }) {
         }
 
         if (newValue >= 150) {
-            setLineupCount(150);
+            setUserSettings({ ...userSettings, 'num-lineups': 150 });
         } else {
-            setLineupCount(newValue);
+            setUserSettings({ ...userSettings, 'num-lineups': newValue });
         }
     }
 
@@ -92,7 +93,7 @@ function SettingsPanel({ userSettings, setUserSettings }) {
             <Grid item style={{ textAlign: 'center', display: 'flex', justifyContent: 'center', alignItems: 'center' }} xs={4}>
                 <Grid container direction='column' justifyContent='center' alignItems='center' spacing={2}>
                     <Grid item xs={6}>
-                        <TextField sx={{ width: '10vh', textAlign: 'center' }} onChange={handleTotalLineupsChange} id="min-salary" label="Lineups" value={lineupCount} variant="standard" inputProps={{ style: { textAlign: 'center' } }} />
+                        {userSettings['num-lineups'] && (<TextField sx={{ width: '10vh', textAlign: 'center' }} onChange={handleTotalLineupsChange} id="lineup-count" label="Lineups" value={userSettings['num-lineups']} variant="standard" inputProps={{ style: { textAlign: 'center' } }} />)}
                     </Grid>
                     <Grid item xs={6}>
                         <Button variant='contained' form='PlayerTableForm' color='primary' disabled={!ready} type='submit'>Optimize</Button>

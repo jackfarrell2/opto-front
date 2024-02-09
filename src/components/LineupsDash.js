@@ -1,12 +1,15 @@
 import { Grid } from "@mui/material"
 import { LineupCard } from "./LineupCard"
 
-function LineupsDash(lineup) {
+function LineupsDash({ optimizedLineups }) {
+    console.log('lineups in dash', optimizedLineups)
     return (
         <Grid container direction='row' justifyContent='flex-start' alignItems='flex-start' spacing={2}>
-            <Grid item xs={4}>
-                <LineupCard lineup={lineup['lineup']} />
-            </Grid>
+            {optimizedLineups.map((lineup, index) => (
+                <Grid key={index} item xs={4}>
+                    <LineupCard lineup={lineup} />
+                </Grid>
+            ))}
         </Grid>
     )
 }
