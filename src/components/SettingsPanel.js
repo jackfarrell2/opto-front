@@ -3,6 +3,8 @@ import { Grid, Button, Tabs, Tab, Box, Typography, TextField } from '@mui/materi
 import PropTypes from 'prop-types'
 import { SimpleSettings } from './SimpleSettings';
 import { UserSettingsContext } from './SlateInfo'
+import { ExposurePanel } from './ExposurePanel';
+
 function CustomTabPanel(props) {
     const { children, value, index, ...other } = props;
 
@@ -36,12 +38,11 @@ function a11yProps(index) {
     };
 }
 
-function SettingsPanel() {
+function SettingsPanel({ tab, setTab, exposures }) {
     const [userSettings, setUserSettings] = React.useContext(UserSettingsContext)
     const lineupCount = userSettings['num-lineups']
     const minSalary = userSettings['min-salary']
     const maxSalary = userSettings['max-salary']
-    const [tab, setTab] = React.useState(0)
     const handleTabChange = (event, newValue) => {
         setTab(newValue);
     };
@@ -70,8 +71,8 @@ function SettingsPanel() {
 
 
     return (
-        <Grid style={{ height: '75vh' }} container direction='column' justifyContent='space-between' alignItems='stretch' spacing={0}>
-            <Grid item xs={8}>
+        <Grid style={{ height: '75vh' }} container direction='row' justifyContent='center' alignItems='space-between' spacing={0}>
+            <Grid item xs={12}>
                 <Grid container direction='row' justifyContent='center' alignItems='flex-start'>
                     <Grid item xs={12}>
                         <Box>
@@ -85,12 +86,13 @@ function SettingsPanel() {
                                 <SimpleSettings />
                             </CustomTabPanel>
                             <CustomTabPanel sx={{ width: '100%' }} value={tab} index={1}>
+                                <ExposurePanel exposures={exposures} />
                             </CustomTabPanel>
                         </Box>
                     </Grid>
                 </Grid>
             </Grid>
-            <Grid item style={{ textAlign: 'center', display: 'flex', justifyContent: 'center', alignItems: 'center' }} xs={4}>
+            <Grid item style={{ textAlign: 'center', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                 <Grid container direction='column' justifyContent='center' alignItems='center' spacing={2}>
                     <Grid item xs={6}>
                         {userSettings['num-lineups'] && (<TextField sx={{ width: '10vh', textAlign: 'center' }} onChange={handleTotalLineupsChange} id="lineup-count" label="Lineups" value={userSettings['num-lineups']} variant="standard" inputProps={{ style: { textAlign: 'center' } }} />)}

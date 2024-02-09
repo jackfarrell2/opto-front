@@ -12,6 +12,7 @@ function Nba() {
     const [slateModal, setSlateModal] = React.useState(false)
     const [slate, setSlate] = React.useState('')
     const [optimizedLineups, setOptimizedLineups] = React.useState('')
+    const [exposures, setExposures] = React.useState('')
     const apiUrl = `${config.apiUrl}`
 
     // Fetch slates
@@ -55,7 +56,7 @@ function Nba() {
                 <>
                     <SecondNavbar setSlateModal={setSlateModal} slate={slate} slates={slates || []} setSlate={setSlate}></SecondNavbar>
                     <Divider />
-                    {slate && <SlateInfo sx={{ bc: 'red' }} key={slate.id} slate={slate} setOptimizedLineups={setOptimizedLineups} />}
+                    {slate && <SlateInfo sx={{ bc: 'red' }} key={slate.id} slate={slate} exposures={exposures} setOptimizedLineups={setOptimizedLineups} setExposures={setExposures} />}
                     {optimizedLineups && (
                         <LineupsDash optimizedLineups={optimizedLineups} />
                     )}
