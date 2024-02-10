@@ -30,7 +30,6 @@ const PlayerRow = React.memo(function PlayerRow({ row }) {
         return () => clearTimeout(timeoutId);
     }, [setStoredValueMeta, playerSettings, token]);
 
-
     return (
         <tr {...row.getRowProps()}>
             <RemoveCell cell={row.cells[0]} playerSettings={playerSettings} setPlayerSettings={setPlayerSettings} />

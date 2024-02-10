@@ -2,7 +2,7 @@ import React from 'react'
 import { useTable, useSortBy, useGlobalFilter } from 'react-table'
 import '../styles/PlayerTable.css'
 import { PlayerRow } from './PlayerRow'
-import { TextField } from '@mui/material'
+import { TextField, Grid, Button } from '@mui/material'
 import { XValueCell } from './PlayerCells/XValueCell'
 import { StaticCell } from './PlayerCells/StaticCell'
 import { RemoveCell } from './PlayerCells/RemoveCell'
@@ -12,7 +12,8 @@ import { LockCell } from './PlayerCells/LockCell'
 import { ExposureCell } from './PlayerCells/ExposureCell'
 
 
-function PlayerTable({ data, handleOptimize }) {
+function PlayerTable({ data, handleOptimize, slateId }) {
+
     // Define columns
     const columns = React.useMemo(() => [
         {
@@ -121,6 +122,20 @@ function PlayerTable({ data, handleOptimize }) {
         }
     }
 
+    // State to manage filter toggle
+    const [isFilterActive, setIsFilterActive] = React.useState(false);
+
+    // Filter rows based on a condition
+    const filteredRows = React.useMemo(() => {
+        if (isFilterActive) {
+            // Apply filter logic based on your requirement
+            return rows.filter(row => row.original.projection['custom'] === true);
+        } else {
+            // Return all rows if filter is not active
+            return rows;
+        }
+    }, [isFilterActive, rows]);
+
     function formDataToObject(formData) {
         const formDataObj = {};
         formData.forEach((value, key) => {
@@ -144,11 +159,20 @@ function PlayerTable({ data, handleOptimize }) {
 
     return (
         <>
+
             <div>
-                {/* <Grid container direction='row' justifyContent=''> */}
-                <TextField size='small' id="filled-search" label="Search Player" type="search" variant="filled" value={globalFilter || ''} onChange={handleSearchChange} />
-                <div>Test</div>
-                {/* </Grid> */}
+                <Grid container direction='row' justifyContent='space-between' alignItems='flex-end' spacing={2}>
+                    <Grid item>
+                        <TextField size='small' id="filled-search" label="Search Player" type="search" variant="filled" value={globalFilter || ''} onChange={handleSearchChange} />
+                    </Grid>
+                    <Grid item>
+                        <Grid style={{ marginBottom: '2vh' }} container direction='row' justifyContent='space-between' alignItems='center' spacing={2}>
+                            <Grid item>
+                                <Button onClick={() => setIsFilterActive(!isFilterActive)} variant='outlined' color='secondary'>{!isFilterActive ? 'Only Use My Projections' : 'Use All Projections'}</Button>
+                            </Grid>
+                        </Grid>
+                    </Grid>
+                </Grid>
                 <form id='PlayerTableForm' onSubmit={handleFormSubmit}>
                     <div>
                         <table className='player-table' {...getTableProps()}>
@@ -164,7 +188,7 @@ function PlayerTable({ data, handleOptimize }) {
                                 ))}
                             </thead>
                             <tbody {...getTableBodyProps()}>
-                                {rows.map(row => {
+                                {filteredRows.map(row => {
                                     prepareRow(row);
                                     return <PlayerRow key={row.id} row={row} />;
                                 })}

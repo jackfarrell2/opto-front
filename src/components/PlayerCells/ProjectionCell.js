@@ -1,6 +1,7 @@
 import '../../styles/PlayerTable.css';
 
 function ProjectionCell({ cell, playerSettings, setPlayerSettings }) {
+  console.log(cell.row.original.projection)
   const projection = playerSettings['projection']['projection']
   const custom = playerSettings['projection']['custom']
   const setProjection = (value) => setPlayerSettings({ ...playerSettings, 'projection': value })
@@ -10,6 +11,7 @@ function ProjectionCell({ cell, playerSettings, setPlayerSettings }) {
     let dotTrails = false
     if (inputValue === '') {
       setProjection({ 'projection': '0', 'custom': true });
+      cell.row.original.projection = { 'projection': '0', 'custom': true }
       return;
     }
     if (isNaN(inputValue)) {
@@ -26,6 +28,7 @@ function ProjectionCell({ cell, playerSettings, setPlayerSettings }) {
     const cleanValue = dotTrails ? roundedValue.toString() + '.' : roundedValue.toString()
     cell.row.original.projection = cleanValue
     setProjection({ 'projection': cleanValue, 'custom': true })
+    cell.row.original.projection = { 'projection': cleanValue, 'custom': true }
   }
 
   return (
