@@ -1,7 +1,6 @@
 import '../../styles/PlayerTable.css';
 
 function ProjectionCell({ cell, playerSettings, setPlayerSettings }) {
-  console.log(cell.row.original.projection)
   const projection = playerSettings['projection']['projection']
   const custom = playerSettings['projection']['custom']
   const setProjection = (value) => setPlayerSettings({ ...playerSettings, 'projection': value })
