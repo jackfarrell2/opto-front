@@ -144,30 +144,35 @@ function PlayerTable({ data, handleOptimize }) {
 
     return (
         <>
-            <TextField size='small' id="filled-search" label="Search Player" type="search" variant="filled" value={globalFilter || ''} onChange={handleSearchChange} />
-            <form id='PlayerTableForm' onSubmit={handleFormSubmit}>
-                <div>
-                    <table className='player-table' {...getTableProps()}>
-                        <thead>
-                            {headerGroups.map(headerGroup => (
-                                <tr {...headerGroup.getHeaderGroupProps()}>
-                                    {headerGroup.headers.map(column => (
-                                        <th {...column.getHeaderProps(column.getSortByToggleProps())}>
-                                            {column.render('Header')}
-                                        </th>
-                                    ))}
-                                </tr>
-                            ))}
-                        </thead>
-                        <tbody {...getTableBodyProps()}>
-                            {rows.map(row => {
-                                prepareRow(row);
-                                return <PlayerRow key={row.id} row={row} />;
-                            })}
-                        </tbody>
-                    </table>
-                </div>
-            </form>
+            <div>
+                {/* <Grid container direction='row' justifyContent=''> */}
+                <TextField size='small' id="filled-search" label="Search Player" type="search" variant="filled" value={globalFilter || ''} onChange={handleSearchChange} />
+                <div>Test</div>
+                {/* </Grid> */}
+                <form id='PlayerTableForm' onSubmit={handleFormSubmit}>
+                    <div>
+                        <table className='player-table' {...getTableProps()}>
+                            <thead>
+                                {headerGroups.map(headerGroup => (
+                                    <tr {...headerGroup.getHeaderGroupProps()}>
+                                        {headerGroup.headers.map(column => (
+                                            <th {...column.getHeaderProps(column.getSortByToggleProps())}>
+                                                {column.render('Header')}
+                                            </th>
+                                        ))}
+                                    </tr>
+                                ))}
+                            </thead>
+                            <tbody {...getTableBodyProps()}>
+                                {rows.map(row => {
+                                    prepareRow(row);
+                                    return <PlayerRow key={row.id} row={row} />;
+                                })}
+                            </tbody>
+                        </table>
+                    </div>
+                </form>
+            </div>
         </>
     )
 }
