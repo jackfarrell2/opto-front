@@ -30,9 +30,11 @@ function SimpleSettings() {
         const data = await response.json()
         setUserSettings({ ...data })
         return data
-    }, {
-        staleTime: Infinity
-    });
+    },
+        // {
+        //     staleTime: Infinity
+        // }
+    );
 
     return (
         <>

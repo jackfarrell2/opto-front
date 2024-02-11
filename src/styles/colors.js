@@ -1,5 +1,6 @@
 export const main = '#0C2340';
 export const secondary = '#62400B';
+export const accent = '#254d78'
 
 export const teamColors = {
     'ATL': '#E03A3E',

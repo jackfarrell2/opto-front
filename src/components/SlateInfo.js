@@ -2,7 +2,7 @@ import React from 'react'
 import { useQuery } from 'react-query'
 import config from '../config'
 import { PlayerTable } from './PlayerTable';
-import { Grid, CircularProgress, Box, Container } from '@mui/material';
+import { Grid, CircularProgress, Box, Container, Divider } from '@mui/material';
 import { SettingsPanel } from './SettingsPanel';
 import { UserContext } from './UserProvider';
 import { useMutation } from 'react-query'
@@ -110,9 +110,10 @@ function SlateInfo({ slate, setOptimizedLineups, exposures, setExposures }) {
                     <UserSettingsContext.Provider value={[userSettings, setUserSettings]}>
                         <Grid container direction='row' justifyContent='center' alignItems='center'>
                             <Grid item xs={8}>
-                                <Container sx={{ maxHeight: '75vh', overflow: 'auto', mt: '2vh' }}>
+                                <Container disableGutters sx={{ maxHeight: '75vh', overflow: 'auto', pt: '2vh', pl: '2vh' }}>
                                     {memoizedPlayerTable}
                                 </Container>
+                                <Divider />
                             </Grid>
                             <Grid item xs={4}>
                                 <SettingsPanel tab={tab} setTab={setTab} exposures={exposures} />

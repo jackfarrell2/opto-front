@@ -168,7 +168,7 @@ function PlayerTable({ data, handleOptimize, slateId }) {
                     <Grid item>
                         <Grid style={{ marginBottom: '2vh' }} container direction='row' justifyContent='space-between' alignItems='center' spacing={2}>
                             <Grid item>
-                                <Button onClick={() => setIsFilterActive(!isFilterActive)} variant='outlined' color='secondary'>{!isFilterActive ? 'Only Use My Projections' : 'Use All Projections'}</Button>
+                                <Button sx={{ marginRight: '2vh' }} onClick={() => setIsFilterActive(!isFilterActive)} variant='outlined' color='secondary'>{!isFilterActive ? 'Only Use My Projections' : 'Use All Projections'}</Button>
                             </Grid>
                         </Grid>
                     </Grid>

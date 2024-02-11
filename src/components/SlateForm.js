@@ -94,7 +94,7 @@ function SlateForm({ setSlateModal, handleSubmit, loading, onlyProjections, setO
                             </Grid>
                         </Grid>
                         <Grid item>
-                            <Button disabled={!onlyProjections ? (!firstSelectedFile || !secondSelectedFile) : (!secondSelectedFile)} variant='contained' onClick={() => handleSubmit(firstSelectedFile, secondSelectedFile)}>Submit</Button>
+                            <Button disabled={!firstSelectedFile} variant='contained' onClick={() => handleSubmit(firstSelectedFile, secondSelectedFile)}>Submit</Button>
                         </Grid>
                         <Grid item>
                             <Button onClick={() => setOnlyProjections(!onlyProjections)} variant='text' size='small' sx={{ textDecoration: 'underline' }}>Want to only update default projections?</Button>

@@ -2,7 +2,7 @@ import { LineupCardRow } from './LineupCardRow';
 import '../styles/PlayerTable.css';
 import { useTheme } from '@mui/material/styles';
 
-function LineupCardBody({lineup}) {
+function LineupCardBody({ lineup }) {
     const playerInfo = Object.keys(lineup).filter(
         (key) => key !== 'total_projection' && key !== 'total_salary'
     );
@@ -13,7 +13,7 @@ function LineupCardBody({lineup}) {
     return (
         <table style={{ borderCollapse: 'collapse', borderSpacing: 0, width: '100%' }}>
             <thead>
-                <tr style={{ color: 'white', backgroundColor: secondaryColor }}>
+                <tr style={{ height: '6vh', fontSize: '2vh', color: 'white', backgroundColor: secondaryColor }}>
                     <th>Pos</th>
                     <th></th>
                     <th>Salary</th>
@@ -24,7 +24,7 @@ function LineupCardBody({lineup}) {
             </thead>
             <tbody>
                 {playerInfo.map((pos) => (
-                    <LineupCardRow key={lineup['name']} pos={pos} player={lineup[pos]}/>
+                    <LineupCardRow key={lineup['name']} pos={pos} player={lineup[pos]} />
                 ))}
             </tbody>
         </table>
