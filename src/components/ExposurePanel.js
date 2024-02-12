@@ -1,9 +1,9 @@
 import { Box, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
 import { teamColors } from '../styles/colors'
 
-function ExposurePanel({ exposures }) {
-    // Get an array of player IDs
-    const exposuresArray = Object.entries(exposures).map(([id, data]) => ({ id, ...data }));
+function ExposurePanel({ exposures, selectedOpto }) {
+    const theseExposures = exposures[selectedOpto];
+    const exposuresArray = Object.entries(theseExposures).map(([id, data]) => ({ id, ...data }));
     exposuresArray.sort((a, b) => b.exposure - a.exposure);
 
     return (

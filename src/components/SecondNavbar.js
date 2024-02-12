@@ -8,7 +8,7 @@ import { ProjectionModal } from "./ProjectionModal";
 import { UserContext } from "./UserProvider"
 import { ConfirmModal } from "./ConfirmModal";
 
-function SecondNavbar({ setSlateModal, slate, slates, setSlate, setSlates }) {
+function SecondNavbar({ setSlateModal, slate, slates, setSlate }) {
     const [openConfirmModal, setOpenConfirmModal] = React.useState(false)
     const { user } = React.useContext(UserContext)
     let userStaff = false

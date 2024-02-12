@@ -8,11 +8,13 @@ import config from '../config'
 import { useQuery } from 'react-query'
 import { LineupsDash } from '../components/LineupsDash'
 
+
 function Nba() {
     const [slateModal, setSlateModal] = React.useState(false)
     const [slate, setSlate] = React.useState('')
-    const [optimizedLineups, setOptimizedLineups] = React.useState('')
-    const [exposures, setExposures] = React.useState('')
+    const [optimizedLineups, setOptimizedLineups] = React.useState({ 'count': 0 })
+    const [exposures, setExposures] = React.useState({})
+    const [selectedOpto, setSelectedOpto] = React.useState(1)
     const apiUrl = `${config.apiUrl}`
 
     // Fetch slates
@@ -56,10 +58,8 @@ function Nba() {
                 <>
                     <SecondNavbar setSlateModal={setSlateModal} slate={slate} slates={slates || []} setSlate={setSlate}></SecondNavbar>
                     <Divider />
-                    {slate && <SlateInfo sx={{ bc: 'red' }} key={slate.id} slate={slate} exposures={exposures} setOptimizedLineups={setOptimizedLineups} setExposures={setExposures} />}
-                    {optimizedLineups && (
-                        <LineupsDash optimizedLineups={optimizedLineups} />
-                    )}
+                    {slate && <SlateInfo key={slate.id} setSelectedOpto={setSelectedOpto} selectedOpto={selectedOpto} slate={slate} exposures={exposures} optimizedLineups={optimizedLineups} setOptimizedLineups={setOptimizedLineups} setExposures={setExposures} />}
+                    {slate && <LineupsDash optimizedLineups={optimizedLineups} selectedOpto={selectedOpto} setSelectedOpto={setSelectedOpto} />}
                 </>
             )}
         </Box>

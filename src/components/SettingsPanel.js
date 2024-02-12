@@ -38,7 +38,7 @@ function a11yProps(index) {
     };
 }
 
-function SettingsPanel({ tab, setTab, exposures }) {
+function SettingsPanel({ tab, setTab, exposures, selectedOpto }) {
     const [userSettings, setUserSettings] = React.useContext(UserSettingsContext)
     const lineupCount = userSettings['num-lineups']
     const minSalary = userSettings['min-salary']
@@ -86,7 +86,7 @@ function SettingsPanel({ tab, setTab, exposures }) {
                                 <SimpleSettings />
                             </CustomTabPanel>
                             <CustomTabPanel sx={{ width: '100%' }} value={tab} index={1}>
-                                <ExposurePanel exposures={exposures} />
+                                <ExposurePanel exposures={exposures} selectedOpto={selectedOpto} />
                             </CustomTabPanel>
                         </Box>
                     </Grid>

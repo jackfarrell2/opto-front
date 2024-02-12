@@ -10,7 +10,7 @@ import { useMutation } from 'react-query'
 export const LockedContext = React.createContext()
 export const UserSettingsContext = React.createContext()
 
-function SlateInfo({ slate, setOptimizedLineups, exposures, setExposures }) {
+function SlateInfo({ slate, setOptimizedLineups, exposures, setExposures, optimizedLineups, setSelectedOpto, selectedOpto }) {
     const { token, user } = React.useContext(UserContext)
     const userId = user ? user.id : null
     const optoApiUrl = userId ? `${config.apiUrl}nba/api/authenticated-optimize/` : `${config.apiUrl}nba/api/unauthenticated-optimize/`
@@ -18,6 +18,8 @@ function SlateInfo({ slate, setOptimizedLineups, exposures, setExposures }) {
     const [lockedData, setLockedData] = React.useState({ 'count': 0, 'salary': 0 })
     const [tab, setTab] = React.useState(0)
     const [userSettings, setUserSettings] = React.useState({ 'uniques': 3, 'min-salary': 45000, 'max-salary': 50000, 'max-players-per-team': 5, 'num-lineups': 20 })
+    const optoCount = optimizedLineups['count']
+
     // Fetch slate information
     const { data, isLoading: playersLoading } = useQuery(['players', slate.id], async () => {
         const response = await fetch(apiUrl, {
@@ -29,6 +31,16 @@ function SlateInfo({ slate, setOptimizedLineups, exposures, setExposures }) {
             throw new Error('Failed to fetch players')
         }
         const data = await response.json()
+        const optimizations = Object.keys(data['optimizations'])
+        const optimizationLength = optimizations.length
+        const userOptimizations = { 'count': optimizationLength }
+        const userExposures = {}
+        for (let i = 0; i < optimizationLength; i++) {
+            userOptimizations[`${i + 1}`] = data['optimizations'][i]['lineups']
+            userExposures[`${i + 1}`] = data['optimizations'][i]['exposures']
+        }
+        setOptimizedLineups(userOptimizations)
+        setExposures(userExposures)
         return data
     },
         {
@@ -55,8 +67,9 @@ function SlateInfo({ slate, setOptimizedLineups, exposures, setExposures }) {
     },
         {
             onSuccess: (data) => {
-                setOptimizedLineups(data['lineups'])
-                setExposures(data['exposures'])
+                setOptimizedLineups({ ...optimizedLineups, [`${optoCount + 1}`]: data['lineups'], 'count': optoCount + 1 })
+                setSelectedOpto(optoCount + 1)
+                setExposures({ ...exposures, [`${optoCount + 1}`]: data['exposures'] })
                 setTab(1)
             },
         });
@@ -80,14 +93,14 @@ function SlateInfo({ slate, setOptimizedLineups, exposures, setExposures }) {
             optimizeMutation.mutate(requestData)
         }
     }, [slate.id, userId, userSettings, optimizeMutation]);
-
     React.useEffect(() => {
-        if (data?.['user-locks'] !== undefined) {
-            setLockedData(data?.['user-locks'])
+        if (data?.['slate-info']?.['user-locks'] !== undefined) {
+            setLockedData(data?.['slate-info']?.['user-locks'])
         }
     }, [data])
 
-    const playerData = React.useMemo(() => data?.players, [data])
+
+    const playerData = React.useMemo(() => data?.['slate-info'].players, [data])
 
     const memoizedPlayerTable = React.useMemo(
         () => (
@@ -95,7 +108,6 @@ function SlateInfo({ slate, setOptimizedLineups, exposures, setExposures }) {
         ),
         [playerData, handleOptimize, slate.id]
     );
-
 
     return (
         <Box>
@@ -116,7 +128,7 @@ function SlateInfo({ slate, setOptimizedLineups, exposures, setExposures }) {
                                 <Divider />
                             </Grid>
                             <Grid item xs={4}>
-                                <SettingsPanel tab={tab} setTab={setTab} exposures={exposures} />
+                                <SettingsPanel tab={tab} setTab={setTab} exposures={exposures} selectedOpto={selectedOpto} />
                             </Grid>
                         </Grid>
                     </UserSettingsContext.Provider>
