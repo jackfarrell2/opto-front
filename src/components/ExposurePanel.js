@@ -1,13 +1,17 @@
+import React from 'react'
 import { Box, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Grid, Typography } from '@mui/material';
 import { teamColors } from '../styles/colors'
 
 function ExposurePanel({ exposures, selectedOpto }) {
 
-    let exposuresArray = [];
-    if (exposures && exposures[selectedOpto]) {
-        exposuresArray = Object.entries(exposures[selectedOpto]).map(([id, data]) => ({ id, ...data }));
-        exposuresArray.sort((a, b) => b.exposure - a.exposure);
-    }
+    const exposuresArray = React.useMemo(() => {
+        let array = [];
+        if (exposures && exposures[selectedOpto]) {
+            array = Object.entries(exposures[selectedOpto]).map(([id, data]) => ({ id, ...data }));
+            array.sort((a, b) => b.exposure - a.exposure);
+        }
+        return array;
+    }, [exposures, selectedOpto]);
 
 
     return (

@@ -17,7 +17,7 @@ function SlateInfo({ slate, setOptimizedLineups, exposures, setExposures, optimi
     const apiUrl = token ? `${config.apiUrl}nba/api/authenticated-slate-info/${slate.id}` : `${config.apiUrl}nba/api/unauthenticated-slate-info/${slate.id}`
     const [lockedData, setLockedData] = React.useState({ 'count': 0, 'salary': 0 })
     const [tab, setTab] = React.useState(0)
-    const [userSettings, setUserSettings] = React.useState({ 'uniques': 3, 'min-salary': 45000, 'max-salary': 50000, 'max-players-per-team': 5, 'num-lineups': 20 })
+    const [userSettings, setUserSettings] = React.useState({ 'uniques': 3, 'min-salary': 45000, 'max-salary': 50000, 'max-players-per-team': 5, 'num-lineups': 5 })
     const optoCount = optimizedLineups['count']
     const [buttonLoading, setButtonLoading] = React.useState(false)
 
@@ -47,7 +47,6 @@ function SlateInfo({ slate, setOptimizedLineups, exposures, setExposures, optimi
         {
             staleTime: Infinity
         });
-
 
     // Submit form / optimize players
     const optimizeMutation = useMutation(async (requestData) => {
@@ -96,6 +95,12 @@ function SlateInfo({ slate, setOptimizedLineups, exposures, setExposures, optimi
             optimizeMutation.mutate(requestData)
         }
     }, [slate.id, userId, userSettings, optimizeMutation]);
+
+    const handleCancelOptimize = () => {
+        console.log('cancelling')
+        setButtonLoading(false);
+    };
+
     React.useEffect(() => {
         if (data?.['slate-info']?.['user-locks'] !== undefined) {
             setLockedData(data?.['slate-info']?.['user-locks'])
@@ -131,7 +136,7 @@ function SlateInfo({ slate, setOptimizedLineups, exposures, setExposures, optimi
                                 <Divider />
                             </Grid>
                             <Grid item xs={4}>
-                                <SettingsPanel buttonLoading={buttonLoading} tab={tab} setTab={setTab} exposures={exposures} selectedOpto={selectedOpto} />
+                                <SettingsPanel handleCancelOptimize={handleCancelOptimize} buttonLoading={buttonLoading} tab={tab} setTab={setTab} exposures={exposures} selectedOpto={selectedOpto} />
                             </Grid>
                         </Grid>
                     </UserSettingsContext.Provider>

@@ -1,3 +1,4 @@
+import React from 'react'
 import { Grid, Typography } from '@mui/material'
 import { LineupCard } from './LineupCard'
 
@@ -5,11 +6,13 @@ function LineupsDashBody({ optimizedLineups, selectedOpto }) {
 
     const stringOpto = selectedOpto.toString()
 
+    const memoizedLineups = React.useMemo(() => optimizedLineups[stringOpto] || [], [optimizedLineups, stringOpto]);
+
     return (
         <>
-            {(optimizedLineups['count'] > 0) ? (
+            {(memoizedLineups.length > 0) ? (
                 <Grid container direction='row' justifyContent='flex-start' alignItems='flex-start' spacing={0} style={{ backgroundColor: '#e5e9ed' }}>
-                    {optimizedLineups[stringOpto].map((lineup, index) => (
+                    {memoizedLineups.map((lineup, index) => (
                         <Grid item key={index} xs={4}>
                             <LineupCard lineup={lineup} index={index} />
                         </Grid>

@@ -1,5 +1,5 @@
 import React from 'react'
-import { Grid, Tabs, Tab, Box, Typography, TextField } from '@mui/material'
+import { Grid, Tabs, Tab, Box, Typography, TextField, Button } from '@mui/material'
 import PropTypes from 'prop-types'
 import { SimpleSettings } from './SimpleSettings';
 import { UserSettingsContext } from './SlateInfo'
@@ -40,7 +40,7 @@ function a11yProps(index) {
     };
 }
 
-function SettingsPanel({ tab, setTab, exposures, selectedOpto, buttonLoading }) {
+function SettingsPanel({ tab, setTab, exposures, selectedOpto, buttonLoading, handleCancelOptimize }) {
     const [userSettings, setUserSettings] = React.useContext(UserSettingsContext)
     const lineupCount = userSettings['num-lineups']
     const minSalary = userSettings['min-salary']
@@ -101,6 +101,7 @@ function SettingsPanel({ tab, setTab, exposures, selectedOpto, buttonLoading }) 
                     </Grid>
                     <Grid item xs={6}>
                         <LoadingButton type='submit' form='PlayerTableForm' size='medium' endIcon={<CalculateIcon />} loading={buttonLoading} loadingPosition='end' variant='contained' color='primary' disabled={!ready}>Optimize</LoadingButton>
+                        {buttonLoading && <Button onClick={handleCancelOptimize}>Cancel</Button>}
                     </Grid>
                 </Grid>
             </Grid>

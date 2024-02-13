@@ -122,16 +122,28 @@ function PlayerTable({ data, handleOptimize, slateId }) {
         }
     }
 
-    // State to manage filter toggle
-    const [isFilterActive, setIsFilterActive] = React.useState(false);
+    // Retrieve stored data from local storage
+    const storedData = localStorage.getItem('only-my') || '{}';
+    const existingData = JSON.parse(storedData);
 
-    // Filter rows based on a condition
+    // Remove expired items
+    const now = new Date().getTime();
+    for (const key in existingData) {
+        if (now > existingData[key].expiresAt) {
+            delete existingData[key];
+        }
+    }
+
+    const booleanValueForSlateId = existingData[slateId] ? existingData[slateId].value : false;
+    const [isFilterActive, setIsFilterActive] = React.useState(booleanValueForSlateId);
+
+    // Use existingData as needed...
+
+
     const filteredRows = React.useMemo(() => {
         if (isFilterActive) {
-            // Apply filter logic based on your requirement
             return rows.filter(row => row.original.projection['custom'] === true);
         } else {
-            // Return all rows if filter is not active
             return rows;
         }
     }, [isFilterActive, rows]);
@@ -156,6 +168,24 @@ function PlayerTable({ data, handleOptimize, slateId }) {
         }, timeout)
     }
 
+    function handleOnlyUseClick() {
+        setIsFilterActive(prevIsFilterActive => {
+            const newIsFilterActive = !prevIsFilterActive;
+            const storedData = localStorage.getItem('only-my') || '{}';
+            const existingData = JSON.parse(storedData);
+            const expirationTimestamp = new Date().getTime() + 3 * 24 * 60 * 60 * 1000; // 3 days expiration
+            existingData[slateId] = { value: newIsFilterActive, expiresAt: expirationTimestamp };
+
+            // Save updated data to local storage
+            localStorage.setItem('only-my', JSON.stringify(existingData));
+
+            return newIsFilterActive;
+        });
+    }
+
+
+
+
 
     return (
         <>
@@ -168,7 +198,7 @@ function PlayerTable({ data, handleOptimize, slateId }) {
                     <Grid item>
                         <Grid style={{ marginBottom: '2vh' }} container direction='row' justifyContent='space-between' alignItems='center' spacing={2}>
                             <Grid item>
-                                <Button sx={{ marginRight: '2vh' }} onClick={() => setIsFilterActive(!isFilterActive)} variant='outlined' color='secondary'>{!isFilterActive ? 'Only Use My Projections' : 'Use All Projections'}</Button>
+                                <Button sx={{ marginRight: '2vh' }} onClick={handleOnlyUseClick} variant='outlined' color='secondary'>{!isFilterActive ? 'Only Use My Projections' : 'Use All Projections'}</Button>
                             </Grid>
                         </Grid>
                     </Grid>

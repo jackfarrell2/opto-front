@@ -31,9 +31,9 @@ function SimpleSettings() {
         setUserSettings({ ...data })
         return data
     },
-        // {
-        //     staleTime: Infinity
-        // }
+        {
+            staleTime: Infinity
+        }
     );
 
     return (
