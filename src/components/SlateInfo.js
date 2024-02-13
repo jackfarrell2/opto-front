@@ -19,6 +19,7 @@ function SlateInfo({ slate, setOptimizedLineups, exposures, setExposures, optimi
     const [tab, setTab] = React.useState(0)
     const [userSettings, setUserSettings] = React.useState({ 'uniques': 3, 'min-salary': 45000, 'max-salary': 50000, 'max-players-per-team': 5, 'num-lineups': 20 })
     const optoCount = optimizedLineups['count']
+    const [buttonLoading, setButtonLoading] = React.useState(false)
 
     // Fetch slate information
     const { data, isLoading: playersLoading } = useQuery(['players', slate.id], async () => {
@@ -50,6 +51,7 @@ function SlateInfo({ slate, setOptimizedLineups, exposures, setExposures, optimi
 
     // Submit form / optimize players
     const optimizeMutation = useMutation(async (requestData) => {
+        setButtonLoading(true)
         const response = await fetch(optoApiUrl, {
             method: 'POST',
             headers: {
@@ -71,6 +73,7 @@ function SlateInfo({ slate, setOptimizedLineups, exposures, setExposures, optimi
                 setSelectedOpto(optoCount + 1)
                 setExposures({ ...exposures, [`${optoCount + 1}`]: data['exposures'] })
                 setTab(1)
+                setButtonLoading(false)
             },
         });
 
@@ -128,7 +131,7 @@ function SlateInfo({ slate, setOptimizedLineups, exposures, setExposures, optimi
                                 <Divider />
                             </Grid>
                             <Grid item xs={4}>
-                                <SettingsPanel tab={tab} setTab={setTab} exposures={exposures} selectedOpto={selectedOpto} />
+                                <SettingsPanel buttonLoading={buttonLoading} tab={tab} setTab={setTab} exposures={exposures} selectedOpto={selectedOpto} />
                             </Grid>
                         </Grid>
                     </UserSettingsContext.Provider>

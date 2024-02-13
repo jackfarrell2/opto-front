@@ -1,10 +1,14 @@
-import { Box, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
+import { Box, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Grid, Typography } from '@mui/material';
 import { teamColors } from '../styles/colors'
 
 function ExposurePanel({ exposures, selectedOpto }) {
-    const theseExposures = exposures[selectedOpto];
-    const exposuresArray = Object.entries(theseExposures).map(([id, data]) => ({ id, ...data }));
-    exposuresArray.sort((a, b) => b.exposure - a.exposure);
+
+    let exposuresArray = [];
+    if (exposures && exposures[selectedOpto]) {
+        exposuresArray = Object.entries(exposures[selectedOpto]).map(([id, data]) => ({ id, ...data }));
+        exposuresArray.sort((a, b) => b.exposure - a.exposure);
+    }
+
 
     return (
         <>
@@ -30,6 +34,13 @@ function ExposurePanel({ exposures, selectedOpto }) {
                         </Table>
                     </TableContainer>
                 </Box>
+            )}
+            {(exposuresArray.length === 0) && (
+                <Grid container direction='row' justifyContent='center' alignItems='center'>
+                    <Grid item>
+                        <Typography>You haven't optimized any lineups!</Typography>
+                    </Grid>
+                </Grid>
             )}
         </>
     );

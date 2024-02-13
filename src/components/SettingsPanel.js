@@ -1,9 +1,11 @@
 import React from 'react'
-import { Grid, Button, Tabs, Tab, Box, Typography, TextField } from '@mui/material'
+import { Grid, Tabs, Tab, Box, Typography, TextField } from '@mui/material'
 import PropTypes from 'prop-types'
 import { SimpleSettings } from './SimpleSettings';
 import { UserSettingsContext } from './SlateInfo'
 import { ExposurePanel } from './ExposurePanel';
+import { LoadingButton } from '@mui/lab';
+import CalculateIcon from '@mui/icons-material/Calculate';
 
 function CustomTabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -38,7 +40,7 @@ function a11yProps(index) {
     };
 }
 
-function SettingsPanel({ tab, setTab, exposures, selectedOpto }) {
+function SettingsPanel({ tab, setTab, exposures, selectedOpto, buttonLoading }) {
     const [userSettings, setUserSettings] = React.useContext(UserSettingsContext)
     const lineupCount = userSettings['num-lineups']
     const minSalary = userSettings['min-salary']
@@ -98,7 +100,7 @@ function SettingsPanel({ tab, setTab, exposures, selectedOpto }) {
                         {userSettings['num-lineups'] && (<TextField sx={{ width: '10vh', textAlign: 'center' }} onChange={handleTotalLineupsChange} id="lineup-count" label="Lineups" value={userSettings['num-lineups']} variant="standard" inputProps={{ style: { textAlign: 'center' } }} />)}
                     </Grid>
                     <Grid item xs={6}>
-                        <Button variant='contained' form='PlayerTableForm' color='primary' disabled={!ready} type='submit'>Optimize</Button>
+                        <LoadingButton type='submit' form='PlayerTableForm' size='medium' endIcon={<CalculateIcon />} loading={buttonLoading} loadingPosition='end' variant='contained' color='primary' disabled={!ready}>Optimize</LoadingButton>
                     </Grid>
                 </Grid>
             </Grid>

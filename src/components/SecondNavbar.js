@@ -35,10 +35,10 @@ function SecondNavbar({ setSlateModal, slate, slates, setSlate }) {
                             </Grid>
                         </Grid>
                         <Grid item>
-                            <Button onClick={() => setOpenProjectionModal(!openProjectionModal)} variant='outlined' color='success'>Upload Projections</Button>
+                            <Button size='small' onClick={() => setOpenProjectionModal(!openProjectionModal)} variant='outlined' color='success'>Upload Projections</Button>
                         </Grid>
                         <Grid item>
-                            <Button onClick={() => setOpenConfirmModal(true)} variant='outlined' color='error'>Remove Projections</Button>
+                            <Button size='small' onClick={() => setOpenConfirmModal(true)} variant='outlined' color='error'>Remove Projections</Button>
                         </Grid>
                     </Grid>
                 </Toolbar>
