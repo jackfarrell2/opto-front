@@ -1,7 +1,10 @@
+import React from 'react'
 import { Grid, Typography, CircularProgress, Button } from '@mui/material'
 import CloseIcon from '@mui/icons-material/Close';
+import { UserContext } from './UserProvider'
 
 function ConfirmForm({ isLoading, handleSubmit, setOpenConfirmModal }) {
+    const { user } = React.useContext(UserContext)
     return (
         <>
             <Button onClick={() => setOpenConfirmModal(false)} sx={{ color: 'primary' }}>
@@ -23,7 +26,7 @@ function ConfirmForm({ isLoading, handleSubmit, setOpenConfirmModal }) {
                                 <Button onClick={() => setOpenConfirmModal(false)} variant='contained' color='error'>No</Button>
                             </Grid>
                             <Grid item xs={6}>
-                                <Button onClick={handleSubmit} variant='contained' color='primary'>Yes</Button>
+                                <Button disabled={!user} onClick={handleSubmit} variant='contained' color='primary'>Yes</Button>
                             </Grid>
                         </Grid>
                     </Grid>

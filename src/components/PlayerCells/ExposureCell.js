@@ -6,6 +6,7 @@ function ExposureCell({ cell, playerSettings, setPlayerSettings }) {
     const exposure = playerSettings['exposure']
     const setExposure = (value) => setPlayerSettings({ ...playerSettings, 'exposure': value })
     const isMobile = useMediaQuery((theme) => theme.breakpoints.down('md'));
+    const isLocked = playerSettings['lock']
 
     function handleChange(e) {
         // Validate input
@@ -35,7 +36,7 @@ function ExposureCell({ cell, playerSettings, setPlayerSettings }) {
 
     return (
         <td {...cell.getCellProps()} className='ownership-cell'>
-            <input type='text' name={`players[${cell.row.original.id}][exposure]`} value={exposure} onChange={handleChange} className='ownership-input'></input>
+            <input type='text' name={`players[${cell.row.original.id}][exposure]`} value={exposure} onChange={handleChange} className='ownership-input' disabled={isLocked}></input>
             {!isMobile && <span style={{ paddingLeft: '5px' }}>%</span>}
         </td>
     )

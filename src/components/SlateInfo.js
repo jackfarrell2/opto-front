@@ -10,6 +10,7 @@ import { useMutation, useQueryClient } from 'react-query'
 export const LockedContext = React.createContext()
 export const UserSettingsContext = React.createContext()
 
+
 function SlateInfo({ slate, setOptimizedLineups, exposures, setExposures, optimizedLineups, setSelectedOpto, selectedOpto }) {
     const queryClient = useQueryClient()
     const { token, user } = React.useContext(UserContext)
@@ -34,17 +35,19 @@ function SlateInfo({ slate, setOptimizedLineups, exposures, setExposures, optimi
             throw new Error('Failed to fetch players')
         }
         const data = await response.json()
-        const optimizations = Object.keys(data['optimizations'])
-        const optimizationLength = optimizations.length
-        const userOptimizations = { 'count': optimizationLength }
-        const userExposures = {}
-        for (let i = 0; i < optimizationLength; i++) {
-            userOptimizations[`${i + 1}`] = data['optimizations'][i]['lineups']
-            userExposures[`${i + 1}`] = data['optimizations'][i]['exposures']
+        if (user) {
+            const optimizations = Object.keys(data['optimizations'])
+            const optimizationLength = optimizations.length
+            const userOptimizations = { 'count': optimizationLength }
+            const userExposures = {}
+            for (let i = 0; i < optimizationLength; i++) {
+                userOptimizations[`${i + 1}`] = data['optimizations'][i]['lineups']
+                userExposures[`${i + 1}`] = data['optimizations'][i]['exposures']
+            }
+            setOptimizedLineups(userOptimizations)
+            setSelectedOpto(userOptimizations.count)
+            setExposures(userExposures)
         }
-        setOptimizedLineups(userOptimizations)
-        setSelectedOpto(userOptimizations.count)
-        setExposures(userExposures)
         return data
     },
         {
@@ -78,7 +81,10 @@ function SlateInfo({ slate, setOptimizedLineups, exposures, setExposures, optimi
                     setTab(1)
                     setButtonLoading(false);
                 }
-            }
+            },
+            onError: () => {
+                setButtonLoading(false);
+            },
         }
     );
 
@@ -129,7 +135,6 @@ function SlateInfo({ slate, setOptimizedLineups, exposures, setExposures, optimi
             setLockedData(data?.['slate-info']?.['user-locks'])
         }
     }, [data])
-
 
     const playerData = React.useMemo(() => data?.['slate-info'].players, [data])
 

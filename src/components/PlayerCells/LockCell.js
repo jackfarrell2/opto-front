@@ -14,7 +14,8 @@ function LockCell({ cell, playerSettings, setPlayerSettings }) {
         if ((lockedData['salary'] + cell.row.original.salary) >= 50000 && !lock) {
             return
         }
-        setPlayerSettings({ ...playerSettings, 'lock': !lock, 'remove': false })
+        setPlayerSettings({ ...playerSettings, 'lock': !lock, 'remove': false, 'exposure': 100 })
+        cell.row.original.exposure = 100
         const lockedDataBuffer = { ...lockedData }
         if (!lock) {
             lockedDataBuffer['count'] += 1
