@@ -6,7 +6,7 @@ import { ConfirmOptoForm } from './ConfirmOptoForm'
 import config from '../config'
 import { UserContext } from './UserProvider'
 
-function ConfirmOptoModal({ openConfirmModal, setOpenConfirmModal, slate }) {
+function ConfirmOptoModal({ openConfirmModal, setOpenConfirmModal, slate, setOptimizedLineups, setExposures }) {
     const { token } = React.useContext(UserContext)
     const isMobile = useMediaQuery((theme) => theme.breakpoints.down('md'));
     const apiUrl = `${config.apiUrl}nba/api/remove-optimizations/`;
@@ -29,8 +29,9 @@ function ConfirmOptoModal({ openConfirmModal, setOpenConfirmModal, slate }) {
         },
         {
             onSuccess: () => {
+                setOptimizedLineups({ 'count': 0 })
+                setExposures({})
                 setOpenConfirmModal(false)
-                window.location.reload(true);
             },
         }
     )
@@ -50,7 +51,7 @@ function ConfirmOptoModal({ openConfirmModal, setOpenConfirmModal, slate }) {
             aria-describedby='modal-modal-upload-slate-form'
         >
             <Box sx={isMobile ? (mobileSignInModal) : (signInModal)}>
-                <ConfirmOptoForm isLoading={removeOptimizationsMutation.isLoading} handleSubmit={handleSubmit} setOpenConfirmModal={setOpenConfirmModal} slate={slate} />
+                <ConfirmOptoForm handleSubmit={handleSubmit} setOpenConfirmModal={setOpenConfirmModal} slate={slate} />
             </Box>
         </Modal>
     )

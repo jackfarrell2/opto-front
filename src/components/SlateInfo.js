@@ -5,16 +5,18 @@ import { PlayerTable } from './PlayerTable';
 import { Grid, CircularProgress, Box, Container, Divider } from '@mui/material';
 import { SettingsPanel } from './SettingsPanel';
 import { UserContext } from './UserProvider';
-import { useMutation } from 'react-query'
+import { useMutation, useQueryClient } from 'react-query'
 
 export const LockedContext = React.createContext()
 export const UserSettingsContext = React.createContext()
 
 function SlateInfo({ slate, setOptimizedLineups, exposures, setExposures, optimizedLineups, setSelectedOpto, selectedOpto }) {
+    const queryClient = useQueryClient()
     const { token, user } = React.useContext(UserContext)
     const userId = user ? user.id : null
     const optoApiUrl = userId ? `${config.apiUrl}nba/api/authenticated-optimize/` : `${config.apiUrl}nba/api/unauthenticated-optimize/`
     const apiUrl = token ? `${config.apiUrl}nba/api/authenticated-slate-info/${slate.id}` : `${config.apiUrl}nba/api/unauthenticated-slate-info/${slate.id}`
+    const cancelApiUrl = `${config.apiUrl}nba/api/cancel-optimization/`
     const [lockedData, setLockedData] = React.useState({ 'count': 0, 'salary': 0 })
     const [tab, setTab] = React.useState(0)
     const [userSettings, setUserSettings] = React.useState({ 'uniques': 3, 'min-salary': 45000, 'max-salary': 50000, 'max-players-per-team': 5, 'num-lineups': 5 })
@@ -41,6 +43,7 @@ function SlateInfo({ slate, setOptimizedLineups, exposures, setExposures, optimi
             userExposures[`${i + 1}`] = data['optimizations'][i]['exposures']
         }
         setOptimizedLineups(userOptimizations)
+        setSelectedOpto(userOptimizations.count)
         setExposures(userExposures)
         return data
     },
@@ -49,57 +52,77 @@ function SlateInfo({ slate, setOptimizedLineups, exposures, setExposures, optimi
         });
 
     // Submit form / optimize players
-    const optimizeMutation = useMutation(async (requestData) => {
-        setButtonLoading(true)
-        const response = await fetch(optoApiUrl, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Token ${token}`,
-            },
-            body: JSON.stringify(requestData),
-        });
+    const optimizeMutation = useMutation(
+        async (requestData) => {
+            setButtonLoading(true);
+            const response = await fetch(optoApiUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Token ${token}`,
+                },
+                body: JSON.stringify(requestData),
+            });
 
-        if (!response.ok) {
-            throw new Error('Failed to optimize players');
-        }
-
-        return response.json();
-    },
+            if (!response.ok) {
+                throw new Error('Failed to optimize players');
+            }
+            return response.json();
+        },
         {
             onSuccess: (data) => {
-                setOptimizedLineups({ ...optimizedLineups, [`${optoCount + 1}`]: data['lineups'], 'count': optoCount + 1 })
-                setSelectedOpto(optoCount + 1)
-                setExposures({ ...exposures, [`${optoCount + 1}`]: data['exposures'] })
-                setTab(1)
-                setButtonLoading(false)
-            },
-        });
-
-    const handleOptimize = React.useMemo(() => {
-        return (formData) => {
-            const formDataObj = formData
-            const optoSettings = {
-                'uniques': userSettings['uniques'],
-                'maxTeamPlayers': userSettings['max-players-per-team'],
-                'minSalary': userSettings['min-salary'],
-                'maxSalary': userSettings['max-salary'],
-                'numLineups': userSettings['num-lineups']
+                if (data['ignore'] !== true) {
+                    setOptimizedLineups({ ...optimizedLineups, [`${optoCount + 1}`]: data['lineups'], 'count': optoCount + 1 })
+                    setSelectedOpto(optoCount + 1)
+                    setExposures({ ...exposures, [`${optoCount + 1}`]: data['exposures'] })
+                    setTab(1)
+                    setButtonLoading(false);
+                }
             }
-            const requestData = {
-                'slate-id': slate.id,
-                'user-id': userId,
-                'players': formDataObj,
-                'opto-settings': optoSettings,
-            }
-            optimizeMutation.mutate(requestData)
         }
-    }, [slate.id, userId, userSettings, optimizeMutation]);
+    );
 
-    const handleCancelOptimize = () => {
-        console.log('cancelling')
-        setButtonLoading(false);
+    const handleOptimize = React.useCallback((formData) => {
+        const formDataObj = formData
+        const optoSettings = {
+            'uniques': userSettings['uniques'],
+            'maxTeamPlayers': userSettings['max-players-per-team'],
+            'minSalary': userSettings['min-salary'],
+            'maxSalary': userSettings['max-salary'],
+            'numLineups': userSettings['num-lineups']
+        }
+        const requestData = {
+            'slate-id': slate.id,
+            'user-id': userId,
+            'players': formDataObj,
+            'opto-settings': optoSettings,
+            'cancelId': Math.random().toString(36).substring(7)
+        }
+        queryClient.cancelMutations('optimizeMutation')
+        optimizeMutation.mutate(requestData)
+    }, [slate.id, userId, userSettings, optimizeMutation, queryClient]);
+
+    const handleCancelOptimize = async () => {
+        const cancelId = optimizeMutation.variables.cancelId;
+        try {
+            const response = await fetch(cancelApiUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Token ${token}`,
+                },
+                body: JSON.stringify({ 'cancel-id': cancelId, 'slate-id': slate.id }),
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to cancel optimization');
+            }
+            setButtonLoading(false);
+        } catch (error) {
+            console.error('Error cancelling optimization:', error);
+        }
     };
+
 
     React.useEffect(() => {
         if (data?.['slate-info']?.['user-locks'] !== undefined) {

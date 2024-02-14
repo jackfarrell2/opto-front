@@ -1,11 +1,12 @@
 import React from 'react'
-import { Grid, Tabs, Tab, Box, Typography, TextField, Button } from '@mui/material'
+import { Grid, Tabs, Tab, Box, Typography, TextField, IconButton } from '@mui/material'
 import PropTypes from 'prop-types'
 import { SimpleSettings } from './SimpleSettings';
 import { UserSettingsContext } from './SlateInfo'
 import { ExposurePanel } from './ExposurePanel';
 import { LoadingButton } from '@mui/lab';
 import CalculateIcon from '@mui/icons-material/Calculate';
+import CancelIcon from '@mui/icons-material/Cancel';
 
 function CustomTabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -101,7 +102,7 @@ function SettingsPanel({ tab, setTab, exposures, selectedOpto, buttonLoading, ha
                     </Grid>
                     <Grid item xs={6}>
                         <LoadingButton type='submit' form='PlayerTableForm' size='medium' endIcon={<CalculateIcon />} loading={buttonLoading} loadingPosition='end' variant='contained' color='primary' disabled={!ready}>Optimize</LoadingButton>
-                        {buttonLoading && <Button onClick={handleCancelOptimize}>Cancel</Button>}
+                        {buttonLoading && <IconButton onClick={handleCancelOptimize}><CancelIcon color='error' /></IconButton>}
                     </Grid>
                 </Grid>
             </Grid>

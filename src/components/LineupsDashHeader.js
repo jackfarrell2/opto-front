@@ -3,12 +3,12 @@ import { Grid, Typography, Button } from '@mui/material';
 import { ScrollableOptoTabs } from './ScrollableOptoTabs';
 import { ConfirmOptoModal } from './ConfirmOptoModal'
 
-function LineupsDashHeader({ optoCount, setSelectedOpto, selectedOpto, slate }) {
+function LineupsDashHeader({ optoCount, setSelectedOpto, selectedOpto, slate, setOptimizedLineups, setExposures }) {
     const [openConfirmModal, setOpenConfirmModal] = React.useState(false)
 
     return (
         <>
-            <ConfirmOptoModal openConfirmModal={openConfirmModal} setOpenConfirmModal={setOpenConfirmModal} slate={slate} />
+            <ConfirmOptoModal setOptimizedLineups={setOptimizedLineups} setExposures={setExposures} openConfirmModal={openConfirmModal} setOpenConfirmModal={setOpenConfirmModal} slate={slate} />
             <Grid container style={{ backgroundColor: '#92a3b8' }} direction='row' justifyContent='space-between' alignItems='center'>
                 <Grid item xs={2}>
                     <Grid container justifyContent='flex-start' alignItems='center'>
