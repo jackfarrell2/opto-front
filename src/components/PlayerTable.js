@@ -10,21 +10,33 @@ import { ProjectionCell } from './PlayerCells/ProjectionCell'
 import { OwnershipCell } from './PlayerCells/OwnershipCell'
 import { LockCell } from './PlayerCells/LockCell'
 import { ExposureCell } from './PlayerCells/ExposureCell'
+import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
+import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 
 
-function PlayerTable({ data, handleOptimize, slateId }) {
+function PlayerTable({ data, handleOptimize, slateId, setClearedSearch }) {
 
     // Define columns
     const columns = React.useMemo(() => [
         {
-            Header: '',
+            Header: 'Remove',
             accessor: 'select',
             Cell: RemoveCell,
+            sortType: (rowA, rowB, columnId) => {
+                const valueA = rowA.original.remove;
+                const valueB = rowB.original.remove;
+                return valueA === valueB ? 0 : valueA ? 1 : -1;
+            }
         },
         {
-            Header: '',
+            Header: 'Lock',
             accessor: 'lock',
             Cell: LockCell,
+            sortType: (rowA, rowB, columnId) => {
+                const valueA = rowA.original.lock;
+                const valueB = rowB.original.lock;
+                return valueA === valueB ? 0 : valueA ? 1 : -1;
+            }
         },
         {
             Header: 'Player',
@@ -76,8 +88,8 @@ function PlayerTable({ data, handleOptimize, slateId }) {
             accessor: 'projection',
             Cell: ProjectionCell,
             sortType: (rowA, rowB, columnId) => {
-                const valueA = rowA.original.projection;
-                const valueB = rowB.original.projection;
+                const valueA = rowA.original.projection.projection;
+                const valueB = rowB.original.projection.projection;
                 return valueA - valueB;
             },
         },
@@ -95,7 +107,7 @@ function PlayerTable({ data, handleOptimize, slateId }) {
 
     // Create table instance
 
-    const tableInstance = useTable({ columns, data }, useGlobalFilter, useSortBy);
+    const tableInstance = useTable({ columns, data, disableSortRemove: true }, useGlobalFilter, useSortBy);
 
     const {
         getTableProps,
@@ -108,6 +120,14 @@ function PlayerTable({ data, handleOptimize, slateId }) {
     } = React.useMemo(() => tableInstance, [tableInstance]);
 
     const { globalFilter } = state;
+
+    React.useEffect(() => {
+        if (globalFilter) {
+            setClearedSearch(false);
+        } else {
+            setClearedSearch(true);
+        }
+    }, [globalFilter, setClearedSearch])
 
     // Search 
     function handleSearchChange(e) {
@@ -160,7 +180,7 @@ function PlayerTable({ data, handleOptimize, slateId }) {
     function handleFormSubmit(e) {
         e.preventDefault();
         const formData = new FormData(e.target);
-        const timeout = globalFilter ? 1500 : 0;
+        const timeout = globalFilter ? 3000 : 0;
         setGlobalFilter('');
         setTimeout(() => {
             const formDataObj = formDataToObject(formData);
@@ -210,8 +230,13 @@ function PlayerTable({ data, handleOptimize, slateId }) {
                                 {headerGroups.map(headerGroup => (
                                     <tr {...headerGroup.getHeaderGroupProps()}>
                                         {headerGroup.headers.map(column => (
-                                            <th {...column.getHeaderProps(column.getSortByToggleProps())}>
-                                                {column.render('Header')}
+                                            <th {...column.getHeaderProps(column.getSortByToggleProps())} style={{ textAlign: 'center' }}>
+                                                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                                    {column.render('Header')}
+                                                    <span style={{ marginLeft: '.3vh', display: 'inline-flex', alignItems: 'center' }}>
+                                                        {column.isSorted ? (column.isSortedDesc ? <ArrowDownwardIcon sx={{ fontSize: '1.5vh' }} /> : <ArrowUpwardIcon sx={{ fontSize: '1.5vh' }} />) : ''}
+                                                    </span>
+                                                </div>
                                             </th>
                                         ))}
                                     </tr>

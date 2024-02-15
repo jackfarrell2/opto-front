@@ -6,6 +6,7 @@ import { Grid, CircularProgress, Box, Container, Divider } from '@mui/material';
 import { SettingsPanel } from './SettingsPanel';
 import { UserContext } from './UserProvider';
 import { useMutation, useQueryClient } from 'react-query'
+import { ConfirmErrorModal } from './ConfirmErrorModal';
 
 export const LockedContext = React.createContext()
 export const UserSettingsContext = React.createContext()
@@ -23,6 +24,8 @@ function SlateInfo({ slate, setOptimizedLineups, exposures, setExposures, optimi
     const [userSettings, setUserSettings] = React.useState({ 'uniques': 3, 'min-salary': 45000, 'max-salary': 50000, 'max-players-per-team': 5, 'num-lineups': 5 })
     const optoCount = optimizedLineups['count']
     const [buttonLoading, setButtonLoading] = React.useState(false)
+    const [failedOptimizeModalOpen, setFailedOptimizeModalOpen] = React.useState(false)
+    const [failedSuccessLineups, setFailedSuccessLineups] = React.useState(0)
 
     // Fetch slate information
     const { data, isLoading: playersLoading } = useQuery(['players', slate.id], async () => {
@@ -74,7 +77,16 @@ function SlateInfo({ slate, setOptimizedLineups, exposures, setExposures, optimi
         },
         {
             onSuccess: (data) => {
+                console.log('data', data)
                 if (data['ignore'] !== true) {
+                    if (data['complete'] === false) {
+                        setFailedSuccessLineups(data['lineups'].length)
+                        setFailedOptimizeModalOpen(true)
+                    }
+                    if (data['complete'] === false && data['lineups'].length === 0) {
+                        setButtonLoading(false);
+                        return
+                    }
                     setOptimizedLineups({ ...optimizedLineups, [`${optoCount + 1}`]: data['lineups'], 'count': optoCount + 1 })
                     setSelectedOpto(optoCount + 1)
                     setExposures({ ...exposures, [`${optoCount + 1}`]: data['exposures'] })
@@ -87,6 +99,8 @@ function SlateInfo({ slate, setOptimizedLineups, exposures, setExposures, optimi
             },
         }
     );
+
+    const [clearedSearch, setClearedSearch] = React.useState(true)
 
     const handleOptimize = React.useCallback((formData) => {
         const formDataObj = formData
@@ -140,37 +154,40 @@ function SlateInfo({ slate, setOptimizedLineups, exposures, setExposures, optimi
 
     const memoizedPlayerTable = React.useMemo(
         () => (
-            <PlayerTable data={playerData} handleOptimize={handleOptimize} slateId={slate.id} />
+            <PlayerTable setClearedSearch={setClearedSearch} data={playerData} handleOptimize={handleOptimize} slateId={slate.id} />
         ),
         [playerData, handleOptimize, slate.id]
     );
 
     return (
-        <Box>
-            {playersLoading ? (
-                <Grid container sx={{ height: '75vh' }} direction='column' justifyContent='center' alignItems='center'>
-                    <Grid item>
-                        <CircularProgress size={120} />
-                    </Grid>
-                </Grid>
-            ) : (
-                <LockedContext.Provider value={[lockedData, setLockedData]}>
-                    <UserSettingsContext.Provider value={[userSettings, setUserSettings]}>
-                        <Grid container direction='row' justifyContent='center' alignItems='center'>
-                            <Grid item xs={8}>
-                                <Container disableGutters sx={{ maxHeight: '75vh', overflow: 'auto', pt: '2vh', pl: '2vh' }}>
-                                    {memoizedPlayerTable}
-                                </Container>
-                                <Divider />
-                            </Grid>
-                            <Grid item xs={4}>
-                                <SettingsPanel handleCancelOptimize={handleCancelOptimize} buttonLoading={buttonLoading} tab={tab} setTab={setTab} exposures={exposures} selectedOpto={selectedOpto} />
-                            </Grid>
+        <>
+            <ConfirmErrorModal openConfirmModal={failedOptimizeModalOpen} setOpenConfirmModal={setFailedOptimizeModalOpen} successfulLineupCount={failedSuccessLineups} setFailedSuccessLineups={setFailedSuccessLineups} />
+            <Box>
+                {playersLoading ? (
+                    <Grid container sx={{ height: '75vh' }} direction='column' justifyContent='center' alignItems='center'>
+                        <Grid item>
+                            <CircularProgress size={120} />
                         </Grid>
-                    </UserSettingsContext.Provider>
-                </LockedContext.Provider>
-            )}
-        </Box>
+                    </Grid>
+                ) : (
+                    <LockedContext.Provider value={[lockedData, setLockedData]}>
+                        <UserSettingsContext.Provider value={[userSettings, setUserSettings]}>
+                            <Grid container direction='row' justifyContent='center' alignItems='flex-start'>
+                                <Grid item xs={8}>
+                                    <Container disableGutters sx={{ maxHeight: '75vh', overflow: 'auto', pt: '2vh', pl: '2vh' }}>
+                                        {memoizedPlayerTable}
+                                    </Container>
+                                    <Divider />
+                                </Grid>
+                                <Grid item xs={4}>
+                                    <SettingsPanel clearedSearch={clearedSearch} handleCancelOptimize={handleCancelOptimize} buttonLoading={buttonLoading} tab={tab} setTab={setTab} exposures={exposures} selectedOpto={selectedOpto} />
+                                </Grid>
+                            </Grid>
+                        </UserSettingsContext.Provider>
+                    </LockedContext.Provider>
+                )}
+            </Box>
+        </>
     )
 }
 

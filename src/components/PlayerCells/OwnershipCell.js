@@ -13,6 +13,7 @@ function OwnershipCell({ cell, playerSettings, setPlayerSettings }) {
         let dotTrails = false
         if (inputValue === '') {
             setOwnership('0');
+            cell.row.original.ownership = '0';
             return;
         }
         if (isNaN(inputValue)) {
@@ -29,6 +30,7 @@ function OwnershipCell({ cell, playerSettings, setPlayerSettings }) {
         const cleanValue = dotTrails ? roundedValue.toString() + '.' : roundedValue.toString()
         cell.row.original.ownership = cleanValue
         setOwnership(cleanValue)
+        cell.row.original.ownership = cleanValue
     }
 
     return (

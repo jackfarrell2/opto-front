@@ -8,7 +8,6 @@ import config from '../config'
 import { useQuery } from 'react-query'
 import { LineupsDash } from '../components/LineupsDash'
 
-
 function Nba() {
     const [slateModal, setSlateModal] = React.useState(false)
     const [slate, setSlate] = React.useState('')
@@ -39,10 +38,7 @@ function Nba() {
         }
         return data
     },
-        {
-            // Fetch once
-            staleTime: Infinity
-        });
+    );
 
     return (
         <Box sx={page}>

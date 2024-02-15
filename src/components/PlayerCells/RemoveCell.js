@@ -8,6 +8,7 @@ function RemoveCell({ cell, playerSettings, setPlayerSettings }) {
 
     function handleClick() {
         setPlayerSettings({ ...playerSettings, 'remove': !exclude, 'lock': false })
+        cell.row.original.remove = !exclude
     }
 
     return (

@@ -1,5 +1,5 @@
 import React from 'react'
-import { Grid, Tabs, Tab, Box, Typography, TextField, IconButton } from '@mui/material'
+import { Grid, Tabs, Tab, Box, Typography, TextField, IconButton, Tooltip } from '@mui/material'
 import PropTypes from 'prop-types'
 import { SimpleSettings } from './SimpleSettings';
 import { UserSettingsContext } from './SlateInfo'
@@ -41,7 +41,7 @@ function a11yProps(index) {
     };
 }
 
-function SettingsPanel({ tab, setTab, exposures, selectedOpto, buttonLoading, handleCancelOptimize }) {
+function SettingsPanel({ tab, setTab, exposures, selectedOpto, buttonLoading, handleCancelOptimize, clearedSearch }) {
     const [userSettings, setUserSettings] = React.useContext(UserSettingsContext)
     const lineupCount = userSettings['num-lineups']
     const minSalary = userSettings['min-salary']
@@ -50,7 +50,7 @@ function SettingsPanel({ tab, setTab, exposures, selectedOpto, buttonLoading, ha
         setTab(newValue);
     };
 
-    const ready = (lineupCount > 0 && lineupCount <= 150 && minSalary >= 40000 && minSalary <= 50000 && maxSalary >= 40000 && maxSalary <= 50000) ? true : false
+    const ready = (lineupCount > 0 && lineupCount <= 150 && minSalary >= 40000 && minSalary <= 50000 && maxSalary >= 40000 && maxSalary <= 50000 && clearedSearch) ? true : false
 
     function handleTotalLineupsChange(e) {
         const inputValue = e.target.value;
@@ -98,10 +98,18 @@ function SettingsPanel({ tab, setTab, exposures, selectedOpto, buttonLoading, ha
             <Grid item style={{ textAlign: 'center', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                 <Grid container direction='column' justifyContent='center' alignItems='center' spacing={2}>
                     <Grid item xs={6}>
-                        {userSettings['num-lineups'] && (<TextField sx={{ width: '10vh', textAlign: 'center' }} onChange={handleTotalLineupsChange} id="lineup-count" label="Lineups" value={userSettings['num-lineups']} variant="standard" inputProps={{ style: { textAlign: 'center' } }} />)}
+                        <TextField sx={{ width: '10vh', textAlign: 'center' }} onChange={handleTotalLineupsChange} id="lineup-count" label="Lineups" value={userSettings['num-lineups']} variant="standard" inputProps={{ style: { textAlign: 'center' } }} />
                     </Grid>
                     <Grid item xs={6}>
-                        <LoadingButton type='submit' form='PlayerTableForm' size='medium' endIcon={<CalculateIcon />} loading={buttonLoading} loadingPosition='end' variant='contained' color='primary' disabled={!ready}>Optimize</LoadingButton>
+                        {clearedSearch ? (
+                            <LoadingButton type='submit' form='PlayerTableForm' size='medium' endIcon={<CalculateIcon />} loading={buttonLoading} loadingPosition='end' variant='contained' color='primary' disabled={!ready}>Optimize</LoadingButton>
+                        ) : (
+                            <Tooltip title="Remove Player Filter to Optimize">
+                                <div>
+                                    <LoadingButton type='submit' form='PlayerTableForm' size='medium' endIcon={<CalculateIcon />} loading={buttonLoading} loadingPosition='end' variant='contained' color='primary' disabled={!ready}>Optimize</LoadingButton>
+                                </div>
+                            </Tooltip>
+                        )}
                         {buttonLoading && <IconButton onClick={handleCancelOptimize}><CancelIcon color='error' /></IconButton>}
                     </Grid>
                 </Grid>
