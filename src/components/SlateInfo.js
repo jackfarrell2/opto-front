@@ -77,7 +77,6 @@ function SlateInfo({ slate, setOptimizedLineups, exposures, setExposures, optimi
         },
         {
             onSuccess: (data) => {
-                console.log('data', data)
                 if (data['ignore'] !== true) {
                     if (data['complete'] === false) {
                         setFailedSuccessLineups(data['lineups'].length)

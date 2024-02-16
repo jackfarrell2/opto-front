@@ -5,6 +5,8 @@ import { SimpleSettings } from './SimpleSettings';
 import { UserSettingsContext } from './SlateInfo'
 import { ExposurePanel } from './ExposurePanel';
 import { LoadingButton } from '@mui/lab';
+import { UserContext } from './UserProvider';
+import { ConfirmSignUpModal } from './ConfirmSignUpModal';
 import CalculateIcon from '@mui/icons-material/Calculate';
 import CancelIcon from '@mui/icons-material/Cancel';
 
@@ -42,6 +44,9 @@ function a11yProps(index) {
 }
 
 function SettingsPanel({ tab, setTab, exposures, selectedOpto, buttonLoading, handleCancelOptimize, clearedSearch }) {
+    const { user } = React.useContext(UserContext)
+    const [openConfirmModal, setOpenConfirmModal] = React.useState(false)
+    const [showedWarning, setShowedWarning] = React.useState(false)
     const [userSettings, setUserSettings] = React.useContext(UserSettingsContext)
     const lineupCount = userSettings['num-lineups']
     const minSalary = userSettings['min-salary']
@@ -72,49 +77,58 @@ function SettingsPanel({ tab, setTab, exposures, selectedOpto, buttonLoading, ha
         }
     }
 
+    function handleOptimizeClick() {
+        if (!user && !showedWarning) {
+            setOpenConfirmModal(true)
+            setShowedWarning(true)
+        }
+    }
 
     return (
-        <Grid style={{ height: '75vh' }} container direction='row' justifyContent='center' alignItems='space-between' spacing={0}>
-            <Grid item xs={12}>
-                <Grid container direction='row' justifyContent='center' alignItems='flex-start'>
-                    <Grid item xs={12}>
-                        <Box>
-                            <Box sx={{ borderBottom: 1, borderColor: 'divider', textColor: 'secondary' }}>
-                                <Tabs value={tab} onChange={handleTabChange} textColor='inherit' indicatorColor='inherit'>
-                                    <Tab sx={{ width: '50%', color: 'white', backgroundColor: 'primary.main' }} label='Settings' {...a11yProps(0)} />
-                                    <Tab sx={{ width: '50%', color: 'white', backgroundColor: 'primary.main' }} label='Exposures' {...a11yProps(1)} />
-                                </Tabs>
+        <>
+            <ConfirmSignUpModal openConfirmModal={openConfirmModal} setOpenConfirmModal={setOpenConfirmModal}></ConfirmSignUpModal>
+            <Grid style={{ height: '75vh' }} container direction='row' justifyContent='center' alignItems='space-between' spacing={0}>
+                <Grid item xs={12}>
+                    <Grid container direction='row' justifyContent='center' alignItems='flex-start'>
+                        <Grid item xs={12}>
+                            <Box>
+                                <Box sx={{ borderBottom: 1, borderColor: 'divider', textColor: 'secondary' }}>
+                                    <Tabs value={tab} onChange={handleTabChange} textColor='inherit' indicatorColor='inherit'>
+                                        <Tab sx={{ width: '50%', color: 'white', backgroundColor: 'primary.main' }} label='Settings' {...a11yProps(0)} />
+                                        <Tab sx={{ width: '50%', color: 'white', backgroundColor: 'primary.main' }} label='Exposures' {...a11yProps(1)} />
+                                    </Tabs>
+                                </Box>
+                                <CustomTabPanel sx={{ width: '100%' }} value={tab} index={0}>
+                                    <SimpleSettings />
+                                </CustomTabPanel>
+                                <CustomTabPanel sx={{ width: '100%' }} value={tab} index={1}>
+                                    <ExposurePanel exposures={exposures} selectedOpto={selectedOpto} />
+                                </CustomTabPanel>
                             </Box>
-                            <CustomTabPanel sx={{ width: '100%' }} value={tab} index={0}>
-                                <SimpleSettings />
-                            </CustomTabPanel>
-                            <CustomTabPanel sx={{ width: '100%' }} value={tab} index={1}>
-                                <ExposurePanel exposures={exposures} selectedOpto={selectedOpto} />
-                            </CustomTabPanel>
-                        </Box>
+                        </Grid>
+                    </Grid>
+                </Grid>
+                <Grid item style={{ textAlign: 'center', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                    <Grid container direction='column' justifyContent='center' alignItems='center' spacing={2}>
+                        <Grid item xs={6}>
+                            <TextField sx={{ width: '10vh', textAlign: 'center' }} onChange={handleTotalLineupsChange} id="lineup-count" label="Lineups" value={userSettings['num-lineups']} variant="standard" inputProps={{ style: { textAlign: 'center' } }} />
+                        </Grid>
+                        <Grid item xs={6}>
+                            {clearedSearch ? (
+                                <LoadingButton onClick={handleOptimizeClick} type='submit' form='PlayerTableForm' size='medium' endIcon={<CalculateIcon />} loading={buttonLoading} loadingPosition='end' variant='contained' color='primary' disabled={!ready}>Optimize</LoadingButton>
+                            ) : (
+                                <Tooltip title="Remove Player Filter to Optimize">
+                                    <div>
+                                        <LoadingButton type='submit' form='PlayerTableForm' size='medium' endIcon={<CalculateIcon />} loading={buttonLoading} loadingPosition='end' variant='contained' color='primary' disabled={!ready}>Optimize</LoadingButton>
+                                    </div>
+                                </Tooltip>
+                            )}
+                            {buttonLoading && <IconButton onClick={handleCancelOptimize}><CancelIcon color='error' /></IconButton>}
+                        </Grid>
                     </Grid>
                 </Grid>
             </Grid>
-            <Grid item style={{ textAlign: 'center', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                <Grid container direction='column' justifyContent='center' alignItems='center' spacing={2}>
-                    <Grid item xs={6}>
-                        <TextField sx={{ width: '10vh', textAlign: 'center' }} onChange={handleTotalLineupsChange} id="lineup-count" label="Lineups" value={userSettings['num-lineups']} variant="standard" inputProps={{ style: { textAlign: 'center' } }} />
-                    </Grid>
-                    <Grid item xs={6}>
-                        {clearedSearch ? (
-                            <LoadingButton type='submit' form='PlayerTableForm' size='medium' endIcon={<CalculateIcon />} loading={buttonLoading} loadingPosition='end' variant='contained' color='primary' disabled={!ready}>Optimize</LoadingButton>
-                        ) : (
-                            <Tooltip title="Remove Player Filter to Optimize">
-                                <div>
-                                    <LoadingButton type='submit' form='PlayerTableForm' size='medium' endIcon={<CalculateIcon />} loading={buttonLoading} loadingPosition='end' variant='contained' color='primary' disabled={!ready}>Optimize</LoadingButton>
-                                </div>
-                            </Tooltip>
-                        )}
-                        {buttonLoading && <IconButton onClick={handleCancelOptimize}><CancelIcon color='error' /></IconButton>}
-                    </Grid>
-                </Grid>
-            </Grid>
-        </Grid>
+        </>
     )
 }
 export { SettingsPanel }

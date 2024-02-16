@@ -21,7 +21,7 @@ function Navbar({ handleOpen }) {
                         {isMobile ? (
                             <Typography sx={logoLink} variant='h5'>DFS Opto</Typography>
                         ) : (
-                            <Grid container direction='row' jusftifyContent='flex-start' alignItems='center'>
+                            <Grid container direction='row' justifyContent='flex-start' alignItems='center'>
                                 <SportsFootballOutlinedIcon fontSize='large' sx={{ color: secondary, marginRight: '1vh' }} />
                                 <Typography sx={logoLink} variant='h5'>DFS Opto</Typography>
                             </Grid>
