@@ -33,15 +33,15 @@ function LockCell({ cell, playerSettings, setPlayerSettings }) {
     return (
         <td {...cell.getCellProps()} onClick={handleClick}>
             {lock ? (
-                <>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flexWrap: 'wrap' }}>
                     <input type='hidden' value='true' name={`players[${cell.row.original.id}][lock]`} />
                     <LockIcon color='primary' fontSize='small' />
-                </>
+                </div>
             ) : (
-                <>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flexWrap: 'wrap' }}>
                     <input type='hidden' value='' name={`players[${cell.row.original.id}][lock]`} />
                     <LockOutlinedIcon color='primary' fontSize='small' />
-                </>
+                </div>
             )}
         </td>
     )

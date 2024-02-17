@@ -23,15 +23,15 @@ function RemoveCell({ cell, playerSettings, setPlayerSettings }) {
     return (
         <td {...cell.getCellProps()} onClick={handleClick}>
             {exclude ? (
-                <>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flexWrap: 'wrap' }}>
                     <input type='hidden' value='true' name={`players[${cell.row.original.id}][remove]`} />
                     <RemoveCircleIcon color='error' fontSize='small' />
-                </>
+                </div>
             ) : (
-                <>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flexWrap: 'wrap' }}>
                     <input type='hidden' value='' name={`players[${cell.row.original.id}][remove]`} />
                     <RemoveCircleOutlineIcon color='error' fontSize='small' />
-                </>
+                </div>
             )}
         </td>
     )

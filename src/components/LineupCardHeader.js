@@ -6,7 +6,7 @@ function LineupCardHeader({ number, projection, salary }) {
     salString = '$' + salString.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     return (
         <Grid container style={{ color: 'white', backgroundColor: accent, height: '6vh', paddingLeft: '2vh', paddingRight: '2vh' }} direction='row' alignItems='center' justifyContent='space-between'>
-            <Grid item xs={4}>
+            <Grid item>
                 <Typography sx={{ fontWeight: 'bold' }} variant='body1'>Lineup #{number} ({projection})</Typography>
             </Grid>
             <Grid item>

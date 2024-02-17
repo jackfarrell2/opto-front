@@ -8,7 +8,7 @@
 
 .player-table th,
 .player-table td {
-    padding: 5px;
+    padding: .7vh;
     border: 1px solid #ddd;
     font-size: 14px;
     text-align: center;
@@ -27,7 +27,7 @@
 }
 
 .player-table .player-cell {
-    max-height: 150px;
+    max-height: 9vh;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -35,19 +35,20 @@
 }
 
 .player-table .projection-cell {
-    max-width: 100px;
+    max-width: 7vh;
     color: inherit;
     padding: 1px;
 }
 
 .player-table .ownership-cell {
-    max-width: 50px;
+    max-width: 6vh;
     color: inherit;
     padding: 1px;
 }
 
-.ownership-input, .projection-input {
-    width: 50px;
+.ownership-input,
+.projection-input {
+    width: 6vh;
     height: 2.8vh;
     text-align: center;
 }
@@ -57,4 +58,3 @@
     padding: 1px;
     text-align: center;
 }
-

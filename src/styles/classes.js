@@ -29,7 +29,7 @@ const mobileSignInModal = {
 }
 
 const topBar = {
-  height: '80px',
+  height: '9.25vh',
 }
 
 const logo = {
@@ -62,20 +62,20 @@ const drawerItem = {
 const secondaryNav = {
   bgcolor: 'common.white',
   color: 'primary.main',
-  height: '40px',
+  height: '4.75vh',
   justifyContent: 'center',
 }
 
 const slateSelector = {
-  maxHeight: '30px',
-  fontSize: '13px',
+  maxHeight: '3.44vh',
+  fontSize: '1.4vh',
   color: 'primary.main',
 }
 
 const slateSelectorDropdown = {
-  fontSize: '13px'
+  fontSize: '1.4vh'
 }
 
 
 
-export {logo, navLinks, buttonLink, topBar, logoLink, drawerItem, page, signInModal, mobileSignInModal, secondaryNav, slateSelector, slateSelectorDropdown }
+export { logo, navLinks, buttonLink, topBar, logoLink, drawerItem, page, signInModal, mobileSignInModal, secondaryNav, slateSelector, slateSelectorDropdown }

@@ -1,5 +1,5 @@
 import React from 'react'
-import { Typography, Grid } from '@mui/material'
+import { Typography, Grid, useMediaQuery } from '@mui/material'
 import IconButton from '@mui/material/IconButton';
 import RemoveIcon from '@mui/icons-material/Remove';
 import AddIcon from '@mui/icons-material/Add';
@@ -7,6 +7,8 @@ import { UserContext } from './UserProvider';
 import { updateUserSettings } from '../util/nbaUtils';
 
 function MaxPlayersPerTeam({ userSettings, setUserSettings }) {
+    const isMedium = useMediaQuery((theme) => theme.breakpoints.down('xl'));
+
     const { token } = React.useContext(UserContext)
     const playersPerTeam = userSettings['max-players-per-team']
     const setPlayersPerTeam = (value) => setUserSettings({ ...userSettings, 'max-players-per-team': value })
@@ -42,7 +44,7 @@ function MaxPlayersPerTeam({ userSettings, setUserSettings }) {
     return (
         <Grid container direction='row' justifyContent='center' alignItems='center'>
             <Grid item>
-                <Typography variant='body1'>Maximum Players Per Team: </Typography>
+                <Typography variant='body1'>{isMedium ? 'Max' : 'Maximum'} Players Per Team: </Typography>
             </Grid>
             <Grid item>
                 <IconButton onClick={() => handleChange('subtract')}><RemoveIcon /></IconButton>

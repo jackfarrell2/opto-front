@@ -1,5 +1,5 @@
 import React from "react"
-import { AppBar, Toolbar, IconButton, Button, Grid } from "@mui/material"
+import { AppBar, Toolbar, IconButton, Button, Grid, useMediaQuery } from "@mui/material"
 import { secondaryNav } from "../styles/classes"
 import { SlateSelector } from "./SlateSelector";
 import AddIcon from '@mui/icons-material/Add';
@@ -9,6 +9,8 @@ import { UserContext } from "./UserProvider"
 import { ConfirmModal } from "./ConfirmModal";
 
 function SecondNavbar({ setSlateModal, slate, slates, setSlate }) {
+    const isMobile = useMediaQuery((theme) => theme.breakpoints.down('md'));
+    const isXtraSmall = useMediaQuery((theme) => theme.breakpoints.down('sm'));
     const [openConfirmModal, setOpenConfirmModal] = React.useState(false)
     const { user } = React.useContext(UserContext)
     let userStaff = false
@@ -21,10 +23,10 @@ function SecondNavbar({ setSlateModal, slate, slates, setSlate }) {
         <>
             <ConfirmModal openConfirmModal={openConfirmModal} setOpenConfirmModal={setOpenConfirmModal} slate={slate.id} />
             <AppBar position='static' sx={secondaryNav}>
-                <Toolbar>
+                <Toolbar style={{ padding: 0 }}>
                     <ProjectionModal setOpenProjectionModal={setOpenProjectionModal} openProjectionModal={openProjectionModal} slates={slates} slate={slate} />
-                    <Grid container direction='row' justifyContent='flex-start' alignItems='center' spacing={2}>
-                        <Grid item>
+                    <Grid container direction='row' justifyContent='flex-start' alignItems='center' spacing={1.5}>
+                        <Grid item style={{ marginLeft: isMobile ? '1vh' : '2vh' }}>
                             <Grid container direction='row' justifyContent='flex-start' alignItems='center'>
                                 <Grid item>
                                     <SlateSelector slates={slates} slate={slate} handleSlateChange={(newSlate) => setSlate(newSlate)} />
@@ -35,10 +37,10 @@ function SecondNavbar({ setSlateModal, slate, slates, setSlate }) {
                             </Grid>
                         </Grid>
                         <Grid item>
-                            <Button size='small' onClick={() => setOpenProjectionModal(!openProjectionModal)} variant='outlined' color='success'>Upload Projections</Button>
+                            <Button size='small' onClick={() => setOpenProjectionModal(!openProjectionModal)} variant='outlined' color='success'>{isXtraSmall ? 'Upload' : 'Upload Projections'}</Button>
                         </Grid>
                         <Grid item>
-                            <Button size='small' onClick={() => setOpenConfirmModal(true)} variant='outlined' color='error'>Remove Projections</Button>
+                            <Button size='small' onClick={() => setOpenConfirmModal(true)} variant='outlined' color='error'>{isXtraSmall ? 'Remove' : 'Remove Projections'}</Button>
                         </Grid>
                     </Grid>
                 </Toolbar>

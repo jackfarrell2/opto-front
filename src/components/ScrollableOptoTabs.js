@@ -16,7 +16,7 @@ function ScrollableOptoTabs({ optoCount, setSelectedOpto, selectedOpto }) {
                 value={selectedOpto - 1}
                 onChange={handleChange}
                 variant="scrollable"
-                scrollButtons="auto"
+                scrollButtons='auto'
                 aria-label="opto-tabs"
                 indicatorColor="secondary"
                 textColor='inherit'

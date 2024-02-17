@@ -1,5 +1,5 @@
 import React from 'react'
-import { Grid, Tabs, Tab, Box, Typography, TextField, IconButton, Tooltip } from '@mui/material'
+import { Grid, Tabs, Tab, Box, Typography, TextField, IconButton, Tooltip, useMediaQuery } from '@mui/material'
 import PropTypes from 'prop-types'
 import { SimpleSettings } from './SimpleSettings';
 import { UserSettingsContext } from './SlateInfo'
@@ -44,6 +44,7 @@ function a11yProps(index) {
 }
 
 function SettingsPanel({ tab, setTab, exposures, selectedOpto, buttonLoading, handleCancelOptimize, clearedSearch }) {
+    const isMobile = useMediaQuery((theme) => theme.breakpoints.down('md'));
     const { user } = React.useContext(UserContext)
     const [openConfirmModal, setOpenConfirmModal] = React.useState(false)
     const [showedWarning, setShowedWarning] = React.useState(false)
@@ -87,13 +88,13 @@ function SettingsPanel({ tab, setTab, exposures, selectedOpto, buttonLoading, ha
     return (
         <>
             <ConfirmSignUpModal openConfirmModal={openConfirmModal} setOpenConfirmModal={setOpenConfirmModal}></ConfirmSignUpModal>
-            <Grid style={{ height: '75vh' }} container direction='row' justifyContent='center' alignItems='space-between' spacing={0}>
+            <Grid style={{ height: isMobile ? '55vh' : '75vh' }} container direction='row' justifyContent='center' alignItems='stretch' spacing={0}>
                 <Grid item xs={12}>
-                    <Grid container direction='row' justifyContent='center' alignItems='flex-start'>
-                        <Grid item xs={12}>
+                    <Grid style={{ height: '100%' }} container direction='column' justifyContent='flex-start' alignItems='stretch'>
+                        <Grid item>
                             <Box>
                                 <Box sx={{ borderBottom: 1, borderColor: 'divider', textColor: 'secondary' }}>
-                                    <Tabs value={tab} onChange={handleTabChange} textColor='inherit' indicatorColor='inherit'>
+                                    <Tabs value={tab} onChange={handleTabChange} textColor='inherit' indicatorColor='inherit' variant='fullWidth'>
                                         <Tab sx={{ width: '50%', color: 'white', backgroundColor: 'primary.main' }} label='Settings' {...a11yProps(0)} />
                                         <Tab sx={{ width: '50%', color: 'white', backgroundColor: 'primary.main' }} label='Exposures' {...a11yProps(1)} />
                                     </Tabs>
@@ -108,12 +109,12 @@ function SettingsPanel({ tab, setTab, exposures, selectedOpto, buttonLoading, ha
                         </Grid>
                     </Grid>
                 </Grid>
-                <Grid item style={{ textAlign: 'center', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                    <Grid container direction='column' justifyContent='center' alignItems='center' spacing={2}>
-                        <Grid item xs={6}>
+                <Grid item xs={12} style={{ textAlign: 'center', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                    <Grid container direction='row' justifyContent='center' alignItems='center' spacing={!isMobile ? 2 : 1.5}>
+                        <Grid item xs={12}>
                             <TextField sx={{ width: '10vh', textAlign: 'center' }} onChange={handleTotalLineupsChange} id="lineup-count" label="Lineups" value={userSettings['num-lineups']} variant="standard" inputProps={{ style: { textAlign: 'center' } }} />
                         </Grid>
-                        <Grid item xs={6}>
+                        <Grid item xs={12}>
                             {clearedSearch ? (
                                 <LoadingButton onClick={handleOptimizeClick} type='submit' form='PlayerTableForm' size='medium' endIcon={<CalculateIcon />} loading={buttonLoading} loadingPosition='end' variant='contained' color='primary' disabled={!ready}>Optimize</LoadingButton>
                             ) : (

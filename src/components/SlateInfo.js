@@ -2,7 +2,7 @@ import React from 'react'
 import { useQuery } from 'react-query'
 import config from '../config'
 import { PlayerTable } from './PlayerTable';
-import { Grid, CircularProgress, Box, Container, Divider } from '@mui/material';
+import { Grid, CircularProgress, Box, Container, Divider, useMediaQuery } from '@mui/material';
 import { SettingsPanel } from './SettingsPanel';
 import { UserContext } from './UserProvider';
 import { useMutation, useQueryClient } from 'react-query'
@@ -13,6 +13,7 @@ export const UserSettingsContext = React.createContext()
 
 
 function SlateInfo({ slate, setOptimizedLineups, exposures, setExposures, optimizedLineups, setSelectedOpto, selectedOpto }) {
+    const isMobile = useMediaQuery((theme) => theme.breakpoints.down('md'));
     const queryClient = useQueryClient()
     const { token, user } = React.useContext(UserContext)
     const userId = user ? user.id : null
@@ -172,13 +173,13 @@ function SlateInfo({ slate, setOptimizedLineups, exposures, setExposures, optimi
                     <LockedContext.Provider value={[lockedData, setLockedData]}>
                         <UserSettingsContext.Provider value={[userSettings, setUserSettings]}>
                             <Grid container direction='row' justifyContent='center' alignItems='flex-start'>
-                                <Grid item xs={8}>
-                                    <Container disableGutters sx={{ maxHeight: '75vh', overflow: 'auto', pt: '2vh', pl: '2vh' }}>
+                                <Grid item lg={9} md={7.9} xs={12}>
+                                    <Container maxWidth='xl' disableGutters sx={{ maxHeight: '75vh', overflow: 'auto', pt: '2vh', pl: isMobile ? '1.2vh' : '2vh', pr: '2vh' }}>
                                         {memoizedPlayerTable}
                                     </Container>
                                     <Divider />
                                 </Grid>
-                                <Grid item xs={4}>
+                                <Grid item lg={3} md={4.1} xs={12}>
                                     <SettingsPanel clearedSearch={clearedSearch} handleCancelOptimize={handleCancelOptimize} buttonLoading={buttonLoading} tab={tab} setTab={setTab} exposures={exposures} selectedOpto={selectedOpto} />
                                 </Grid>
                             </Grid>

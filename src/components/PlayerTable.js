@@ -2,7 +2,7 @@ import React from 'react'
 import { useTable, useSortBy, useGlobalFilter } from 'react-table'
 import '../styles/PlayerTable.css'
 import { PlayerRow } from './PlayerRow'
-import { TextField, Grid, Button } from '@mui/material'
+import { TextField, Grid, Button, useMediaQuery } from '@mui/material'
 import { XValueCell } from './PlayerCells/XValueCell'
 import { StaticCell } from './PlayerCells/StaticCell'
 import { RemoveCell } from './PlayerCells/RemoveCell'
@@ -15,7 +15,6 @@ import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 
 
 function PlayerTable({ data, handleOptimize, slateId, setClearedSearch }) {
-
     // Define columns
     const columns = React.useMemo(() => [
         {
@@ -205,20 +204,24 @@ function PlayerTable({ data, handleOptimize, slateId, setClearedSearch }) {
 
 
 
-
+    const isMobile = useMediaQuery((theme) => theme.breakpoints.down('sm'));
 
     return (
         <>
 
             <div>
                 <Grid container direction='row' justifyContent='space-between' alignItems='flex-end' spacing={2}>
-                    <Grid item>
+                    <Grid item xs={7}>
                         <TextField size='small' id="filled-search" label="Search Player" type="search" variant="filled" value={globalFilter || ''} onChange={handleSearchChange} />
                     </Grid>
                     <Grid item>
-                        <Grid style={{ marginBottom: '2vh' }} container direction='row' justifyContent='space-between' alignItems='center' spacing={2}>
+                        <Grid style={{ marginBottom: '1vh' }} container direction='row' justifyContent='flex-end' alignItems='center' spacing={2}>
                             <Grid item>
-                                <Button sx={{ marginRight: '2vh' }} onClick={handleOnlyUseClick} variant='outlined' color='secondary'>{!isFilterActive ? 'Only Use My Projections' : 'Use All Projections'}</Button>
+                                {isMobile ? (
+                                    <Button onClick={handleOnlyUseClick} variant='outlined' color='secondary'>{!isFilterActive ? 'Only Use Mine' : 'Use All'}</Button>
+                                ) : (
+                                    <Button onClick={handleOnlyUseClick} variant='outlined' color='secondary'>{!isFilterActive ? 'Only Use My Projections' : 'Use All Projections'}</Button>
+                                )}
                             </Grid>
                         </Grid>
                     </Grid>
@@ -251,7 +254,7 @@ function PlayerTable({ data, handleOptimize, slateId, setClearedSearch }) {
                         </table>
                     </div>
                 </form>
-            </div>
+            </div >
         </>
     )
 }

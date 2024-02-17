@@ -13,7 +13,7 @@ function LineupsDashBody({ optimizedLineups, selectedOpto }) {
             {(memoizedLineups.length > 0) ? (
                 <Grid container direction='row' justifyContent='flex-start' alignItems='flex-start' spacing={0} style={{ backgroundColor: '#e5e9ed' }}>
                     {memoizedLineups.map((lineup, index) => (
-                        <Grid item key={index} xs={4}>
+                        <Grid item key={index} sm={12} md={6} lg={4}>
                             <LineupCard lineup={lineup} index={index} />
                         </Grid>
                     ))}
