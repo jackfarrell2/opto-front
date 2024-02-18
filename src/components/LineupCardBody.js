@@ -1,6 +1,8 @@
+import React from 'react'
 import { LineupCardRow } from './LineupCardRow';
 import '../styles/PlayerTable.css';
 import { useTheme } from '@mui/material/styles';
+import { Divider } from '@mui/material';
 
 function LineupCardBody({ lineup }) {
     const playerInfo = Object.keys(lineup).filter(
@@ -23,8 +25,17 @@ function LineupCardBody({ lineup }) {
                 </tr>
             </thead>
             <tbody>
-                {playerInfo.map((pos) => (
-                    <LineupCardRow key={lineup['name']} pos={pos} player={lineup[pos]} />
+                {playerInfo.map((pos, index) => (
+                    <React.Fragment key={index}>
+                        <LineupCardRow key={lineup['name']} pos={pos} player={lineup[pos]} />
+                        {index < playerInfo.length - 1 && (
+                            <tr>
+                                <td colSpan="6">
+                                    <Divider />
+                                </td>
+                            </tr>
+                        )}
+                    </React.Fragment>
                 ))}
             </tbody>
         </table>

@@ -1,5 +1,5 @@
 
-import { Typography, Divider } from "@mui/material"
+import { Typography } from "@mui/material"
 import '../styles/PlayerTable.css';
 import { teamColors } from '../styles/colors'
 
@@ -14,7 +14,6 @@ function LineupCardRow({ player, pos }) {
                 <td className='lineup-card-cell'><Typography variant="body2">{player['opponent']}</Typography></td>
                 <td className='lineup-card-cell'><Typography variant="body2">{player['projection']}</Typography></td>
             </tr>
-            <Divider />
         </>
     )
 }

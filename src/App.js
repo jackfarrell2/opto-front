@@ -41,10 +41,6 @@ const apiUrl = `${config.apiUrl}`
 
 function App() {
 
-  React.useEffect(() => {
-    document.title = "DFS Opto";
-  }, []);
-
   const [openModal, setOpenModal] = React.useState('none');
   const handleOpen = () => setOpenModal('sign-in');
   const handleClose = () => setOpenModal('none');
