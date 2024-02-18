@@ -13,7 +13,7 @@ function LineupCardBody({ lineup }) {
     return (
         <table style={{ borderCollapse: 'collapse', borderSpacing: 0, width: '100%' }}>
             <thead>
-                <tr style={{ height: '6vh', fontSize: '2vh', color: 'white', backgroundColor: secondaryColor }}>
+                <tr style={{ height: '5vh', fontSize: '1.5vh', color: 'white', backgroundColor: secondaryColor }}>
                     <th>Pos</th>
                     <th></th>
                     <th>Salary</th>

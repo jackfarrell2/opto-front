@@ -6,7 +6,7 @@ import { teamColors } from '../styles/colors'
 function LineupCardRow({ player, pos }) {
     return (
         <>
-            <tr style={{ color: 'white', height: '6vh', backgroundColor: teamColors[player['team']] }}>
+            <tr style={{ color: 'white', height: '5vh', backgroundColor: teamColors[player['team']] }}>
                 <td className='lineup-card-cell'><Typography variant="body2">{pos}</Typography></td>
                 <td><Typography variant="body2">{player['name']}</Typography></td>
                 <td className='lineup-card-cell'><Typography variant="body2">${player['salary']}</Typography></td>

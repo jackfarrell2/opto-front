@@ -88,7 +88,7 @@ function SettingsPanel({ tab, setTab, exposures, selectedOpto, buttonLoading, ha
     return (
         <>
             <ConfirmSignUpModal openConfirmModal={openConfirmModal} setOpenConfirmModal={setOpenConfirmModal}></ConfirmSignUpModal>
-            <Grid style={{ height: isMobile ? '55vh' : '75vh' }} container direction='row' justifyContent='center' alignItems='stretch' spacing={0}>
+            <Grid style={{ height: '75vh' }} container direction='row' justifyContent='center' alignItems='stretch' spacing={0}>
                 <Grid item xs={12}>
                     <Grid style={{ height: '100%' }} container direction='column' justifyContent='flex-start' alignItems='stretch'>
                         <Grid item>

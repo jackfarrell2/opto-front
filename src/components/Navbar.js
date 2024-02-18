@@ -17,15 +17,11 @@ function Navbar({ handleOpen }) {
         <AppBar position='static'>
             <Toolbar sx={topBar}>
                 <Box sx={logo}>
-                    <Link to='/' style={{ textDecoration: 'none' }}>
-                        {isMobile ? (
+                    <Link to='/nba' style={{ textDecoration: 'none' }}>
+                        <Grid container direction='row' justifyContent='flex-start' alignItems='center'>
+                            <SportsFootballOutlinedIcon fontSize='large' sx={{ color: secondary, marginRight: '1vh' }} />
                             <Typography sx={logoLink} variant='h5'>DFS Opto</Typography>
-                        ) : (
-                            <Grid container direction='row' justifyContent='flex-start' alignItems='center'>
-                                <SportsFootballOutlinedIcon fontSize='large' sx={{ color: secondary, marginRight: '1vh' }} />
-                                <Typography sx={logoLink} variant='h5'>DFS Opto</Typography>
-                            </Grid>
-                        )}
+                        </Grid>
                     </Link>
                 </Box>
                 {isMobile ? (
@@ -35,9 +31,9 @@ function Navbar({ handleOpen }) {
                         <Link to='/nba'>
                             <Button sx={buttonLink}>NBA</Button>
                         </Link>
-                        <Link to='/mlb'>
+                        {/* <Link to='/mlb'>
                             <Button sx={buttonLink}>MLB</Button>
-                        </Link>
+                        </Link> */}
                         {user ? (<Button onClick={() => signOut()} sx={buttonLink}>Log Out</Button>) : (<Button onClick={handleOpen} sx={buttonLink}>Sign In</Button>)}
                     </Box>
                 )}

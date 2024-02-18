@@ -7,11 +7,11 @@ function LineupsDash({ optimizedLineups, selectedOpto, setSelectedOpto, slate, s
     const optoCount = optimizedLineups['count'] || 0;
 
     return (
-        <Grid container direction='row' justifyContent='center' alignItems='center' spacing={0} style={{ marginTop: '5vh', marginBottom: '5vh' }}>
-            <Grid item xs={12} style={{ width: '100%', backgroundColor: '#92a3b8' }}>
+        <Grid container direction='row' justifyContent='center' alignItems='center' spacing={0}>
+            <Grid item xs={12} style={{ width: '100%', backgroundColor: '#92a3b8', marginTop: '5vh' }}>
                 <LineupsDashHeader selectedLineups={optimizedLineups[selectedOpto]} setExposures={setExposures} setOptimizedLineups={setOptimizedLineups} optoCount={optoCount} selectedOpto={selectedOpto} setSelectedOpto={setSelectedOpto} slate={slate} />
             </Grid>
-            <Grid item xs={12} style={{ width: '100%' }}>
+            <Grid item xs={12} style={{ width: '100%', marginBottom: '5vh' }}>
                 <LineupsDashBody optimizedLineups={optimizedLineups} selectedOpto={selectedOpto} />
             </Grid>
         </Grid >

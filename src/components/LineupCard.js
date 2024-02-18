@@ -4,7 +4,7 @@ import { LineupCardHeader } from './LineupCardHeader'
 
 function LineupCard({ lineup, index }) {
     return (
-        <Paper sx={{ m: '2vh' }} elevation={20}>
+        <Paper elevation={15} style={{ margin: '1vh' }}>
             <Container disableGutters>
                 <LineupCardHeader projection={lineup['total_projection']} salary={lineup['total_salary']} number={index + 1} />
                 <LineupCardBody lineup={lineup} />
