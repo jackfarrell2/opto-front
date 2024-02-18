@@ -24,7 +24,7 @@ function ProjectionResponse({ data, setUploaded, setOpenProjectionModal }) {
     for (const player in assumedPlayers) {
         const assumedPlayer = assumedPlayers[player]
         assumedPlayersList.push(
-            <Grid item key={assumedPlayer}>
+            <Grid item key={assumedPlayer} xs={12} sm={6} md={4}>
                 <Grid container direction='row' justifyContent='center' alignItems='center' spacing={1}>
                     <Grid item>
                         <Typography sx={{ fontSize: '2vh' }}>{player}</Typography>
@@ -53,12 +53,12 @@ function ProjectionResponse({ data, setUploaded, setOpenProjectionModal }) {
             </Grid>
             {(assumedPlayersCount > 0) && (
                 <>
-                    <Grid item sx={{ overflow: 'auto', }}>
+                    <Grid item style={{ overflow: 'auto' }}>
                         <Typography sx={{ fontSize: '2vh' }}><span style={{ color: 'red' }}>Warning!</span> The following name mappings have been assumed.</Typography>
                     </Grid>
-                    <Grid item>
+                    <Grid item style={{ overflow: 'auto', maxHeight: '25vh' }}>
                         <Grid container direction='column' justifyContent='flex-start' alignItems='center' spacing={1} style={{
-                            maxHeight: '300px', // Set a maximum height for the div
+                            maxHeight: '25vh', // Set a maximum height for the div
                             overflowY: 'auto',  // Add a vertical scrollbar when content overflows
                             border: '1px solid #ccc', // Optional: Add border for visibility
                         }}>
@@ -77,12 +77,13 @@ function ProjectionResponse({ data, setUploaded, setOpenProjectionModal }) {
                     </Grid>
                     <Grid item>
                         <Grid container direction='column' justifyContent='flex-start' alignItems='center' spacing={1} style={{
-                            maxHeight: '300px', // Set a maximum height for the div
                             overflowY: 'auto',  // Add a vertical scrollbar when content overflows
-                            border: '1px solid #ccc', // Optional: Add border for visibility
+                            border: '1px solid #ccc',
+                            overflowX: 'auto',
+                            maxHeight: '25vh'
                         }}>
                             {unfoundPlayers.map((player) => (
-                                <Grid key={player} item>
+                                <Grid key={player} item xs={12} sm={6} md={4}>
                                     <Typography sx={{ fontSize: '2vh' }}>{player}</Typography>
                                 </Grid>
                             ))}

@@ -9,6 +9,11 @@ import { useQuery } from 'react-query'
 import { LineupsDash } from '../components/LineupsDash'
 
 function Nba() {
+
+    React.useEffect(() => {
+        document.title = "DFS Opto: NBA";
+    }, []);
+
     const [slateModal, setSlateModal] = React.useState(false)
     const [slate, setSlate] = React.useState('')
     const [optimizedLineups, setOptimizedLineups] = React.useState({ 'count': 0 })
