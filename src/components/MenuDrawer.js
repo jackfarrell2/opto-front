@@ -29,18 +29,18 @@ function MenuDrawer({ handleOpen }) {
                         </ListItemText>
                     </ListItem>
                     <Divider />
-                    <ListItem onClick={() => setOpenDrawer(false)}>
+                    {/* <ListItem onClick={() => setOpenDrawer(false)}>
                         <ListItemText>
                             <Link to='/mlb' style={drawerItem}>MLB</Link>
                         </ListItemText>
                     </ListItem>
-                    <Divider />
-                    {/* <ListItem onClick={() => setOpenDrawer(false)}>
+                    <Divider /> */}
+                    <ListItem onClick={() => setOpenDrawer(false)}>
                         <ListItemText>
                             <Link to='/nba' style={drawerItem}>NBA</Link>
                         </ListItemText>
                     </ListItem>
-                    <Divider /> */}
+                    <Divider />
                     <ListItem>
                         <ListItemText>
                             {user ? (<Link to='/' onClick={handleSignOut} style={drawerItem}>Log Out</Link>) : (<Link to='/' onClick={openLoginForm} style={drawerItem}>Log In</Link>)}
