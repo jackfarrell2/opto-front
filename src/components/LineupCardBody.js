@@ -30,8 +30,8 @@ function LineupCardBody({ lineup }) {
                         <LineupCardRow key={lineup['name']} pos={pos} player={lineup[pos]} />
                         {index < playerInfo.length - 1 && (
                             <tr>
-                                <td colSpan="6">
-                                    <Divider />
+                                <td colSpan={6} style={{ padding: 0 }}>
+                                    <Divider style={{ margin: 0 }} />
                                 </td>
                             </tr>
                         )}

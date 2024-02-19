@@ -6,7 +6,7 @@ import { drawerItem } from '../styles/classes'
 import { UserContext } from './UserProvider'
 
 
-function MenuDrawer({handleOpen}) {
+function MenuDrawer({ handleOpen }) {
     const { user, signOut } = React.useContext(UserContext);
     const [openDrawer, setOpenDrawer] = useState(false)
     function openLoginForm() {
@@ -20,7 +20,7 @@ function MenuDrawer({handleOpen}) {
     return (
         <>
             <Drawer open={openDrawer}
-            onClose={() => setOpenDrawer(false)}
+                onClose={() => setOpenDrawer(false)}
             >
                 <List>
                     <ListItem onClick={() => setOpenDrawer(false)}>
@@ -35,12 +35,12 @@ function MenuDrawer({handleOpen}) {
                         </ListItemText>
                     </ListItem>
                     <Divider />
-                    <ListItem onClick={() => setOpenDrawer(false)}>
+                    {/* <ListItem onClick={() => setOpenDrawer(false)}>
                         <ListItemText>
                             <Link to='/nba' style={drawerItem}>NBA</Link>
                         </ListItemText>
                     </ListItem>
-                    <Divider />
+                    <Divider /> */}
                     <ListItem>
                         <ListItemText>
                             {user ? (<Link to='/' onClick={handleSignOut} style={drawerItem}>Log Out</Link>) : (<Link to='/' onClick={openLoginForm} style={drawerItem}>Log In</Link>)}
@@ -56,4 +56,4 @@ function MenuDrawer({handleOpen}) {
     )
 }
 
-export {MenuDrawer}
+export { MenuDrawer }

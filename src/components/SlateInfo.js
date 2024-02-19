@@ -174,7 +174,7 @@ function SlateInfo({ slate, setOptimizedLineups, exposures, setExposures, optimi
                         <UserSettingsContext.Provider value={[userSettings, setUserSettings]}>
                             <Grid container direction='row' justifyContent='center' alignItems='flex-start'>
                                 <Grid item lg={9} md={7.9} xs={12}>
-                                    <Container maxWidth='xl' disableGutters sx={{ maxHeight: '75vh', overflow: 'auto', pt: '2vh', pl: isMobile ? '1.2vh' : '2vh', pr: '2vh' }}>
+                                    <Container maxWidth='xl' disableGutters sx={{ maxHeight: isMobile ? '57.5vh' : '70vh', overflow: 'auto', pt: '2vh', pl: isMobile ? '1.2vh' : '2vh', pr: '2vh' }}>
                                         {memoizedPlayerTable}
                                     </Container>
                                     <Divider />

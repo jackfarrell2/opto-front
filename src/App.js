@@ -53,7 +53,7 @@ function App() {
         <Router>
           <Navbar handleOpen={handleOpen} />
           <Routes>
-            <Route exact path="/" element={<Home />} />
+            <Route exact path="/" element={<Nba />} />
             <Route path="/mlb" element={<Mlb />} />
             <Route path="/nba" element={<Nba />} />
           </Routes>
