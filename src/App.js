@@ -1,7 +1,7 @@
 import React from "react";
 import { CssBaseline, ThemeProvider, createTheme } from "@mui/material";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Home from "./pages/home";
+// import Home from "./pages/home";
 import Mlb from "./pages/mlb";
 import Nba from "./pages/nba";
 import { Navbar } from "./components/Navbar";
@@ -9,6 +9,8 @@ import { SignInModal } from "./components/SignInModal";
 import { Footer } from "./components/Footer";
 import config from "./config";
 import { UserProvider } from "./components/UserProvider";
+import { ActivationPage } from './components/ActivationPage';
+
 
 
 const theme = createTheme({
@@ -54,6 +56,7 @@ function App() {
           <Navbar handleOpen={handleOpen} />
           <Routes>
             <Route exact path="/" element={<Nba />} />
+            <Route path='/activate/:token' element={<ActivationPage />} />
             <Route path="/mlb" element={<Mlb />} />
             <Route path="/nba" element={<Nba />} />
           </Routes>

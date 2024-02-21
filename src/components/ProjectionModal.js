@@ -125,7 +125,7 @@ function ProjectionModal({ openProjectionModal, setOpenProjectionModal, slate, s
             aria-labelledby='modal-modal-upload'
             aria-describedby='modal-modal-upload-slate-form'
         >
-            <Box sx={isMobile ? (mobileSignInModal) : (signInModal)}>
+            <Box sx={isMobile ? (mobileSignInModal) : (signInModal)} style={{ maxHeight: isMobile ? '75vh' : null, overflow: 'auto' }}>
                 {(uploaded && responseData) ? (
                     <ProjectionResponse data={responseData} setUploaded={setUploaded} setOpenProjectionModal={setOpenProjectionModal} />
                 ) : (

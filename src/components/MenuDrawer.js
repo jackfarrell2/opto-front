@@ -43,7 +43,7 @@ function MenuDrawer({ handleOpen }) {
                     <Divider />
                     <ListItem>
                         <ListItemText>
-                            {user ? (<Link to='/' onClick={handleSignOut} style={drawerItem}>Log Out</Link>) : (<Link to='/' onClick={openLoginForm} style={drawerItem}>Log In</Link>)}
+                            {user ? (<Link to='/' onClick={handleSignOut} style={drawerItem}>Sign Out</Link>) : (<Link to='/' onClick={openLoginForm} style={drawerItem}>Sign In</Link>)}
                         </ListItemText>
                     </ListItem>
                     <Divider />

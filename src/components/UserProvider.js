@@ -55,20 +55,22 @@ function UserProvider({ setOpenModal, apiUrl, children }) {
             });
 
             if (!response.ok) {
-                throw new Error(`HTTP error! Status: ${response.status}`);
+                const errorData = await response.json(); // Parse the JSON error
+                // Return an object indicating success/failure and any messages
+                return { success: false, message: errorData };
             }
 
-            const data = await response.json();
-            localStorage.setItem('user', JSON.stringify(data.user));
-            localStorage.setItem('token', data.token);
-            setUser(data.user);
-            setToken(data.token);
-            setOpenModal('none');
-            window.location.reload();
+            const data = await response.json(); // Assuming the response is successful and returns user data
+            // Perform your success logic here, e.g., updating local storage and user context
+            return { success: true, user: data.user, token: data.token };
+
         } catch (error) {
             console.error('Sign-up error:', error);
+            // Return an error in a similar format for consistency
+            return { success: false, message: { general: 'An error occurred during sign-up.' } };
         }
     };
+
 
     const signOut = () => {
         localStorage.removeItem('user');
@@ -86,7 +88,7 @@ function UserProvider({ setOpenModal, apiUrl, children }) {
         return context;
     }
 
-    return <UserContext.Provider value={{ user, token, signIn, signOut, useUser, signUp }}>{children}</UserContext.Provider>
+    return <UserContext.Provider value={{ user, token, signIn, signOut, useUser, signUp, setUser, setToken }}>{children}</UserContext.Provider>
 }
 
 export { UserProvider, UserContext };

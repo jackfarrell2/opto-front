@@ -34,7 +34,7 @@ function Navbar({ handleOpen }) {
                         {/* <Link to='/mlb'>
                             <Button sx={buttonLink}>MLB</Button>
                         </Link> */}
-                        {user ? (<Button onClick={() => signOut()} sx={buttonLink}>Log Out</Button>) : (<Button onClick={handleOpen} sx={buttonLink}>Sign In</Button>)}
+                        {user ? (<Button onClick={() => signOut()} sx={buttonLink}>Sign Out</Button>) : (<Button onClick={handleOpen} sx={buttonLink}>Sign In</Button>)}
                     </Box>
                 )}
             </Toolbar>

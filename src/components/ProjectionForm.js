@@ -42,7 +42,7 @@ function ProjectionForm({ handlePasteSubmit, fileMethod, handleMethodChange, err
             <Button onClick={() => setOpenProjectionModal(false)} sx={{ color: theme.palette.primary.main }}>
                 <CloseIcon sx={{ color: theme.palette.primary.main }} />
             </Button>
-            <Grid container direction='column' justifyContent='center' alignItems='center' spacing={8}>
+            <Grid container direction='column' justifyContent='center' alignItems='center' spacing={5}>
                 <Grid item>
                     <Typography variant='h5'>Upload Projections</Typography>
                 </Grid>
