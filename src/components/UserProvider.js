@@ -28,21 +28,80 @@ function UserProvider({ setOpenModal, apiUrl, children }) {
             });
 
             if (!response.ok) {
-                throw new Error(`HTTP error! Status: ${response.status}`);
+                const errorData = await response.json();
+                return { success: false, message: errorData.detail };
             }
 
             const data = await response.json();
-
             setUser(data.user);
             setToken(data.token);
             setOpenModal('none');
             localStorage.setItem('user', JSON.stringify(data.user));
             localStorage.setItem('token', data.token);
             window.location.reload();
+
         } catch (error) {
             console.error('Sign-in error:', error);
+            return { success: false, message: { general: 'An error occurred during sign-in.' } };
         }
     };
+
+    function resetPass(formData) {
+        fetch(`${userUrl}reset-password-request`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(formData),
+        });
+        return
+    }
+
+    const confirmResetPass = async (formData) => {
+        try {
+            const response = await fetch(`${userUrl}confirm-password-reset/${formData.code}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                return { success: false, message: errorData.detail };
+            }
+
+            const data = await response.json();
+            return { success: true, user: data.user, token: data.token };
+
+        } catch (error) {
+            console.error('Reset password error:', error);
+            return { success: false, message: 'An error occurred during reset password.' };
+        }
+    }
+
+    const resetPassword = async (formData) => {
+        try {
+            const response = await fetch(`${userUrl}reset-password`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Token ${token}`,
+                },
+                body: JSON.stringify(formData),
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                return { success: false, message: errorData.detail };
+            }
+            const data = await response.json();
+            return { success: true, message: data.detail };
+        } catch (error) {
+            console.error('Resend password error:', error);
+            return { success: false, message: 'An error occurred during resend password.' };
+        }
+    }
 
     const signUp = async (formData) => {
         try {
@@ -55,18 +114,15 @@ function UserProvider({ setOpenModal, apiUrl, children }) {
             });
 
             if (!response.ok) {
-                const errorData = await response.json(); // Parse the JSON error
-                // Return an object indicating success/failure and any messages
+                const errorData = await response.json();
                 return { success: false, message: errorData };
             }
 
-            const data = await response.json(); // Assuming the response is successful and returns user data
-            // Perform your success logic here, e.g., updating local storage and user context
+            const data = await response.json();
             return { success: true, user: data.user, token: data.token };
 
         } catch (error) {
             console.error('Sign-up error:', error);
-            // Return an error in a similar format for consistency
             return { success: false, message: { general: 'An error occurred during sign-up.' } };
         }
     };
@@ -88,7 +144,7 @@ function UserProvider({ setOpenModal, apiUrl, children }) {
         return context;
     }
 
-    return <UserContext.Provider value={{ user, token, signIn, signOut, useUser, signUp, setUser, setToken }}>{children}</UserContext.Provider>
+    return <UserContext.Provider value={{ user, token, signIn, signOut, useUser, signUp, setUser, setToken, resetPass, confirmResetPass, resetPassword }}>{children}</UserContext.Provider>
 }
 
 export { UserProvider, UserContext };

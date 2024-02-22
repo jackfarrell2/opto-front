@@ -116,7 +116,7 @@ function SettingsPanel({ tab, setTab, exposures, selectedOpto, buttonLoading, ha
                         </Grid>
                         <Grid item xs={12}>
                             {clearedSearch ? (
-                                <LoadingButton onClick={handleOptimizeClick} type='submit' form='PlayerTableForm' size='medium' endIcon={<CalculateIcon />} loading={buttonLoading} loadingPosition='end' variant='contained' color='primary' disabled={!ready}>Optimize</LoadingButton>
+                                <LoadingButton onClick={handleOptimizeClick} type='submit' form='PlayerTableForm' size='medium' endIcon={<CalculateIcon />} loading={buttonLoading} loadingPosition='end' variant='contained' color='primary' disabled={!ready}><span>Optimize</span></LoadingButton>
                             ) : (
                                 <Tooltip title="Remove Player Filter to Optimize">
                                     <div>
