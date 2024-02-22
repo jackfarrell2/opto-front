@@ -5,8 +5,8 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import { MenuDrawer } from './MenuDrawer'
 import { UserContext } from './UserProvider'
-import SportsFootballOutlinedIcon from '@mui/icons-material/SportsFootballOutlined';
 import { secondary } from '../styles/colors'
+import SportsBasketballIcon from '@mui/icons-material/SportsBasketball';
 
 
 function Navbar({ handleOpen }) {
@@ -19,7 +19,7 @@ function Navbar({ handleOpen }) {
                 <Box sx={logo}>
                     <Link to='/nba' style={{ textDecoration: 'none' }}>
                         <Grid container direction='row' justifyContent='flex-start' alignItems='center'>
-                            <SportsFootballOutlinedIcon fontSize='large' sx={{ color: secondary, marginRight: '1vh' }} />
+                            <SportsBasketballIcon fontSize='large' sx={{ color: secondary, marginRight: '1vh' }} />
                             <Typography sx={logoLink} variant='h5'>DFS Opto</Typography>
                         </Grid>
                     </Link>

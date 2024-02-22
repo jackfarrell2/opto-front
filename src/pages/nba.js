@@ -42,7 +42,9 @@ function Nba() {
             }
         }
         return data
-    },
+    }, {
+        refetchOnWindowFocus: false
+    }
     );
 
     return (

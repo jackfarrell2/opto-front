@@ -7,12 +7,17 @@ import { LoadingButton } from '@mui/lab';
 import { EmptyIcon } from './EmptyIcon';
 
 
-function SignInForm({ handleClose, onSubmit, setOpenModal, openModal, error, setError, passwordError, setPasswordError, buttonLoading, resendEmail }) {
+function SignInForm({ handleClose, onSubmit, setOpenModal, openModal, error, setError, passwordError, setPasswordError, buttonLoading, resendEmail, resendCodeEmail }) {
 
   const [checked, setChecked] = React.useState(true)
   const [resent, setResent] = React.useState(false)
   const [confirmedName, setConfirmedName] = React.useState(null)
   const [confirmedEmail, setConfirmedEmail] = React.useState(null)
+
+  React.useEffect(() => {
+    setPasswordError('')
+    setError('')
+  }, [openModal, setError, setPasswordError])
 
   const handleCheck = () => setChecked(!checked)
 
@@ -25,6 +30,15 @@ function SignInForm({ handleClose, onSubmit, setOpenModal, openModal, error, set
     const pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return pattern.test(email);
   };
+
+  function handleCodeResend() {
+    if (resent) return
+    resendCodeEmail(confirmedEmail)
+    setResent(true)
+    setTimeout(() => {
+      setResent(false)
+    }, 3000)
+  }
 
   function handleResend() {
     if (resent) return
@@ -87,6 +101,7 @@ function SignInForm({ handleClose, onSubmit, setOpenModal, openModal, error, set
       })
     } else if (openModal === 'forgot') {
       const email = event.target.elements.email.value
+      setConfirmedEmail(email)
       onSubmit({
         email: email
       })
@@ -138,6 +153,7 @@ function SignInForm({ handleClose, onSubmit, setOpenModal, openModal, error, set
           </Box>
           <Grid container style={{ padding: '4.5vh' }} direction="column" justifyContent="center" alignItems="center" spacing={3}>
             <Grid item>
+              <input type='username' name='username' value={confirmedEmail} hidden readOnly />
               <TextField
                 required
                 name="new-password"
@@ -186,7 +202,7 @@ function SignInForm({ handleClose, onSubmit, setOpenModal, openModal, error, set
                 </Grid>
               )}
               <Grid item>
-                <Button onClick={handleResend} variant='text' size='small' sx={{ textDecoration: 'underline' }}>Click here to send a new code</Button>
+                <Button onClick={handleCodeResend} variant='text' size='small' sx={{ textDecoration: 'underline' }}>Click here to send a new code</Button>
               </Grid>
               {resent && (
                 <Grid item>

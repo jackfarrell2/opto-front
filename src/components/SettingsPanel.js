@@ -56,7 +56,7 @@ function SettingsPanel({ tab, setTab, exposures, selectedOpto, buttonLoading, ha
         setTab(newValue);
     };
 
-    const ready = (lineupCount > 0 && lineupCount <= 150 && minSalary >= 40000 && minSalary <= 50000 && maxSalary >= 40000 && maxSalary <= 50000 && clearedSearch) ? true : false
+    const ready = (lineupCount > 0 && lineupCount <= 20 && minSalary >= 40000 && minSalary <= 50000 && maxSalary >= 40000 && maxSalary <= 50000 && clearedSearch) ? true : false
 
     function handleTotalLineupsChange(e) {
         const inputValue = e.target.value;
@@ -67,12 +67,12 @@ function SettingsPanel({ tab, setTab, exposures, selectedOpto, buttonLoading, ha
         const newValue = parseInt(inputValue, 10);
 
         if (isNaN(newValue)) {
-            console.error('Invalid input for total lineups. Please enter a number between 1 and 150.');
+            console.error('Invalid input for total lineups. Please enter a number between 1 and 20.');
             return;
         }
 
-        if (newValue >= 150) {
-            setUserSettings({ ...userSettings, 'num-lineups': 150 });
+        if (newValue >= 20) {
+            setUserSettings({ ...userSettings, 'num-lineups': 20 });
         } else {
             setUserSettings({ ...userSettings, 'num-lineups': newValue });
         }

@@ -72,6 +72,24 @@ function SignInModal({ openModal, handleClose, submit, setOpenModal }) {
         setButtonLoading(false)
     };
 
+    const resendCodeEmail = async (confirmedEmail) => {
+        try {
+            const response = await fetch(`${userUrl}resend-code`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ email: confirmedEmail }),
+            });
+
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+        } catch (error) {
+            console.error('Error resending email:', error);
+        }
+    }
+
     const resendEmail = async (confirmedEmail) => {
         try {
             const response = await fetch(`${userUrl}resend-confirmation`, {
@@ -103,7 +121,7 @@ function SignInModal({ openModal, handleClose, submit, setOpenModal }) {
             aria-describedby='modal-modal-signin or registration form'
         >
             <Box sx={isMobile ? (mobileSignInModal) : (signInModal)}>
-                <SignInForm onSubmit={handleSubmit} handleClose={handleClose} openModal={openModal} setOpenModal={setOpenModal} error={error} setError={setError} passwordError={passwordError} setPasswordError={setPasswordError} buttonLoading={buttonLoading} resendEmail={resendEmail} />
+                <SignInForm onSubmit={handleSubmit} handleClose={handleClose} openModal={openModal} setOpenModal={setOpenModal} error={error} setError={setError} passwordError={passwordError} setPasswordError={setPasswordError} buttonLoading={buttonLoading} resendEmail={resendEmail} resendCodeEmail={resendCodeEmail} />
             </Box>
         </Modal>
     )
