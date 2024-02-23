@@ -16,8 +16,7 @@ function SlateInfo({ slate, setOptimizedLineups, exposures, setExposures, optimi
     const isMobile = useMediaQuery((theme) => theme.breakpoints.down('md'));
     const queryClient = useQueryClient()
     const { token, user } = React.useContext(UserContext)
-    const userId = user ? user.id : null
-    const optoApiUrl = userId ? `${config.apiUrl}nba/api/authenticated-optimize/` : `${config.apiUrl}nba/api/unauthenticated-optimize/`
+    const optoApiUrl = token ? `${config.apiUrl}nba/api/authenticated-optimize/` : `${config.apiUrl}nba/api/unauthenticated-optimize/`
     const apiUrl = token ? `${config.apiUrl}nba/api/authenticated-slate-info/${slate.id}` : `${config.apiUrl}nba/api/unauthenticated-slate-info/${slate.id}`
     const cancelApiUrl = `${config.apiUrl}nba/api/cancel-optimization/`
     const [lockedData, setLockedData] = React.useState({ 'count': 0, 'salary': 0 })
@@ -113,14 +112,13 @@ function SlateInfo({ slate, setOptimizedLineups, exposures, setExposures, optimi
         }
         const requestData = {
             'slate-id': slate.id,
-            'user-id': userId,
             'players': formDataObj,
             'opto-settings': optoSettings,
             'cancelId': Math.random().toString(36).substring(7)
         }
         queryClient.cancelMutations('optimizeMutation')
         optimizeMutation.mutate(requestData)
-    }, [slate.id, userId, userSettings, optimizeMutation, queryClient]);
+    }, [slate.id, userSettings, optimizeMutation, queryClient]);
 
     const handleCancelOptimize = async () => {
         const cancelId = optimizeMutation.variables.cancelId;
