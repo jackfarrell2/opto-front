@@ -162,7 +162,7 @@ function SlateInfo({ slate, setOptimizedLineups, exposures, setExposures, optimi
             <ConfirmErrorModal openConfirmModal={failedOptimizeModalOpen} setOpenConfirmModal={setFailedOptimizeModalOpen} successfulLineupCount={failedSuccessLineups} setFailedSuccessLineups={setFailedSuccessLineups} />
             <Box>
                 {playersLoading ? (
-                    <Grid container sx={{ height: '75vh' }} direction='column' justifyContent='center' alignItems='center'>
+                    <Grid container sx={{ minHeight: '75vh' }} direction='column' justifyContent='center' alignItems='center'>
                         <Grid item>
                             <CircularProgress size={120} />
                         </Grid>
@@ -170,9 +170,9 @@ function SlateInfo({ slate, setOptimizedLineups, exposures, setExposures, optimi
                 ) : (
                     <LockedContext.Provider value={[lockedData, setLockedData]}>
                         <UserSettingsContext.Provider value={[userSettings, setUserSettings]}>
-                            <Grid container direction='row' justifyContent='center' alignItems='flex-start'>
-                                <Grid item lg={9} md={7.9} xs={12}>
-                                    <Container maxWidth='xl' disableGutters sx={{ maxHeight: isMobile ? '57.5vh' : '70vh', overflow: 'auto', pt: '2vh', pl: isMobile ? '1.2vh' : '2vh', pr: '2vh' }}>
+                            <Grid container direction='row' justifyContent='stretch' alignItems='flex-start'>
+                                <Grid item lg={9} md={7.9} xs={12} style={{ maxHeight: isMobile ? '57.5vh' : '82.5vh', overflow: 'auto' }}>
+                                    <Container disableGutters maxWidth={false} sx={{ overflow: 'auto', pt: '2vh', pl: isMobile ? '1.2vh' : '2vh', pr: '2vh' }}>
                                         {memoizedPlayerTable}
                                     </Container>
                                     <Divider />

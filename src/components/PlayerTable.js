@@ -2,7 +2,7 @@ import React from 'react'
 import { useTable, useSortBy, useGlobalFilter } from 'react-table'
 import '../styles/PlayerTable.css'
 import { PlayerRow } from './PlayerRow'
-import { TextField, Grid, Button, useMediaQuery } from '@mui/material'
+import { TextField, Grid, Button, useMediaQuery, Box } from '@mui/material'
 import { XValueCell } from './PlayerCells/XValueCell'
 import { StaticCell } from './PlayerCells/StaticCell'
 import { RemoveCell } from './PlayerCells/RemoveCell'
@@ -204,10 +204,10 @@ function PlayerTable({ data, handleOptimize, slateId, setClearedSearch }) {
 
 
 
-    const isMobile = useMediaQuery((theme) => theme.breakpoints.down('sm'));
+    const isMobile = useMediaQuery((theme) => theme.breakpoints.down('md'));
 
     return (
-        <>
+        <div>
 
             <div>
                 <Grid container direction='row' justifyContent='space-between' alignItems='flex-end' spacing={2}>
@@ -227,8 +227,8 @@ function PlayerTable({ data, handleOptimize, slateId, setClearedSearch }) {
                     </Grid>
                 </Grid>
                 <form id='PlayerTableForm' onSubmit={handleFormSubmit}>
-                    <div>
-                        <table className='player-table' {...getTableProps()}>
+                    <Box style={{ width: isMobile ? '5vh' : '100%' }}>
+                        <table style={{ overflow: 'auto' }} className='player-table' {...getTableProps()}>
                             <thead>
                                 {headerGroups.map(headerGroup => (
                                     <tr {...headerGroup.getHeaderGroupProps()}>
@@ -252,10 +252,10 @@ function PlayerTable({ data, handleOptimize, slateId, setClearedSearch }) {
                                 })}
                             </tbody>
                         </table>
-                    </div>
+                    </Box>
                 </form>
             </div >
-        </>
+        </div>
     )
 }
 

@@ -88,8 +88,8 @@ function SettingsPanel({ tab, setTab, exposures, selectedOpto, buttonLoading, ha
     return (
         <>
             <ConfirmSignUpModal openConfirmModal={openConfirmModal} setOpenConfirmModal={setOpenConfirmModal}></ConfirmSignUpModal>
-            <Grid style={{ height: '75vh' }} container direction='row' justifyContent='center' alignItems='stretch' spacing={0}>
-                <Grid item xs={12}>
+            <Grid container direction='column' justifyContent='space-between' alignItems='stretch' spacing={0} style={{ minHeight: isMobile ? '50vh' : '70vh' }}>
+                <Grid item>
                     <Grid style={{ height: '100%' }} container direction='column' justifyContent='flex-start' alignItems='stretch'>
                         <Grid item>
                             <Box>
@@ -110,7 +110,7 @@ function SettingsPanel({ tab, setTab, exposures, selectedOpto, buttonLoading, ha
                     </Grid>
                 </Grid>
                 <Grid item xs={12} style={{ textAlign: 'center', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                    <Grid container direction='row' justifyContent='center' alignItems='center' spacing={!isMobile ? 2 : 1.5}>
+                    <Grid container direction='row' justifyContent='center' alignItems='flex-end' spacing={!isMobile ? 2 : 1.5}>
                         <Grid item xs={12}>
                             <TextField sx={{ width: '10vh', textAlign: 'center' }} onChange={handleTotalLineupsChange} id="lineup-count" label="Lineups" value={userSettings['num-lineups']} variant="standard" inputProps={{ style: { textAlign: 'center' } }} />
                         </Grid>
@@ -128,7 +128,7 @@ function SettingsPanel({ tab, setTab, exposures, selectedOpto, buttonLoading, ha
                         </Grid>
                     </Grid>
                 </Grid>
-            </Grid>
+            </Grid >
         </>
     )
 }
