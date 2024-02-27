@@ -66,7 +66,7 @@ function ProjectionForm({ handlePasteSubmit, fileMethod, handleMethodChange, err
                         {fileMethod && (
                             <>
                                 <Grid item>
-                                    <Typography sx={{ fontSize: '1.75vh', margin: '1vh' }}>Upload a CSV or XLSX with 2 columns titled "Player" and "Projection". {!user && <strong>Only users</strong>} can upload projections!</Typography>
+                                    <Typography sx={{ fontSize: '1.75vh', margin: '1vh' }}>Upload a CSV or XLSX with 2 columns titled "Player" and "Projection". {!user && <span><strong>Only users </strong><span>can upload projections!</span></span>}</Typography>
                                 </Grid>
                                 <Grid item>
                                     <Grid container direction='row' justifyContent='center' alignItems='center' spacing={2}>
@@ -110,7 +110,7 @@ function ProjectionForm({ handlePasteSubmit, fileMethod, handleMethodChange, err
                         {!fileMethod && (
                             <>
                                 <Grid item>
-                                    <Typography sx={{ fontSize: '1.75vh', margin: '1vh' }}>Copy and paste your data in the table below. The table will grow accordingly. {!user && <strong>Only users</strong>} can upload projections!</Typography>
+                                    <Typography sx={{ fontSize: '1.75vh', margin: '1vh' }}>Copy and paste your data in the table below. The table will grow accordingly. {!user && <span><strong>Only users </strong><span>can upload projections!</span></span>}</Typography>
                                 </Grid>
                                 <Grid item >
                                     <SpreadsheetInput projections={projections} setProjections={setProjections} />
