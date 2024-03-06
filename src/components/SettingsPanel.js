@@ -64,7 +64,7 @@ function SettingsPanel({ tab, setTab, exposures, selectedOpto, buttonLoading, ha
             setUserSettings({ ...userSettings, 'num-lineups': '' });
             return;
         }
-        const newValue = parseInt(inputValue, 20);
+        const newValue = parseInt(inputValue, 10);
 
         if (isNaN(newValue)) {
             console.error('Invalid input for total lineups. Please enter a number between 1 and 20.');
