@@ -259,10 +259,13 @@ function SlateInfo({ slate, setOptimizedLineups, exposures, setExposures, optimi
             if (lineup === null) {
                 setFailedOptimizeModalOpen(true)
                 setFailedSuccessLineups(i)
+                optimizeMutation.mutate({ 'lineups': lineups, 'slate': slate.id, 'exposures': optoExposures });
                 return
             }
+            // Update lineups
             lineups.push(lineup)
             setOptimizedLineups({ ...optimizedLineups, [`${thisOpto.toString()}`]: lineups, 'count': thisOpto })
+            // Update exposures
             for (const pos in lineup) {
                 if (lineup.hasOwnProperty(pos)) {
                     if (pos !== 'total_salary' && pos !== 'total_projection') {
