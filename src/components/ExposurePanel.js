@@ -2,17 +2,16 @@ import React from 'react'
 import { Box, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Grid, Typography } from '@mui/material';
 import { teamColors } from '../styles/colors'
 
-function ExposurePanel({ exposures, selectedOpto }) {
+function ExposurePanel({ exposures, selectedOpto, optoLen }) {
 
     const exposuresArray = React.useMemo(() => {
         let array = [];
         if (exposures && exposures[selectedOpto]) {
             array = Object.entries(exposures[selectedOpto]).map(([id, data]) => ({ id, ...data }));
-            array.sort((a, b) => b.exposure - a.exposure);
+            array.sort((a, b) => b.count - a.count);
         }
         return array;
     }, [exposures, selectedOpto]);
-
 
     return (
         <>
@@ -30,7 +29,7 @@ function ExposurePanel({ exposures, selectedOpto }) {
                                             <span> (</span><span>{item["count"]}<span>)</span></span>
                                         </TableCell>
                                         <TableCell style={{ color: 'white' }} align="right">
-                                            {item["exposure"]} %
+                                            {Math.trunc((item["count"] / optoLen) * 100)} %
                                         </TableCell>
                                     </TableRow>
                                 ))}

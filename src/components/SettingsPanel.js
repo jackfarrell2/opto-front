@@ -1,5 +1,5 @@
 import React from 'react'
-import { Grid, Tabs, Tab, Box, Typography, TextField, IconButton, Tooltip, useMediaQuery } from '@mui/material'
+import { Grid, Tabs, Tab, Box, Typography, TextField, IconButton, useMediaQuery } from '@mui/material'
 import PropTypes from 'prop-types'
 import { SimpleSettings } from './SimpleSettings';
 import { UserSettingsContext } from './SlateInfo'
@@ -43,7 +43,7 @@ function a11yProps(index) {
     };
 }
 
-function SettingsPanel({ tab, setTab, exposures, selectedOpto, buttonLoading, handleCancelOptimize, clearedSearch }) {
+function SettingsPanel({ tab, setTab, exposures, selectedOpto, buttonLoading, handleCancelOptimize, handleOptimization, optoLen }) {
     const isMobile = useMediaQuery((theme) => theme.breakpoints.down('md'));
     const { user } = React.useContext(UserContext)
     const [openConfirmModal, setOpenConfirmModal] = React.useState(false)
@@ -56,7 +56,7 @@ function SettingsPanel({ tab, setTab, exposures, selectedOpto, buttonLoading, ha
         setTab(newValue);
     };
 
-    const ready = (lineupCount > 0 && lineupCount <= 20 && minSalary >= 40000 && minSalary <= 50000 && maxSalary >= 40000 && maxSalary <= 50000 && clearedSearch) ? true : false
+    const ready = (lineupCount > 0 && lineupCount <= 150 && minSalary >= 40000 && minSalary <= 50000 && maxSalary >= 40000 && maxSalary <= 50000) ? true : false
 
     function handleTotalLineupsChange(e) {
         const inputValue = e.target.value;
@@ -67,18 +67,19 @@ function SettingsPanel({ tab, setTab, exposures, selectedOpto, buttonLoading, ha
         const newValue = parseInt(inputValue, 10);
 
         if (isNaN(newValue)) {
-            console.error('Invalid input for total lineups. Please enter a number between 1 and 20.');
+            console.error('Invalid input for total lineups. Please enter a number between 1 and 150.');
             return;
         }
 
-        if (newValue >= 20) {
-            setUserSettings({ ...userSettings, 'num-lineups': 20 });
+        if (newValue >= 150) {
+            setUserSettings({ ...userSettings, 'num-lineups': 150 });
         } else {
             setUserSettings({ ...userSettings, 'num-lineups': newValue });
         }
     }
 
     function handleOptimizeClick() {
+        handleOptimization()
         if (!user && !showedWarning) {
             setOpenConfirmModal(true)
             setShowedWarning(true)
@@ -103,7 +104,7 @@ function SettingsPanel({ tab, setTab, exposures, selectedOpto, buttonLoading, ha
                                     <SimpleSettings />
                                 </CustomTabPanel>
                                 <CustomTabPanel sx={{ width: '100%' }} value={tab} index={1}>
-                                    <ExposurePanel exposures={exposures} selectedOpto={selectedOpto} />
+                                    <ExposurePanel optoLen={optoLen} exposures={exposures} selectedOpto={selectedOpto} />
                                 </CustomTabPanel>
                             </Box>
                         </Grid>
@@ -115,15 +116,7 @@ function SettingsPanel({ tab, setTab, exposures, selectedOpto, buttonLoading, ha
                             <TextField sx={{ width: '10vh', textAlign: 'center' }} onChange={handleTotalLineupsChange} id="lineup-count" label="Lineups" value={userSettings['num-lineups']} variant="standard" inputProps={{ style: { textAlign: 'center' } }} />
                         </Grid>
                         <Grid item xs={12}>
-                            {clearedSearch ? (
-                                <LoadingButton onClick={handleOptimizeClick} type='submit' form='PlayerTableForm' size='medium' endIcon={<CalculateIcon />} loading={buttonLoading} loadingPosition='end' variant='contained' color='primary' disabled={!ready}><span>Optimize</span></LoadingButton>
-                            ) : (
-                                <Tooltip title="Remove Player Filter to Optimize">
-                                    <div>
-                                        <LoadingButton type='submit' form='PlayerTableForm' size='medium' endIcon={<CalculateIcon />} loading={buttonLoading} loadingPosition='end' variant='contained' color='primary' disabled={!ready}>Optimize</LoadingButton>
-                                    </div>
-                                </Tooltip>
-                            )}
+                            <LoadingButton onClick={handleOptimizeClick} size='medium' endIcon={<CalculateIcon />} loading={buttonLoading} loadingPosition='end' variant='contained' color='primary' disabled={!ready}>Optimize</LoadingButton>
                             {buttonLoading && <IconButton onClick={handleCancelOptimize}><CancelIcon color='error' /></IconButton>}
                         </Grid>
                     </Grid>

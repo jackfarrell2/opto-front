@@ -14,7 +14,7 @@ import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 
 
-function PlayerTable({ data, handleOptimize, slateId, setClearedSearch }) {
+function PlayerTable({ data, setOnlyUseMine, slateId, setClearedSearch }) {
     // Define columns
     const columns = React.useMemo(() => [
         {
@@ -156,8 +156,9 @@ function PlayerTable({ data, handleOptimize, slateId, setClearedSearch }) {
     const booleanValueForSlateId = existingData[slateId] ? existingData[slateId].value : false;
     const [isFilterActive, setIsFilterActive] = React.useState(booleanValueForSlateId);
 
-    // Use existingData as needed...
-
+    React.useEffect(() => {
+        setOnlyUseMine(isFilterActive);
+    }, [isFilterActive, setOnlyUseMine]);
 
     const filteredRows = React.useMemo(() => {
         if (isFilterActive) {
@@ -166,26 +167,6 @@ function PlayerTable({ data, handleOptimize, slateId, setClearedSearch }) {
             return rows;
         }
     }, [isFilterActive, rows]);
-
-    function formDataToObject(formData) {
-        const formDataObj = {};
-        formData.forEach((value, key) => {
-            formDataObj[key] = value;
-        });
-        return formDataObj;
-    }
-
-    // Submit optimize
-    function handleFormSubmit(e) {
-        e.preventDefault();
-        const formData = new FormData(e.target);
-        const timeout = globalFilter ? 3000 : 0;
-        setGlobalFilter('');
-        setTimeout(() => {
-            const formDataObj = formDataToObject(formData);
-            handleOptimize(formDataObj)
-        }, timeout)
-    }
 
     function handleOnlyUseClick() {
         setIsFilterActive(prevIsFilterActive => {
@@ -226,7 +207,7 @@ function PlayerTable({ data, handleOptimize, slateId, setClearedSearch }) {
                         </Grid>
                     </Grid>
                 </Grid>
-                <form id='PlayerTableForm' onSubmit={handleFormSubmit}>
+                <form id='PlayerTableForm'>
                     <Box style={{ width: isMobile ? '5vh' : '100%' }}>
                         <table style={{ overflow: 'auto' }} className='player-table' {...getTableProps()}>
                             <thead>
