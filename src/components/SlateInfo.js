@@ -20,7 +20,7 @@ function SlateInfo({ slate, setOptimizedLineups, exposures, setExposures, optimi
     const apiUrl = token ? `${config.apiUrl}nba/api/authenticated-slate-info/${slate.id}` : `${config.apiUrl}nba/api/unauthenticated-slate-info/${slate.id}`
     const [lockedData, setLockedData] = React.useState({ 'count': 0, 'salary': 0 })
     const [tab, setTab] = React.useState(0)
-    const [userSettings, setUserSettings] = React.useState({ 'uniques': 3, 'min-salary': 45000, 'max-salary': 50000, 'max-players-per-team': 5, 'num-lineups': 5 })
+    const [userSettings, setUserSettings] = React.useState({ 'uniques': 3, 'min-salary': 45000, 'max-salary': 50000, 'max-players-per-team': 5, 'num-lineups': 20 })
     const optoCount = optimizedLineups['count']
     const [buttonLoading, setButtonLoading] = React.useState(false)
     const [failedOptimizeModalOpen, setFailedOptimizeModalOpen] = React.useState(false)
