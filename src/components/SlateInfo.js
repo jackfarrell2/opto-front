@@ -101,11 +101,25 @@ function SlateInfo({ slate, setOptimizedLineups, exposures, setExposures, optimi
         const salaryVars = []
         const playerTotalVars = []
         const individualPlayerVars = []
+        const gameLists = {}
         const glpk = await GLPK()
         players.forEach(player => {
             if (onlyUseMine === false || player.projection.custom === true) {
                 const thisPlayerVars = []
                 for (let i = 0; i < player.eligiblePositions.length; i++) {
+                    const team = player.team
+                    const opp = player.opponent
+                    let game = ''
+                    if (team.localeCompare(opp) < 0) {
+                        game = `${team}:${opp}`
+                    } else {
+                        game = `${opp}:${team}`
+                    }
+                    if (gameLists[game]) {
+                        gameLists[game].push({ 'name': player.id + '-' + player.eligiblePositions[i], 'coef': 1 })
+                    } else {
+                        gameLists[game] = [{ 'name': player.id + '-' + player.eligiblePositions[i], 'coef': 1 }]
+                    }
                     const playerVar = player.id + '-' + player.eligiblePositions[i]
                     playerVars.push(playerVar)
                     position_lists[player.eligiblePositions[i]].push({ 'name': playerVar, 'coef': 1 })
@@ -154,6 +168,11 @@ function SlateInfo({ slate, setOptimizedLineups, exposures, setExposures, optimi
                 name: `${team.toLowerCase()} max`,
                 vars: team_lists[team],
                 bnds: { type: glpk.GLP_UP, ub: userSettings['max-players-per-team'], lb: 0 }
+            })),
+            ...Object.keys(gameLists).map(game => ({
+                name: `${game} max`,
+                vars: gameLists[game],
+                bnds: { type: glpk.GLP_UP, ub: 7, lb: 0 }
             })),
             ...individualPlayerVars
         ];
@@ -259,6 +278,7 @@ function SlateInfo({ slate, setOptimizedLineups, exposures, setExposures, optimi
             if (lineup === null) {
                 setFailedOptimizeModalOpen(true)
                 setFailedSuccessLineups(i)
+                setButtonLoading(false)
                 return
             }
             lineups.push(lineup)
