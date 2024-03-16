@@ -63,7 +63,7 @@ function Nba() {
                     <Divider />
                     <Grid container direction='column' justifyContent='center' alignItems='stretch' spacing={0}>
                         <Grid item style={{ minHeight: '75vh' }}>
-                            {slate && <SlateInfo key={slate.id} setSelectedOpto={setSelectedOpto} selectedOpto={selectedOpto} slate={slate} exposures={exposures} optimizedLineups={optimizedLineups} setOptimizedLineups={setOptimizedLineups} setExposures={setExposures} />}
+                            {slate && <SlateInfo sport={'nba'} key={slate.id} setSelectedOpto={setSelectedOpto} selectedOpto={selectedOpto} slate={slate} exposures={exposures} optimizedLineups={optimizedLineups} setOptimizedLineups={setOptimizedLineups} setExposures={setExposures} />}
                         </Grid>
                         <Grid item>
                             {slate && <LineupsDash setExposures={setExposures} optimizedLineups={optimizedLineups} setOptimizedLineups={setOptimizedLineups} selectedOpto={selectedOpto} setSelectedOpto={setSelectedOpto} slate={slate.id} />}

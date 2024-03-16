@@ -1,7 +1,7 @@
 import React from 'react'
 import { TextField } from '@mui/material'
 import { UserContext } from './UserProvider';
-import { updateUserSettings } from '../util/nbaUtils';
+import { updateUserSettings } from '../util/utils';
 
 
 

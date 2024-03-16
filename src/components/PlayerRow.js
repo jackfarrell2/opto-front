@@ -6,7 +6,7 @@ import { OwnershipCell } from './PlayerCells/OwnershipCell'
 import { ProjectionCell } from './PlayerCells/ProjectionCell'
 import { XValueCell } from './PlayerCells/XValueCell'
 import { ExposureCell } from './PlayerCells/ExposureCell'
-import { updatePlayerSettings } from '../util/nbaUtils'
+import { updatePlayerSettings } from '../util/utils'
 import { UserContext } from './UserProvider'
 
 const PlayerRow = React.memo(function PlayerRow({ row }) {

@@ -31,9 +31,9 @@ function Navbar({ handleOpen }) {
                         <Link to='/nba'>
                             <Button sx={buttonLink}>NBA</Button>
                         </Link>
-                        {/* <Link to='/mlb'>
+                        <Link to='/mlb'>
                             <Button sx={buttonLink}>MLB</Button>
-                        </Link> */}
+                        </Link>
                         {user ? (<Button onClick={() => signOut()} sx={buttonLink}>Sign Out</Button>) : (<Button onClick={handleOpen} sx={buttonLink}>Sign In</Button>)}
                     </Box>
                 )}

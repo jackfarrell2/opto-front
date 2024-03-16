@@ -4,7 +4,7 @@ import IconButton from '@mui/material/IconButton';
 import RemoveIcon from '@mui/icons-material/Remove';
 import AddIcon from '@mui/icons-material/Add';
 import { UserContext } from './UserProvider';
-import { updateUserSettings } from '../util/nbaUtils';
+import { updateUserSettings } from '../util/utils';
 
 function UniquePlayers({ userSettings, setUserSettings }) {
     const isMedium = useMediaQuery((theme) => theme.breakpoints.down('xl'));

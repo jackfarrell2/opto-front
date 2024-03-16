@@ -17,7 +17,7 @@ function ExposurePanel({ exposures, selectedOpto, optoLen }) {
         <>
             {exposures && (
                 <Box sx={{ maxHeight: '50vh', overflow: 'auto' }}>
-                    <TableContainer component={Paper}>
+                    {/* <TableContainer component={Paper}>
                         <Table>
                             <TableHead>
                             </TableHead>
@@ -35,7 +35,7 @@ function ExposurePanel({ exposures, selectedOpto, optoLen }) {
                                 ))}
                             </TableBody>
                         </Table>
-                    </TableContainer>
+                    </TableContainer> */}
                 </Box>
             )}
             {(exposuresArray.length === 0) && (

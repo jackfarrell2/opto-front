@@ -13,11 +13,12 @@ export const LockedContext = React.createContext()
 export const UserSettingsContext = React.createContext()
 
 
-function SlateInfo({ slate, setOptimizedLineups, exposures, setExposures, optimizedLineups, setSelectedOpto, selectedOpto }) {
+function SlateInfo({ sport, slate, setOptimizedLineups, exposures, setExposures, optimizedLineups, setSelectedOpto, selectedOpto }) {
     const isMobile = useMediaQuery((theme) => theme.breakpoints.down('md'));
     const { token, user } = React.useContext(UserContext)
-    const optoApiUrl = `${config.apiUrl}nba/api/authenticated-optimize/`
-    const apiUrl = token ? `${config.apiUrl}nba/api/authenticated-slate-info/${slate.id}` : `${config.apiUrl}nba/api/unauthenticated-slate-info/${slate.id}`
+    const optoApiUrl = `${config.apiUrl}${sport}/api/authenticated-optimize`;
+    console.log('optoApiUrl:', optoApiUrl)
+    const apiUrl = token ? `${config.apiUrl}${sport}/api/authenticated-slate-info/${slate.id}` : `${config.apiUrl}${sport}/api/unauthenticated-slate-info/${slate.id}`
     const [lockedData, setLockedData] = React.useState({ 'count': 0, 'salary': 0 })
     const [tab, setTab] = React.useState(0)
     const [userSettings, setUserSettings] = React.useState({ 'uniques': 3, 'min-salary': 45000, 'max-salary': 50000, 'max-players-per-team': 5, 'num-lineups': 20 })
@@ -80,19 +81,34 @@ function SlateInfo({ slate, setOptimizedLineups, exposures, setExposures, optimi
     const [clearedSearch, setClearedSearch] = React.useState(true)
 
     const handleOptimize = async () => {
+        console.log('optimizing...')
         cancelledRef.current = false
+        let positionLists = {}
         setButtonLoading(true);
         const players = data['slate-info'].players
         // Separate each player into each position they are eligible for 
-        const position_lists = {
-            'PG': [],
-            'SG': [],
-            'SF': [],
-            'PF': [],
-            'C': [],
-            'G': [],
-            'F': [],
-            'UTIL': []
+        if (sport === 'nba') {
+            positionLists = {
+                'PG': [],
+                'SG': [],
+                'SF': [],
+                'PF': [],
+                'C': [],
+                'G': [],
+                'F': [],
+                'UTIL': []
+            }
+        } else if (sport === 'mlb') {
+            positionLists = {
+                'P': [],
+                'C': [],
+                '1B': [],
+                '2B': [],
+                '3B': [],
+                'SS': [],
+                'OF': [],
+                'UTIL': []
+            }
         }
         const team_lists = {}
         // Prepare optimization
@@ -108,7 +124,7 @@ function SlateInfo({ slate, setOptimizedLineups, exposures, setExposures, optimi
                 for (let i = 0; i < player.eligiblePositions.length; i++) {
                     const playerVar = player.id + '-' + player.eligiblePositions[i]
                     playerVars.push(playerVar)
-                    position_lists[player.eligiblePositions[i]].push({ 'name': playerVar, 'coef': 1 })
+                    positionLists[player.eligiblePositions[i]].push({ 'name': playerVar, 'coef': 1 })
                     playerTotalVars.push({ 'name': playerVar, 'coef': 1 })
                     objVars.push({ 'name': playerVar, 'coef': player.projection.projection })
                     salaryVars.push({ 'name': playerVar, 'coef': player.salary })
@@ -145,9 +161,9 @@ function SlateInfo({ slate, setOptimizedLineups, exposures, setExposures, optimi
                 vars: playerTotalVars,
                 bnds: { type: glpk.GLP_FX, ub: 8, lb: 8 }
             },
-            ...Object.keys(position_lists).map(position => ({
+            ...Object.keys(positionLists).map(position => ({
                 name: `max_${position.toLowerCase()}s`,
-                vars: position_lists[position],
+                vars: positionLists[position],
                 bnds: { type: glpk.GLP_FX, ub: 1, lb: 1 }
             })),
             ...Object.keys(team_lists).map(team => ({
@@ -192,7 +208,12 @@ function SlateInfo({ slate, setOptimizedLineups, exposures, setExposures, optimi
                 const selectedPlayerPositions = Object.keys(res.result.vars).filter(key => res.result.vars[key] === 1)
                 const selectedPlayerIds = Object.keys(res.result.vars).filter(key => res.result.vars[key] === 1).map(key => key.split('-')[0])
                 const selectedPlayers = players.filter(player => selectedPlayerIds.includes(player.id))
-                const updatedLineup = { 'PG': {}, "SG": {}, "SF": {}, "PF": {}, "C": {}, "G": {}, "F": {}, "UTIL": {}, 'total_salary': 0, 'total_projection': 0 }
+                let updatedLineup = {}
+                if (sport === 'nba') {
+                    updatedLineup = { 'PG': {}, "SG": {}, "SF": {}, "PF": {}, "C": {}, "G": {}, "F": {}, "UTIL": {}, 'total_salary': 0, 'total_projection': 0 }
+                } else if (sport === 'mlb') {
+                    updatedLineup = { 'P': {}, "C": {}, "1B": {}, "2B": {}, "3B": {}, "SS": {}, "OF": {}, "UTIL": {}, 'total_salary': 0, 'total_projection': 0 }
+                }
                 let lineupSal = 0
                 let lineupProj = 0
                 for (let i = 0; i < selectedPlayers.length; i++) {
