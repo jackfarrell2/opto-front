@@ -6,7 +6,7 @@ import { useMutation, useQueryClient } from 'react-query'
 import config from '../config'
 import { UserContext } from './UserProvider'
 
-function SlateModal({ openModal, setSlateModal, slates, slate }) {
+function SlateModal({ sport, openModal, setSlateModal, slates, slate }) {
     const { token } = React.useContext(UserContext)
     const isMobile = useMediaQuery((theme) => theme.breakpoints.down('md'));
     const apiUrl = `${config.apiUrl}`;
@@ -25,7 +25,7 @@ function SlateModal({ openModal, setSlateModal, slates, slate }) {
             formData.append('file-two', files[1]);
 
 
-            const response = await fetch(`${apiUrl}nba/add-slate/`, {
+            const response = await fetch(`${apiUrl}${sport}/add-slate/`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Token ${token}`,

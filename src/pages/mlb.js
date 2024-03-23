@@ -11,7 +11,7 @@ import { LineupsDash } from '../components/LineupsDash'
 function Mlb() {
 
     React.useEffect(() => {
-        document.title = "DFS Opto: Mlb";
+        document.title = "DFS Opto: MLB";
     }, []);
 
     const [slateModal, setSlateModal] = React.useState(false)
@@ -49,7 +49,7 @@ function Mlb() {
 
     return (
         <Box sx={page}>
-            {slate && (<SlateModal slate={slate} openModal={slateModal} setSlateModal={setSlateModal} slates={slates} />)}
+            {slate && (<SlateModal sport='mlb' slate={slate} openModal={slateModal} setSlateModal={setSlateModal} slates={slates} />)}
             <Divider />
             {(slatesLoading || !slate) ? (
                 <Grid container justifyContent="center" alignItems="center" sx={{ height: '75vh' }}>
@@ -65,9 +65,9 @@ function Mlb() {
                         <Grid item style={{ minHeight: '75vh' }}>
                             {slate && <SlateInfo sport={'mlb'} key={slate.id} setSelectedOpto={setSelectedOpto} selectedOpto={selectedOpto} slate={slate} exposures={exposures} optimizedLineups={optimizedLineups} setOptimizedLineups={setOptimizedLineups} setExposures={setExposures} />}
                         </Grid>
-                        <Grid item>
+                        {/* <Grid item>
                             {slate && <LineupsDash setExposures={setExposures} optimizedLineups={optimizedLineups} setOptimizedLineups={setOptimizedLineups} selectedOpto={selectedOpto} setSelectedOpto={setSelectedOpto} slate={slate.id} />}
-                        </Grid>
+                        </Grid> */}
 
                     </Grid>
                 </>

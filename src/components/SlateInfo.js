@@ -15,9 +15,9 @@ export const UserSettingsContext = React.createContext()
 
 function SlateInfo({ sport, slate, setOptimizedLineups, exposures, setExposures, optimizedLineups, setSelectedOpto, selectedOpto }) {
     const isMobile = useMediaQuery((theme) => theme.breakpoints.down('md'));
+    const totalPlayers = (sport === 'nba') ? 8 : 10
     const { token, user } = React.useContext(UserContext)
     const optoApiUrl = `${config.apiUrl}${sport}/api/authenticated-optimize`;
-    console.log('optoApiUrl:', optoApiUrl)
     const apiUrl = token ? `${config.apiUrl}${sport}/api/authenticated-slate-info/${slate.id}` : `${config.apiUrl}${sport}/api/unauthenticated-slate-info/${slate.id}`
     const [lockedData, setLockedData] = React.useState({ 'count': 0, 'salary': 0 })
     const [tab, setTab] = React.useState(0)
@@ -81,9 +81,10 @@ function SlateInfo({ sport, slate, setOptimizedLineups, exposures, setExposures,
     const [clearedSearch, setClearedSearch] = React.useState(true)
 
     const handleOptimize = async () => {
-        console.log('optimizing...')
         cancelledRef.current = false
         let positionLists = {}
+        let ofList = []
+        let pList = []
         setButtonLoading(true);
         const players = data['slate-info'].players
         // Separate each player into each position they are eligible for 
@@ -100,14 +101,11 @@ function SlateInfo({ sport, slate, setOptimizedLineups, exposures, setExposures,
             }
         } else if (sport === 'mlb') {
             positionLists = {
-                'P': [],
                 'C': [],
-                '1B': [],
-                '2B': [],
-                '3B': [],
+                'FB': [],
+                'SB': [],
+                'TB': [],
                 'SS': [],
-                'OF': [],
-                'UTIL': []
             }
         }
         const team_lists = {}
@@ -124,7 +122,17 @@ function SlateInfo({ sport, slate, setOptimizedLineups, exposures, setExposures,
                 for (let i = 0; i < player.eligiblePositions.length; i++) {
                     const playerVar = player.id + '-' + player.eligiblePositions[i]
                     playerVars.push(playerVar)
-                    positionLists[player.eligiblePositions[i]].push({ 'name': playerVar, 'coef': 1 })
+                    if (sport === 'mlb') {
+                        if (player.eligiblePositions[i] === 'OF') {
+                            ofList.push({ 'name': playerVar, 'coef': 1 })
+                        } else if (player.eligiblePositions[i] === 'P') {
+                            pList.push({ 'name': playerVar, 'coef': 1 })
+                        } else {
+                            positionLists[player.eligiblePositions[i]].push({ 'name': playerVar, 'coef': 1 })
+                        }
+                    } else {
+                        positionLists[player.eligiblePositions[i]].push({ 'name': playerVar, 'coef': 1 })
+                    }
                     playerTotalVars.push({ 'name': playerVar, 'coef': 1 })
                     objVars.push({ 'name': playerVar, 'coef': player.projection.projection })
                     salaryVars.push({ 'name': playerVar, 'coef': player.salary })
@@ -159,7 +167,7 @@ function SlateInfo({ sport, slate, setOptimizedLineups, exposures, setExposures,
             {
                 name: 'total_players',
                 vars: playerTotalVars,
-                bnds: { type: glpk.GLP_FX, ub: 8, lb: 8 }
+                bnds: { type: glpk.GLP_FX, ub: totalPlayers, lb: totalPlayers }
             },
             ...Object.keys(positionLists).map(position => ({
                 name: `max_${position.toLowerCase()}s`,
@@ -173,9 +181,20 @@ function SlateInfo({ sport, slate, setOptimizedLineups, exposures, setExposures,
             })),
             ...individualPlayerVars
         ];
-        const additionalConstraints = []
-        for (let i = 0; i < 1; i++) {
+        if (sport === 'mlb') {
+            subjectToConstraints.push({
+                name: 'max_ofs',
+                vars: ofList,
+                bnds: { type: glpk.GLP_FX, ub: 3, lb: 3 }
+            })
+            subjectToConstraints.push({
+                name: 'max_pitchers',
+                vars: pList,
+                bnds: { type: glpk.GLP_FX, ub: 2, lb: 2 }
+            })
         }
+        console.log('subjectToConstraints', subjectToConstraints)
+        const additionalConstraints = []
         async function optimizeLineup(i, additionalConstraints, exposureConstraints, removeExposureConstraints) {
             try {
                 if (removeExposureConstraints.length > 0) {
@@ -204,6 +223,8 @@ function SlateInfo({ sport, slate, setOptimizedLineups, exposures, setExposures,
                 if (res.result.status !== 2 && res.result.status !== 5) {
                     console.error('Failed to optimize lineup:', res.result.status);
                     return null
+                } else {
+                    console.log('success')
                 }
                 const selectedPlayerPositions = Object.keys(res.result.vars).filter(key => res.result.vars[key] === 1)
                 const selectedPlayerIds = Object.keys(res.result.vars).filter(key => res.result.vars[key] === 1).map(key => key.split('-')[0])
@@ -212,10 +233,11 @@ function SlateInfo({ sport, slate, setOptimizedLineups, exposures, setExposures,
                 if (sport === 'nba') {
                     updatedLineup = { 'PG': {}, "SG": {}, "SF": {}, "PF": {}, "C": {}, "G": {}, "F": {}, "UTIL": {}, 'total_salary': 0, 'total_projection': 0 }
                 } else if (sport === 'mlb') {
-                    updatedLineup = { 'P': {}, "C": {}, "1B": {}, "2B": {}, "3B": {}, "SS": {}, "OF": {}, "UTIL": {}, 'total_salary': 0, 'total_projection': 0 }
+                    updatedLineup = { 'P': {}, "C": {}, "1B": {}, "2B": {}, "3B": {}, "SS": {}, "OF": [], 'total_salary': 0, 'total_projection': 0 }
                 }
                 let lineupSal = 0
                 let lineupProj = 0
+                console.log('selectedPlayers', selectedPlayers)
                 for (let i = 0; i < selectedPlayers.length; i++) {
                     const player = selectedPlayers[i]
                     lineupSal += player.salary
@@ -242,7 +264,7 @@ function SlateInfo({ sport, slate, setOptimizedLineups, exposures, setExposures,
                 additionalConstraints.push({
                     name: `lineup_${i}_unique`,
                     vars: restrictionVars,
-                    bnds: { type: glpk.GLP_UP, ub: (8 - userSettings['uniques']), lb: 0 }
+                    bnds: { type: glpk.GLP_UP, ub: (totalPlayers - userSettings['uniques']), lb: 0 }
                 })
                 return updatedLineup
             } catch (error) {
