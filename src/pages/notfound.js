@@ -4,8 +4,6 @@ import basError from '../util/basError.jpg'
 
 
 function NotFound() {
-    console.log('404 page triggered')
-
     const isMobile = useMediaQuery((theme) => theme.breakpoints.down('md'));
     const picWidth = isMobile ? '200px' : '400px';
 
