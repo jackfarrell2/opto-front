@@ -18,9 +18,8 @@ function LineupsDashHeader({ sport, optoCount, setSelectedOpto, selectedOpto, sl
         }
         let csvContent = newHeaders.join(",") + "\n"
         selectedLineups.forEach(lineup => {
-            const lineupValues = (sport === 'mlb' ? newHeaders : headers).map(position => {
-                let originalPosition = sport === 'mlb' ? Object.keys(mlbMappings).find(key => mlbMappings[key] === position) : position;
-                const player = lineup[originalPosition];
+            const lineupValues = headers.map(position => {
+                const player = lineup[position];
                 return `${player.name} (${player['dk-id']})`;
             });
             csvContent += lineupValues.join(",") + "\n";
