@@ -59,7 +59,7 @@ function Nba() {
                 </Grid>
             ) : (
                 <>
-                    <SecondNavbar sport='mlb' setSlateModal={setSlateModal} slate={slate} slates={slates || []} setSlate={setSlate}></SecondNavbar>
+                    <SecondNavbar sport='nba' setSlateModal={setSlateModal} slate={slate} slates={slates || []} setSlate={setSlate}></SecondNavbar>
                     <Divider />
                     <Grid container direction='column' justifyContent='center' alignItems='stretch' spacing={0}>
                         <Grid item style={{ minHeight: '75vh' }}>
