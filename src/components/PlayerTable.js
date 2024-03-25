@@ -209,7 +209,7 @@ function PlayerTable({ sport, data, setOnlyUseMine, slateId, setClearedSearch })
                 </Grid>
                 <form id='PlayerTableForm'>
                     <Box style={{ width: isMobile ? '5vh' : '100%' }}>
-                        <table style={{ overflow: 'auto' }} className='player-table' {...getTableProps()}>
+                        <table className='player-table' {...getTableProps()}>
                             <thead>
                                 {headerGroups.map(headerGroup => (
                                     <tr {...headerGroup.getHeaderGroupProps()}>

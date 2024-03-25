@@ -1,8 +1,4 @@
 import { Box, Container, Grid, Typography } from "@mui/material";
-// import GitHubIcon from '@mui/icons-material/GitHub';
-// import LinkedInIcon from '@mui/icons-material/LinkedIn';
-// import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
-// import { Link } from '@mui/material'
 import CopyrightIcon from '@mui/icons-material/Copyright';
 
 

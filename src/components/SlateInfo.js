@@ -264,8 +264,8 @@ function SlateInfo({ sport, slate, setOptimizedLineups, exposures, setExposures,
                 let lineupProj = 0
                 for (let i = 0; i < selectedPlayers.length; i++) {
                     const player = selectedPlayers[i]
-                    lineupSal += player.salary
-                    lineupProj += player.projection.projection
+                    lineupSal += parseInt(player.salary)
+                    lineupProj += parseFloat(player.projection.projection)
                     for (let j = 0; j < selectedPlayerPositions.length; j++) {
                         if (selectedPlayerPositions[j].split('-')[0] === player.id) {
                             if (selectedPlayerPositions[j].split('-')[1] === 'OF') {
@@ -463,7 +463,7 @@ function SlateInfo({ sport, slate, setOptimizedLineups, exposures, setExposures,
                     <LockedContext.Provider value={[lockedData, setLockedData]}>
                         <UserSettingsContext.Provider value={[userSettings, setUserSettings]}>
                             <Grid container direction='row' justifyContent='stretch' alignItems='flex-start'>
-                                <Grid item lg={9} md={7.9} xs={12} style={{ maxHeight: isMobile ? '57.5vh' : '82.5vh', overflow: 'auto' }}>
+                                <Grid item lg={9} md={7.9} xs={12} style={{ maxHeight: isMobile ? '57.5vh' : '82.5vh', overflow: 'auto', width: '100%' }}>
                                     <Container disableGutters maxWidth={false} sx={{ overflow: 'auto', pt: '2vh', pl: isMobile ? '1.2vh' : '2vh', pr: '2vh' }}>
                                         {memoizedPlayerTable}
                                     </Container>
