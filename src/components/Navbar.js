@@ -1,12 +1,11 @@
-import { AppBar, Toolbar, Typography, Box, Button } from '@mui/material'
+import { AppBar, Toolbar, Box, Button } from '@mui/material'
 import { useMediaQuery, Grid } from '@mui/material'
-import { logo, navLinks, buttonLink, topBar, logoLink, } from '../styles/classes'
+import { logo, navLinks, buttonLink, topBar, } from '../styles/classes'
 import React from 'react'
 import { Link } from 'react-router-dom'
 import { MenuDrawer } from './MenuDrawer'
 import { UserContext } from './UserProvider'
-import { secondary } from '../styles/colors'
-import SportsBasketballIcon from '@mui/icons-material/SportsBasketball';
+import horizontal from '../util/horizontal.png'
 
 
 function Navbar({ handleOpen }) {
@@ -19,8 +18,7 @@ function Navbar({ handleOpen }) {
                 <Box sx={logo}>
                     <Link to='/nba' style={{ textDecoration: 'none' }}>
                         <Grid container direction='row' justifyContent='flex-start' alignItems='center'>
-                            <SportsBasketballIcon fontSize='large' sx={{ color: secondary, marginRight: '1vh' }} />
-                            <Typography sx={logoLink} variant='h5'>DFS Opto</Typography>
+                            <img src={horizontal} alt='logo' width='200vh'></img>
                         </Grid>
                     </Link>
                 </Box>

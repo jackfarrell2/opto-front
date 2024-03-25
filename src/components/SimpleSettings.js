@@ -8,10 +8,10 @@ import config from '../config'
 import { UserContext } from './UserProvider'
 import { useQuery } from 'react-query'
 import { UserSettingsContext } from './SlateInfo';
+import { HittersVsPitcher } from './HittersVsPitcher';
 
-const apiUrl = `${config.apiUrl}nba/api/user-opto-settings/`
-
-function SimpleSettings() {
+function SimpleSettings({ sport }) {
+    const apiUrl = `${config.apiUrl}${sport}/api/user-opto-settings/`
     const { user, token } = React.useContext(UserContext)
     const [userSettings, setUserSettings] = React.useContext(UserSettingsContext)
 
@@ -47,10 +47,11 @@ function SimpleSettings() {
             ) : (
                 <Grid container direction='column' justifyContent='center' alignItems='center' spacing={2}>
                     <Grid item><LockedData /></Grid>
-                    <Grid item><UniquePlayers userSettings={userSettings} setUserSettings={setUserSettings} /></Grid>
-                    <Grid item><MaxPlayersPerTeam userSettings={userSettings} setUserSettings={setUserSettings} /></Grid>
-                    <Grid item><SalaryField variant='min' userSettings={userSettings} setUserSettings={setUserSettings} /></Grid>
-                    <Grid item><SalaryField variant='max' userSettings={userSettings} setUserSettings={setUserSettings} /></Grid>
+                    <Grid item><UniquePlayers sport={sport} userSettings={userSettings} setUserSettings={setUserSettings} /></Grid>
+                    <Grid item><MaxPlayersPerTeam sport={sport} userSettings={userSettings} setUserSettings={setUserSettings} /></Grid>
+                    {sport === 'mlb' && <Grid item><HittersVsPitcher userSettings={userSettings} setUserSettings={setUserSettings} /></Grid>}
+                    <Grid item><SalaryField sport={sport} variant='min' userSettings={userSettings} setUserSettings={setUserSettings} /></Grid>
+                    <Grid item><SalaryField sport={sport} variant='max' userSettings={userSettings} setUserSettings={setUserSettings} /></Grid>
                 </Grid>
             )}
         </>

@@ -6,51 +6,50 @@ import AddIcon from '@mui/icons-material/Add';
 import { UserContext } from './UserProvider';
 import { updateUserSettings } from '../util/utils';
 
-function MaxPlayersPerTeam({ sport, userSettings, setUserSettings }) {
+function HittersVsPitcher({ userSettings, setUserSettings }) {
     const isMedium = useMediaQuery((theme) => theme.breakpoints.down('xl'));
-
     const { token } = React.useContext(UserContext)
-    const playersPerTeam = userSettings['max-players-per-team']
-    const setPlayersPerTeam = (value) => setUserSettings({ ...userSettings, 'max-players-per-team': value })
-    const [storedValue, setStoredValue] = React.useState(playersPerTeam)
+    const { hittersVsPitcher } = userSettings
+    const setHittersVsPitcher = (value) => setUserSettings({ ...userSettings, 'hittersVsPitcher': value })
+    const [storedValue, setStoredValue] = React.useState(hittersVsPitcher)
 
     const setStoredValueMeta = React.useCallback(async (value) => {
         if (value === storedValue) return
         setStoredValue(value)
         try {
-            await updateUserSettings({ ...userSettings, 'max-players-per-team': value }, token, sport);
+            await updateUserSettings({ ...userSettings, 'hittersVsPitcher': value }, token, 'mlb');
         } catch (error) {
             console.error('Failed to update user settings', error)
         }
-    }, [storedValue, userSettings, token, sport])
+    }, [storedValue, userSettings, token])
 
     React.useEffect(() => {
         if (!token) return
-        const timeoutId = setTimeout(() => setStoredValueMeta(playersPerTeam), 1200);
+        const timeoutId = setTimeout(() => setStoredValueMeta(hittersVsPitcher), 1200);
         return () => clearTimeout(timeoutId);
-    }, [setStoredValueMeta, playersPerTeam, token]);
+    }, [setStoredValueMeta, hittersVsPitcher, token]);
 
     function handleChange(change) {
         if (change === 'add') {
-            if (playersPerTeam + 1 > 8) return console.log('Max players is 8')
-            setPlayersPerTeam(playersPerTeam + 1)
+            if (hittersVsPitcher + 1 > 5) return console.log('Max hitters is 5')
+            setHittersVsPitcher(hittersVsPitcher + 1)
         }
         if (change === 'subtract') {
-            if (playersPerTeam - 1 < 1) return console.log('Min players is 1')
-            setPlayersPerTeam(playersPerTeam - 1)
+            if (hittersVsPitcher - 1 < 0) return console.log('Min uniques is 0')
+            setHittersVsPitcher(hittersVsPitcher - 1)
         }
     }
 
     return (
         <Grid container direction='row' justifyContent='center' alignItems='center'>
             <Grid item>
-                <Typography variant='body1'>{isMedium ? 'Max' : 'Maximum'} {sport === 'mlb' ? 'Hitters' : 'Players'} Per Team: </Typography>
+                <Typography variant='body1'>{isMedium ? 'Max Hitters vs. Pitcher: ' : 'Maximum Hitters vs. Pitcher: '}</Typography>
             </Grid>
             <Grid item>
                 <IconButton onClick={() => handleChange('subtract')}><RemoveIcon /></IconButton>
             </Grid>
             <Grid item>
-                <Typography variant='body1'>{playersPerTeam}</Typography>
+                <Typography variant='body1'>{hittersVsPitcher}</Typography>
             </Grid>
             <Grid item>
                 <IconButton onClick={() => handleChange('add')}><AddIcon /></IconButton>
@@ -59,4 +58,4 @@ function MaxPlayersPerTeam({ sport, userSettings, setUserSettings }) {
     )
 }
 
-export { MaxPlayersPerTeam }
+export { HittersVsPitcher }

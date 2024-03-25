@@ -5,9 +5,16 @@ import { useTheme } from '@mui/material/styles';
 import { Divider } from '@mui/material';
 
 function LineupCardBody({ lineup }) {
-    const playerInfo = Object.keys(lineup).filter(
-        (key) => key !== 'total_projection' && key !== 'total_salary'
-    );
+    let sport = 'nba'
+    if (lineup['P1']) {
+        sport = 'mlb'
+    }
+    let playerInfo = []
+    if (sport === 'mlb') {
+        playerInfo = ['P1', 'P2', 'C', 'FB', 'SB', 'TB', 'SS', 'OF1', 'OF2', 'OF3']
+    } else {
+        playerInfo = ['PG', 'SG', 'SF', 'PF', 'C', 'G', 'F', 'UTIL']
+    }
 
     const theme = useTheme();
     const secondaryColor = theme.palette.secondary.main;
@@ -27,7 +34,7 @@ function LineupCardBody({ lineup }) {
             <tbody>
                 {playerInfo.map((pos, index) => (
                     <React.Fragment key={index}>
-                        <LineupCardRow key={lineup['name']} pos={pos} player={lineup[pos]} />
+                        <LineupCardRow sport={sport} key={lineup['name']} pos={pos} player={lineup[pos]} />
                         {index < playerInfo.length - 1 && (
                             <tr>
                                 <td colSpan={6} style={{ padding: 0 }}>

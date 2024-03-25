@@ -14,7 +14,7 @@ import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 
 
-function PlayerTable({ data, setOnlyUseMine, slateId, setClearedSearch }) {
+function PlayerTable({ sport, data, setOnlyUseMine, slateId, setClearedSearch }) {
     // Define columns
     const columns = React.useMemo(() => [
         {
@@ -229,7 +229,7 @@ function PlayerTable({ data, setOnlyUseMine, slateId, setClearedSearch }) {
                             <tbody {...getTableBodyProps()}>
                                 {filteredRows.map(row => {
                                     prepareRow(row);
-                                    return <PlayerRow key={row.id} row={row} />;
+                                    return <PlayerRow key={row.id} row={row} sport={sport} />;
                                 })}
                             </tbody>
                         </table>

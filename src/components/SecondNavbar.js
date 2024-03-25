@@ -8,7 +8,7 @@ import { ProjectionModal } from "./ProjectionModal";
 import { UserContext } from "./UserProvider"
 import { ConfirmModal } from "./ConfirmModal";
 
-function SecondNavbar({ setSlateModal, slate, slates, setSlate }) {
+function SecondNavbar({ sport, setSlateModal, slate, slates, setSlate }) {
     const isMobile = useMediaQuery((theme) => theme.breakpoints.down('md'));
     const isXtraSmall = useMediaQuery((theme) => theme.breakpoints.down('sm'));
     const [openConfirmModal, setOpenConfirmModal] = React.useState(false)
@@ -21,10 +21,10 @@ function SecondNavbar({ setSlateModal, slate, slates, setSlate }) {
     const [openProjectionModal, setOpenProjectionModal] = React.useState(false)
     return (
         <>
-            <ConfirmModal openConfirmModal={openConfirmModal} setOpenConfirmModal={setOpenConfirmModal} slate={slate.id} />
+            <ConfirmModal sport={sport} openConfirmModal={openConfirmModal} setOpenConfirmModal={setOpenConfirmModal} slate={slate.id} />
             <AppBar position='static' sx={secondaryNav}>
                 <Toolbar style={{ padding: 0 }}>
-                    <ProjectionModal setOpenProjectionModal={setOpenProjectionModal} openProjectionModal={openProjectionModal} slates={slates} slate={slate} />
+                    <ProjectionModal sport={sport} setOpenProjectionModal={setOpenProjectionModal} openProjectionModal={openProjectionModal} slates={slates} slate={slate} />
                     <Grid container direction='row' justifyContent='flex-start' alignItems='center' spacing={1.5}>
                         <Grid item style={{ marginLeft: isMobile ? '1vh' : '2vh' }}>
                             <Grid container direction='row' justifyContent='flex-start' alignItems='center'>

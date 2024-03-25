@@ -17,11 +17,11 @@ function SlateInfo({ sport, slate, setOptimizedLineups, exposures, setExposures,
     const isMobile = useMediaQuery((theme) => theme.breakpoints.down('md'));
     const totalPlayers = (sport === 'nba') ? 8 : 10
     const { token, user } = React.useContext(UserContext)
-    const optoApiUrl = `${config.apiUrl}${sport}/api/authenticated-optimize`;
+    const optoApiUrl = `${config.apiUrl}${sport}/api/authenticated-optimize/`;
     const apiUrl = token ? `${config.apiUrl}${sport}/api/authenticated-slate-info/${slate.id}` : `${config.apiUrl}${sport}/api/unauthenticated-slate-info/${slate.id}`
     const [lockedData, setLockedData] = React.useState({ 'count': 0, 'salary': 0 })
     const [tab, setTab] = React.useState(0)
-    const [userSettings, setUserSettings] = React.useState({ 'uniques': 3, 'min-salary': 45000, 'max-salary': 50000, 'max-players-per-team': 5, 'num-lineups': 20 })
+    const [userSettings, setUserSettings] = React.useState({ 'uniques': 3, 'min-salary': 45000, 'max-salary': 50000, 'max-players-per-team': 5, 'num-lineups': 20, 'hittersVsPitcher': 0 })
     const optoCount = optimizedLineups['count']
     const [buttonLoading, setButtonLoading] = React.useState(false)
     const [failedOptimizeModalOpen, setFailedOptimizeModalOpen] = React.useState(false)
@@ -54,10 +54,10 @@ function SlateInfo({ sport, slate, setOptimizedLineups, exposures, setExposures,
             setExposures(userExposures)
         }
         return data
-    },
-        {
-            staleTime: Infinity
-        });
+    }, {
+        refetchOnWindowFocus: false
+
+    });
 
     // Add optimization on backend
     const optimizeMutation = useMutation(
@@ -137,20 +137,29 @@ function SlateInfo({ sport, slate, setOptimizedLineups, exposures, setExposures,
                     objVars.push({ 'name': playerVar, 'coef': player.projection.projection })
                     salaryVars.push({ 'name': playerVar, 'coef': player.salary })
                     thisPlayerVars.push({ 'name': playerVar, 'coef': 1 })
-                    if (team_lists[player.team]) {
-                        team_lists[player.team].push({ 'name': playerVar, 'coef': 1 })
+                    if (player.eligiblePositions[i] === 'P') {
+                        if (team_lists[player.opponent]) {
+                            team_lists[player.opponent].push({ 'name': playerVar, 'coef': (5 - userSettings['hittersVsPitcher']) })
+                        } else {
+                            team_lists[player.opponent] = [{ 'name': playerVar, 'coef': (5 - userSettings['hittersVsPitcher']) }]
+
+                        }
                     } else {
-                        team_lists[player.team] = [{ 'name': playerVar, 'coef': 1 }]
+                        if (team_lists[player.team]) {
+                            team_lists[player.team].push({ 'name': playerVar, 'coef': 1 })
+                        } else {
+                            team_lists[player.team] = [{ 'name': playerVar, 'coef': 1 }]
+                        }
                     }
-                }
-                // Add locks and removes
-                if (player.lock === true) {
-                    individualPlayerVars.push({ 'name': player.id, 'vars': thisPlayerVars, 'bnds': { type: glpk.GLP_FX, ub: 1, lb: 1 } })
-                }
-                else if (player.remove === true) {
-                    individualPlayerVars.push({ 'name': player.id, 'vars': thisPlayerVars, 'bnds': { type: glpk.GLP_FX, ub: 0, lb: 0 } })
-                } else {
-                    individualPlayerVars.push({ 'name': player.id, 'vars': thisPlayerVars, 'bnds': { type: glpk.GLP_UP, ub: 1, lb: 0 } })
+                    // Add locks and removes
+                    if (player.lock === true) {
+                        individualPlayerVars.push({ 'name': player.id, 'vars': thisPlayerVars, 'bnds': { type: glpk.GLP_FX, ub: 1, lb: 1 } })
+                    }
+                    else if (player.remove === true) {
+                        individualPlayerVars.push({ 'name': player.id, 'vars': thisPlayerVars, 'bnds': { type: glpk.GLP_FX, ub: 0, lb: 0 } })
+                    } else {
+                        individualPlayerVars.push({ 'name': player.id, 'vars': thisPlayerVars, 'bnds': { type: glpk.GLP_UP, ub: 1, lb: 0 } })
+                    }
                 }
             }
         })
@@ -193,7 +202,6 @@ function SlateInfo({ sport, slate, setOptimizedLineups, exposures, setExposures,
                 bnds: { type: glpk.GLP_FX, ub: 2, lb: 2 }
             })
         }
-        console.log('subjectToConstraints', subjectToConstraints)
         const additionalConstraints = []
         async function optimizeLineup(i, additionalConstraints, exposureConstraints, removeExposureConstraints) {
             try {
@@ -223,8 +231,6 @@ function SlateInfo({ sport, slate, setOptimizedLineups, exposures, setExposures,
                 if (res.result.status !== 2 && res.result.status !== 5) {
                     console.error('Failed to optimize lineup:', res.result.status);
                     return null
-                } else {
-                    console.log('success')
                 }
                 const selectedPlayerPositions = Object.keys(res.result.vars).filter(key => res.result.vars[key] === 1)
                 const selectedPlayerIds = Object.keys(res.result.vars).filter(key => res.result.vars[key] === 1).map(key => key.split('-')[0])
@@ -233,24 +239,28 @@ function SlateInfo({ sport, slate, setOptimizedLineups, exposures, setExposures,
                 if (sport === 'nba') {
                     updatedLineup = { 'PG': {}, "SG": {}, "SF": {}, "PF": {}, "C": {}, "G": {}, "F": {}, "UTIL": {}, 'total_salary': 0, 'total_projection': 0 }
                 } else if (sport === 'mlb') {
-                    updatedLineup = { 'P': {}, "C": {}, "1B": {}, "2B": {}, "3B": {}, "SS": {}, "OF": [], 'total_salary': 0, 'total_projection': 0 }
+                    updatedLineup = { 'P': [], "C": {}, "FB": {}, "SB": {}, "TB": {}, "SS": {}, "OF": [], 'total_salary': 0, 'total_projection': 0 }
                 }
                 let lineupSal = 0
                 let lineupProj = 0
-                console.log('selectedPlayers', selectedPlayers)
                 for (let i = 0; i < selectedPlayers.length; i++) {
                     const player = selectedPlayers[i]
                     lineupSal += player.salary
                     lineupProj += player.projection.projection
                     for (let j = 0; j < selectedPlayerPositions.length; j++) {
                         if (selectedPlayerPositions[j].split('-')[0] === player.id) {
-                            updatedLineup[selectedPlayerPositions[j].split('-')[1]] = { 'playerId': selectedPlayerPositions[j].split('-')[0], 'dk-id': player.dk_id, 'name': player.name, 'salary': player.salary, 'projection': player.projection.projection, 'ownership': player.ownership, 'team': player.team, 'opponent': player.opponent, 'exposureCap': player.exposure }
+                            if (selectedPlayerPositions[j].split('-')[1] === 'OF') {
+                                updatedLineup['OF'].push({ 'playerId': selectedPlayerPositions[j].split('-')[0], 'dk-id': player.dk_id, 'name': player.name, 'salary': player.salary, 'projection': player.projection.projection, 'ownership': player.ownership, 'team': player.team, 'opponent': player.opponent, 'exposureCap': player.exposure })
+                            } else if (selectedPlayerPositions[j].split('-')[1] === 'P') {
+                                updatedLineup['P'].push({ 'playerId': selectedPlayerPositions[j].split('-')[0], 'dk-id': player.dk_id, 'name': player.name, 'salary': player.salary, 'projection': player.projection.projection, 'ownership': player.ownership, 'team': player.team, 'opponent': player.opponent, 'exposureCap': player.exposure })
+                            } else {
+                                updatedLineup[selectedPlayerPositions[j].split('-')[1]] = { 'playerId': selectedPlayerPositions[j].split('-')[0], 'dk-id': player.dk_id, 'name': player.name, 'salary': player.salary, 'projection': player.projection.projection, 'ownership': player.ownership, 'team': player.team, 'opponent': player.opponent, 'exposureCap': player.exposure }
+                            }
                         }
                     }
                     updatedLineup['total_salary'] = lineupSal
                     const roundedProj = parseFloat(lineupProj.toFixed(2))
                     updatedLineup['total_projection'] = roundedProj
-
                 }
                 const result = players.filter(player => selectedPlayerIds.includes(player.id))
                 const restrictionVars = []
@@ -294,21 +304,56 @@ function SlateInfo({ sport, slate, setOptimizedLineups, exposures, setExposures,
             }
             // Optimize each lineup
             if (cancelledRef.current) {
-                optimizeMutation.mutate({ 'lineups': lineups, 'slate': slate.id, 'exposures': optoExposures });
+                if (lineups.length > 0) {
+                    optimizeMutation.mutate({ 'lineups': lineups, 'slate': slate.id, 'exposures': optoExposures });
+                }
                 setButtonLoading(false)
                 return
             }
-            const lineup = await optimizeLineup(i, additionalConstraints, exposureConstraints, removeExposureConstraints)
+            let lineup = await optimizeLineup(i, additionalConstraints, exposureConstraints, removeExposureConstraints)
             if (lineup === null) {
                 setFailedOptimizeModalOpen(true)
+                setButtonLoading(false)
                 setFailedSuccessLineups(i)
-                optimizeMutation.mutate({ 'lineups': lineups, 'slate': slate.id, 'exposures': optoExposures });
+                if (lineups.length > 0) {
+                    optimizeMutation.mutate({ 'lineups': lineups, 'slate': slate.id, 'exposures': optoExposures });
+                }
                 return
             }
             // Update lineups
-            lineups.push(lineup)
+            if (sport === 'mlb') {
+                const cleanedMlbLineup = { 'P1': {}, 'P2': {}, 'C': {}, 'FB': {}, 'SB': {}, 'TB': {}, 'SS': {}, 'OF1': {}, 'OF2': {}, 'OF3': {}, 'total_salary': lineup.total_salary, 'total_projection': lineup.total_projection }
+                cleanedMlbLineup['P1'] = lineup['P'][0]
+                cleanedMlbLineup['P2'] = lineup['P'][1]
+                cleanedMlbLineup['C'] = lineup['C']
+                cleanedMlbLineup['FB'] = lineup['FB']
+                cleanedMlbLineup['SB'] = lineup['SB']
+                cleanedMlbLineup['TB'] = lineup['TB']
+                cleanedMlbLineup['SS'] = lineup['SS']
+                cleanedMlbLineup['OF1'] = lineup['OF'][0]
+                cleanedMlbLineup['OF2'] = lineup['OF'][1]
+                cleanedMlbLineup['OF3'] = lineup['OF'][2]
+                cleanedMlbLineup['total_salary'] = lineup.total_salary
+                cleanedMlbLineup['total_projection'] = lineup.total_projection
+                lineups.push(cleanedMlbLineup)
+            } else {
+                lineups.push(lineup)
+            }
             setOptimizedLineups({ ...optimizedLineups, [`${thisOpto.toString()}`]: lineups, 'count': thisOpto })
             // Update exposures
+            const cleanedLineup = {}
+            for (const pos in lineup) {
+                if (pos !== 'total_salary' && pos !== 'total_projection') {
+                    if (pos === 'P' || pos === 'OF') {
+                        for (let i = 0; i < lineup[pos].length; i++) {
+                            cleanedLineup[`${pos}${i}`] = lineup[pos][i]
+                        }
+                    } else {
+                        cleanedLineup[pos] = lineup[pos]
+                    }
+                }
+            }
+            lineup = cleanedLineup
             for (const pos in lineup) {
                 if (lineup.hasOwnProperty(pos)) {
                     if (pos !== 'total_salary' && pos !== 'total_projection') {
@@ -379,9 +424,9 @@ function SlateInfo({ sport, slate, setOptimizedLineups, exposures, setExposures,
 
     const memoizedPlayerTable = React.useMemo(
         () => (
-            <PlayerTable setOnlyUseMine={setOnlyUseMine} setClearedSearch={setClearedSearch} data={playerData} slateId={slate.id} />
+            <PlayerTable sport={sport} setOnlyUseMine={setOnlyUseMine} setClearedSearch={setClearedSearch} data={playerData} slateId={slate.id} />
         ),
-        [playerData, slate.id, setOnlyUseMine]
+        [playerData, slate.id, setOnlyUseMine, sport]
     );
 
     return (
@@ -405,7 +450,7 @@ function SlateInfo({ sport, slate, setOptimizedLineups, exposures, setExposures,
                                     <Divider />
                                 </Grid>
                                 <Grid item lg={3} md={4.1} xs={12}>
-                                    <SettingsPanel handleOptimization={handleOptimize} optoLen={optimizedLineups[selectedOpto] ? optimizedLineups[selectedOpto].length : null} clearedSearch={clearedSearch} handleCancelOptimize={handleCancelOptimize} buttonLoading={buttonLoading} tab={tab} setTab={setTab} exposures={exposures} selectedOpto={selectedOpto} />
+                                    <SettingsPanel sport={sport} handleOptimization={handleOptimize} optoLen={optimizedLineups[selectedOpto] ? optimizedLineups[selectedOpto].length : null} clearedSearch={clearedSearch} handleCancelOptimize={handleCancelOptimize} buttonLoading={buttonLoading} tab={tab} setTab={setTab} exposures={exposures} selectedOpto={selectedOpto} />
                                 </Grid>
                             </Grid>
                         </UserSettingsContext.Provider>

@@ -6,7 +6,7 @@ import AddIcon from '@mui/icons-material/Add';
 import { UserContext } from './UserProvider';
 import { updateUserSettings } from '../util/utils';
 
-function UniquePlayers({ userSettings, setUserSettings }) {
+function UniquePlayers({ sport, userSettings, setUserSettings }) {
     const isMedium = useMediaQuery((theme) => theme.breakpoints.down('xl'));
     const { token } = React.useContext(UserContext)
     const { uniques } = userSettings
@@ -17,11 +17,11 @@ function UniquePlayers({ userSettings, setUserSettings }) {
         if (value === storedValue) return
         setStoredValue(value)
         try {
-            await updateUserSettings({ ...userSettings, 'uniques': value }, token);
+            await updateUserSettings({ ...userSettings, 'uniques': value }, token, sport);
         } catch (error) {
             console.error('Failed to update user settings', error)
         }
-    }, [storedValue, userSettings, token])
+    }, [storedValue, userSettings, token, sport])
 
     React.useEffect(() => {
         if (!token) return

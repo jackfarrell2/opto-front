@@ -1,8 +1,10 @@
 import React from 'react'
 import { Box, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Grid, Typography } from '@mui/material';
-import { teamColors } from '../styles/colors'
+import { teamColors, mlbTeamColors } from '../styles/colors'
 
-function ExposurePanel({ exposures, selectedOpto, optoLen }) {
+function ExposurePanel({ sport, exposures, selectedOpto, optoLen }) {
+
+    const sportColors = (sport === 'mlb') ? mlbTeamColors : teamColors
 
     const exposuresArray = React.useMemo(() => {
         let array = [];
@@ -17,13 +19,13 @@ function ExposurePanel({ exposures, selectedOpto, optoLen }) {
         <>
             {exposures && (
                 <Box sx={{ maxHeight: '50vh', overflow: 'auto' }}>
-                    {/* <TableContainer component={Paper}>
+                    <TableContainer component={Paper}>
                         <Table>
                             <TableHead>
                             </TableHead>
                             <TableBody>
                                 {exposuresArray.map((item, index) => (
-                                    <TableRow key={index} style={{ color: 'white', backgroundColor: teamColors[`${item.team}`] }}>
+                                    <TableRow key={index} style={{ color: 'white', backgroundColor: sportColors[`${item.team}`] }}>
                                         <TableCell style={{ color: 'white' }} component="th" scope="row">
                                             <span>{item["player-name"]}</span>
                                             <span> (</span><span>{item["count"]}<span>)</span></span>
@@ -35,7 +37,7 @@ function ExposurePanel({ exposures, selectedOpto, optoLen }) {
                                 ))}
                             </TableBody>
                         </Table>
-                    </TableContainer> */}
+                    </TableContainer>
                 </Box>
             )}
             {(exposuresArray.length === 0) && (

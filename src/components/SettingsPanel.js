@@ -43,7 +43,7 @@ function a11yProps(index) {
     };
 }
 
-function SettingsPanel({ tab, setTab, exposures, selectedOpto, buttonLoading, handleCancelOptimize, handleOptimization, optoLen }) {
+function SettingsPanel({ sport, tab, setTab, exposures, selectedOpto, buttonLoading, handleCancelOptimize, handleOptimization, optoLen }) {
     const isMobile = useMediaQuery((theme) => theme.breakpoints.down('md'));
     const { user } = React.useContext(UserContext)
     const [openConfirmModal, setOpenConfirmModal] = React.useState(false)
@@ -101,10 +101,10 @@ function SettingsPanel({ tab, setTab, exposures, selectedOpto, buttonLoading, ha
                                     </Tabs>
                                 </Box>
                                 <CustomTabPanel sx={{ width: '100%' }} value={tab} index={0}>
-                                    <SimpleSettings />
+                                    <SimpleSettings sport={sport} />
                                 </CustomTabPanel>
                                 <CustomTabPanel sx={{ width: '100%' }} value={tab} index={1}>
-                                    <ExposurePanel optoLen={optoLen} exposures={exposures} selectedOpto={selectedOpto} />
+                                    <ExposurePanel sport={sport} optoLen={optoLen} exposures={exposures} selectedOpto={selectedOpto} />
                                 </CustomTabPanel>
                             </Box>
                         </Grid>

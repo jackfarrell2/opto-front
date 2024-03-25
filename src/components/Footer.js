@@ -1,8 +1,9 @@
 import { Box, Container, Grid, Typography } from "@mui/material";
-import GitHubIcon from '@mui/icons-material/GitHub';
-import LinkedInIcon from '@mui/icons-material/LinkedIn';
-import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
-import { Link } from '@mui/material'
+// import GitHubIcon from '@mui/icons-material/GitHub';
+// import LinkedInIcon from '@mui/icons-material/LinkedIn';
+// import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
+// import { Link } from '@mui/material'
+import CopyrightIcon from '@mui/icons-material/Copyright';
 
 
 function Footer() {
@@ -19,33 +20,20 @@ function Footer() {
       <Container maxWidth="lg">
         <Grid container direction="column" alignItems="center">
           <Grid item xs={12}>
-            <Typography color="common.white" variant="h6">
-              Jack Farrell
-            </Typography>
+            <Grid container direction='row' justifyContent='center' alignItems='center' spacing={1}>
+              <Grid item>
+                <CopyrightIcon fontSize="small" sx={{ color: 'white' }} />
+              </Grid>
+              <Grid item alignItems='center'>
+                <Typography color="common.white" variant="h6" sx={{ mb: '.7vh' }}>DFS Opto</Typography>
+              </Grid>
+            </Grid>
           </Grid>
           <Grid item xs={12}>
             <Box display='flex' justifyContent='center' alignItems='center'>
-               <Typography variant="subtitle1" sx={{ color: 'common.white' }}>
-                  {`${new Date().getFullYear()}`}
-                </Typography>
-                <Typography m={1} variant="subtitle1" sx={{ color: 'common.white' }}>|</Typography>
-                <Link href="https://github.com/jackfarrell2">
-                  <Box display='flex' justifyContent='center'>
-                    <GitHubIcon fontSize='small' sx={{ color: 'common.white' }} />
-                  </Box>
-                </Link>
-                <Typography m={1} variant="subtitle1" sx={{ color: 'common.white' }}>|</Typography>
-                <Link href="https://www.linkedin.com/">
-                  <Box display='flex' justifyContent='center'>
-                    <LinkedInIcon fontSize='small' sx={{ color: 'common.white' }} />
-                  </Box>
-                </Link>
-                <Typography m={1} variant="subtitle1" sx={{ color: 'common.white' }}>|</Typography>
-                <Link href="https://www.paypal.com/paypalme/jaaackthecat">
-                  <Box display='flex' justifyContent='center'>
-                    <AttachMoneyIcon fontSize='small' sx={{ color: 'common.white' }} />
-                  </Box>
-                </Link>
+              <Typography variant="subtitle1" sx={{ color: 'common.white' }}>
+                {`${new Date().getFullYear()}`}
+              </Typography>
             </Box>
           </Grid>
         </Grid>

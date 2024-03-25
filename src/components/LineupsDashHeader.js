@@ -3,23 +3,31 @@ import { Grid, Typography, Button, useMediaQuery } from '@mui/material';
 import { ScrollableOptoTabs } from './ScrollableOptoTabs';
 import { ConfirmOptoModal } from './ConfirmOptoModal'
 
-function LineupsDashHeader({ optoCount, setSelectedOpto, selectedOpto, slate, setOptimizedLineups, setExposures, selectedLineups }) {
+function LineupsDashHeader({ sport, optoCount, setSelectedOpto, selectedOpto, slate, setOptimizedLineups, setExposures, selectedLineups }) {
     const isMobile = useMediaQuery((theme) => theme.breakpoints.down('md'));
     const isXtraSmall = useMediaQuery((theme) => theme.breakpoints.down('sm'));
     const [openConfirmModal, setOpenConfirmModal] = React.useState(false)
+    const mlbMappings = { 'P1': 'P', 'P2': 'P', 'C': 'C', 'FB': '1B', 'SB': '2B', 'TB': '3B', 'SS': 'SS', 'OF1': 'OF', 'OF2': 'OF', 'OF3': 'OF' }
 
     const handleExport = () => {
-        const headers = ["PG", "SG", "SF", "PF", "C", "G", "F", "UTIL"]
-        let csvContent = headers.join(",") + "\n"
+        let headers = ["PG", "SG", "SF", "PF", "C", "G", "F", "UTIL"]
+        let newHeaders = ["PG", "SG", "SF", "PF", "C", "G", "F", "UTIL"]
+        if (sport === 'mlb') {
+            headers = ["P1", "P2", "C", "FB", "SB", "TB", "SS", "OF1", "OF2", "OF3"]
+            newHeaders = headers.map(header => mlbMappings[header])
+        }
+        let csvContent = newHeaders.join(",") + "\n"
         selectedLineups.forEach(lineup => {
-            const lineupValues = headers.map(position => {
-                const player = lineup[position]
-                return `${player.name} (${player['dk-id']})`
+            const lineupValues = (sport === 'mlb' ? newHeaders : headers).map(position => {
+                let originalPosition = sport === 'mlb' ? Object.keys(mlbMappings).find(key => mlbMappings[key] === position) : position;
+                const player = lineup[originalPosition];
+                return `${player.name} (${player['dk-id']})`;
             });
-            csvContent += lineupValues.join(",") + "\n"
+            csvContent += lineupValues.join(",") + "\n";
         })
 
         const blob = new Blob([csvContent], { type: 'text/csv' });
+
         const url = window.URL.createObjectURL(blob);
 
         const a = document.createElement('a');
@@ -34,7 +42,7 @@ function LineupsDashHeader({ optoCount, setSelectedOpto, selectedOpto, slate, se
 
     return (
         <>
-            <ConfirmOptoModal setOptimizedLineups={setOptimizedLineups} setExposures={setExposures} openConfirmModal={openConfirmModal} setOpenConfirmModal={setOpenConfirmModal} slate={slate} />
+            <ConfirmOptoModal sport={sport} setOptimizedLineups={setOptimizedLineups} setExposures={setExposures} openConfirmModal={openConfirmModal} setOpenConfirmModal={setOpenConfirmModal} slate={slate} />
             <Grid container style={{ backgroundColor: '#92a3b8' }} direction='row' justifyContent='flex-start' alignItems='center'>
                 {!isXtraSmall && (
                     <Grid item sm={2} md={2.5} lg={2} xl={2}>
