@@ -57,8 +57,8 @@ function App() {
           <Routes>
             <Route exact path="/" element={<Nba />} />
             <Route path='/activate/:token' element={<ActivationPage />} />
-            <Route path="/mlb" element={<Mlb />} />
-            <Route path="/nba" element={<Nba />} />
+            <Route path='/mlb' element={<Mlb />} />
+            <Route path='/nba' element={<Nba />} />
             <Route path='*' Component={NotFound} />
           </Routes>
           <Footer />

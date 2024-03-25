@@ -1,11 +1,11 @@
 import React from 'react'
 import { TextField } from '@mui/material'
 import { UserContext } from './UserProvider';
-import { updateUserSettings } from '../util/nbaUtils';
+import { updateUserSettings } from '../util/utils';
 
 
 
-function SalaryField({ variant, userSettings, setUserSettings }) {
+function SalaryField({ sport, variant, userSettings, setUserSettings }) {
     const { token } = React.useContext(UserContext)
     const salary = userSettings[`${variant}-salary`] || ''
     const setSalary = (value) => setUserSettings({ ...userSettings, [`${variant}-salary`]: value })
@@ -16,11 +16,11 @@ function SalaryField({ variant, userSettings, setUserSettings }) {
         if (value === storedValue) return
         setStoredValue(value)
         try {
-            await updateUserSettings({ ...userSettings, label: value }, token);
+            await updateUserSettings({ ...userSettings, label: value }, token, sport);
         } catch (error) {
             console.error('Failed to update user settings', error)
         }
-    }, [storedValue, userSettings, token])
+    }, [storedValue, userSettings, token, sport])
 
     React.useEffect(() => {
         if (!token) return

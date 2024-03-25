@@ -6,10 +6,10 @@ import { ConfirmOptoForm } from './ConfirmOptoForm'
 import config from '../config'
 import { UserContext } from './UserProvider'
 
-function ConfirmOptoModal({ openConfirmModal, setOpenConfirmModal, slate, setOptimizedLineups, setExposures }) {
+function ConfirmOptoModal({ sport, openConfirmModal, setOpenConfirmModal, slate, setOptimizedLineups, setExposures }) {
     const { token, user } = React.useContext(UserContext)
     const isMobile = useMediaQuery((theme) => theme.breakpoints.down('md'));
-    const apiUrl = `${config.apiUrl}nba/api/remove-optimizations/`;
+    const apiUrl = `${config.apiUrl}${sport}/api/remove-optimizations/`;
     const removeOptimizationsMutation = useMutation(
         async () => {
             const response = await fetch(apiUrl, {

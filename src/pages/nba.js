@@ -49,7 +49,7 @@ function Nba() {
 
     return (
         <Box sx={page}>
-            {slate && (<SlateModal slate={slate} openModal={slateModal} setSlateModal={setSlateModal} slates={slates} />)}
+            {slate && (<SlateModal sport='nba' slate={slate} openModal={slateModal} setSlateModal={setSlateModal} slates={slates} />)}
             <Divider />
             {(slatesLoading || !slate) ? (
                 <Grid container justifyContent="center" alignItems="center" sx={{ height: '75vh' }}>
@@ -59,14 +59,14 @@ function Nba() {
                 </Grid>
             ) : (
                 <>
-                    <SecondNavbar setSlateModal={setSlateModal} slate={slate} slates={slates || []} setSlate={setSlate}></SecondNavbar>
+                    <SecondNavbar sport='mlb' setSlateModal={setSlateModal} slate={slate} slates={slates || []} setSlate={setSlate}></SecondNavbar>
                     <Divider />
                     <Grid container direction='column' justifyContent='center' alignItems='stretch' spacing={0}>
                         <Grid item style={{ minHeight: '75vh' }}>
-                            {slate && <SlateInfo key={slate.id} setSelectedOpto={setSelectedOpto} selectedOpto={selectedOpto} slate={slate} exposures={exposures} optimizedLineups={optimizedLineups} setOptimizedLineups={setOptimizedLineups} setExposures={setExposures} />}
+                            {slate && <SlateInfo sport='nba' key={slate.id} setSelectedOpto={setSelectedOpto} selectedOpto={selectedOpto} slate={slate} exposures={exposures} optimizedLineups={optimizedLineups} setOptimizedLineups={setOptimizedLineups} setExposures={setExposures} />}
                         </Grid>
                         <Grid item>
-                            {slate && <LineupsDash setExposures={setExposures} optimizedLineups={optimizedLineups} setOptimizedLineups={setOptimizedLineups} selectedOpto={selectedOpto} setSelectedOpto={setSelectedOpto} slate={slate.id} />}
+                            {slate && <LineupsDash sport='nba' setExposures={setExposures} optimizedLineups={optimizedLineups} setOptimizedLineups={setOptimizedLineups} selectedOpto={selectedOpto} setSelectedOpto={setSelectedOpto} slate={slate.id} />}
                         </Grid>
 
                     </Grid>

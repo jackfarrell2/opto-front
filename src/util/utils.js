@@ -1,7 +1,7 @@
 import config from "../config";
 
-async function updateUserSettings(userSettings, token) {
-    const apiUrl = `${config.apiUrl}nba/api/user-opto-settings/`
+async function updateUserSettings(userSettings, token, sport) {
+    const apiUrl = `${config.apiUrl}${sport}/api/user-opto-settings/`
     try {
         const response = await fetch(apiUrl, {
             method: 'PUT',
@@ -22,8 +22,8 @@ async function updateUserSettings(userSettings, token) {
     }
 }
 
-async function updatePlayerSettings(player, settings, token) {
-    const apiUrl = `${config.apiUrl}nba/api/player-settings/`
+async function updatePlayerSettings(player, settings, token, sport) {
+    const apiUrl = `${config.apiUrl}${sport}/api/player-settings/`
     try {
         const response = await fetch(apiUrl, {
             method: 'PUT',

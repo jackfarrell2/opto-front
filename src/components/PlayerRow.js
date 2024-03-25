@@ -6,10 +6,10 @@ import { OwnershipCell } from './PlayerCells/OwnershipCell'
 import { ProjectionCell } from './PlayerCells/ProjectionCell'
 import { XValueCell } from './PlayerCells/XValueCell'
 import { ExposureCell } from './PlayerCells/ExposureCell'
-import { updatePlayerSettings } from '../util/nbaUtils'
+import { updatePlayerSettings } from '../util/utils'
 import { UserContext } from './UserProvider'
 
-const PlayerRow = React.memo(function PlayerRow({ row }) {
+const PlayerRow = React.memo(function PlayerRow({ sport, row }) {
     const { token } = React.useContext(UserContext)
     const [playerSettings, setPlayerSettings] = React.useState({ 'ownership': row.original.ownership, 'exposure': row.original.exposure, 'projection': row.original.projection, 'lock': row.original.lock, 'remove': row.original.remove })
     const [storedValue, setStoredValue] = React.useState(playerSettings)
@@ -18,11 +18,11 @@ const PlayerRow = React.memo(function PlayerRow({ row }) {
         if (value === storedValue) return
         setStoredValue(value)
         try {
-            await updatePlayerSettings(row.original.id, value, token);
+            await updatePlayerSettings(row.original.id, value, token, sport);
         } catch (error) {
             console.error('Failed to update user settings', error)
         }
-    }, [row.original.id, storedValue, token])
+    }, [row.original.id, storedValue, token, sport])
 
     React.useEffect(() => {
         if (!token) return

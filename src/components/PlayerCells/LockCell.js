@@ -8,6 +8,7 @@ function LockCell({ cell, playerSettings, setPlayerSettings }) {
     const [lockedData, setLockedData] = React.useContext(LockedContext)
 
     function handleClick() {
+        console.log('lockedData', lockedData)
         if (lockedData['count'] === 8 && !lock) {
             return
         }

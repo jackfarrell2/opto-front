@@ -7,7 +7,7 @@ import { ProjectionForm } from './ProjectionForm'
 import { UserContext } from './UserProvider'
 import { ProjectionResponse } from './ProjectionResponse'
 
-function ProjectionModal({ openProjectionModal, setOpenProjectionModal, slate, slates }) {
+function ProjectionModal({ sport, openProjectionModal, setOpenProjectionModal, slate, slates }) {
     const { token } = React.useContext(UserContext)
     const isMobile = useMediaQuery((theme) => theme.breakpoints.down('md'));
     const apiUrl = `${config.apiUrl}`;
@@ -44,7 +44,7 @@ function ProjectionModal({ openProjectionModal, setOpenProjectionModal, slate, s
             formData.append('file', file);
             formData.append('slate', selectedSlate.id);
             formData.append('method', 'file');
-            const response = await fetch(`${apiUrl}nba/api/upload-projections/`, {
+            const response = await fetch(`${apiUrl}${sport}/api/upload-projections/`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Token ${token}`,
@@ -87,7 +87,7 @@ function ProjectionModal({ openProjectionModal, setOpenProjectionModal, slate, s
             formData.append('paste-projections', JSON.stringify(pasteProjections));
             formData.append('slate', selectedSlate.id);
             formData.append('method', 'paste');
-            const response = await fetch(`${apiUrl}nba/api/upload-projections/`, {
+            const response = await fetch(`${apiUrl}${sport}/api/upload-projections/`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Token ${token}`,

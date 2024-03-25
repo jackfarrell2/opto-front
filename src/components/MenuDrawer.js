@@ -29,12 +29,12 @@ function MenuDrawer({ handleOpen }) {
                         </ListItemText>
                     </ListItem>
                     <Divider />
-                    {/* <ListItem onClick={() => setOpenDrawer(false)}>
+                    <ListItem onClick={() => setOpenDrawer(false)}>
                         <ListItemText>
                             <Link to='/mlb' style={drawerItem}>MLB</Link>
                         </ListItemText>
                     </ListItem>
-                    <Divider /> */}
+                    <Divider />
                     <ListItem onClick={() => setOpenDrawer(false)}>
                         <ListItemText>
                             <Link to='/nba' style={drawerItem}>NBA</Link>

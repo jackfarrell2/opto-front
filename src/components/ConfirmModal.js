@@ -6,10 +6,10 @@ import { ConfirmForm } from './ConfirmForm'
 import config from '../config'
 import { UserContext } from './UserProvider'
 
-function ConfirmModal({ openConfirmModal, setOpenConfirmModal, slate }) {
+function ConfirmModal({ sport, openConfirmModal, setOpenConfirmModal, slate }) {
     const { token } = React.useContext(UserContext)
     const isMobile = useMediaQuery((theme) => theme.breakpoints.down('md'));
-    const apiUrl = `${config.apiUrl}nba/api/remove-projections/`;
+    const apiUrl = `${config.apiUrl}${sport}/api/remove-projections/`;
     const removeProjectionsMutation = useMutation(
         async () => {
             const response = await fetch(apiUrl, {
