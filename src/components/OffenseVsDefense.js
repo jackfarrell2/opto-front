@@ -43,7 +43,7 @@ function OffenseVsDefense({ userSettings, setUserSettings }) {
     return (
         <Grid container direction='row' justifyContent='center' alignItems='center'>
             <Grid item>
-                <Typography variant='body1'>{isMedium ? 'Max Offense vs. DST: ' : 'Max Offensive Players vs. Defense: '}</Typography>
+                <Typography variant='body1'>{isMedium ? 'Max Off vs. DST: ' : 'Max Off Players vs. DST: '}</Typography>
             </Grid>
             <Grid item>
                 <IconButton onClick={() => handleChange('subtract')}><RemoveIcon /></IconButton>

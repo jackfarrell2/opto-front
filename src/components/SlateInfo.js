@@ -207,7 +207,7 @@ function SlateInfo({ sport, slate, setOptimizedLineups, exposures, setExposures,
             {
                 name: 'max_salary',
                 vars: salaryVars,
-                bnds: { type: glpk.GLP_UP, ub: userSettings['max-salary'], lb: userSettings['min-salary'] }
+                bnds: { type: glpk.GLP_DB, ub: userSettings['max-salary'], lb: userSettings['min-salary'] }
             },
             {
                 name: 'total_players',
@@ -270,6 +270,7 @@ function SlateInfo({ sport, slate, setOptimizedLineups, exposures, setExposures,
                     subjectToConstraints.push(additionalConstraints[additionalConstraints.length - 1])
                 }
                 subjectToConstraints.push(...exposureConstraints)
+                console.log(subjectToConstraints)
                 const res = await glpk.solve({
                     name: `Optimize_Lineups_${i}`,
                     objective: {
