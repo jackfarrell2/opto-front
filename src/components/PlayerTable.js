@@ -1,5 +1,5 @@
 import React from 'react'
-import { useTable, useSortBy, useGlobalFilter } from 'react-table'
+import { useTable, useSortBy, useGlobalFilter, usePagination } from 'react-table'
 import '../styles/PlayerTable.css'
 import { PlayerRow } from './PlayerRow'
 import { TextField, Grid, Button, useMediaQuery, Box } from '@mui/material'
@@ -15,6 +15,8 @@ import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 
 
 function PlayerTable({ sport, data, setOnlyUseMine, slateId, setClearedSearch }) {
+    const isMedium = useMediaQuery((theme) => theme.breakpoints.down('md'));
+    const defaultPageSize = isMedium ? 10 : 25
     // Define columns
     const columns = React.useMemo(() => [
         {
@@ -106,13 +108,18 @@ function PlayerTable({ sport, data, setOnlyUseMine, slateId, setClearedSearch })
 
     // Create table instance
 
-    const tableInstance = useTable({ columns, data, disableSortRemove: true }, useGlobalFilter, useSortBy);
+    const tableInstance = useTable({ columns, data, initialState: { pageSize: defaultPageSize }, disableSortRemove: true }, useGlobalFilter, useSortBy, usePagination);
 
     const {
         getTableProps,
         getTableBodyProps,
         headerGroups,
-        rows,
+        // rows,
+        page,
+        nextPage,
+        previousPage,
+        canPreviousPage,
+        canNextPage,
         prepareRow,
         state,
         setGlobalFilter,
@@ -131,7 +138,7 @@ function PlayerTable({ sport, data, setOnlyUseMine, slateId, setClearedSearch })
     // Search 
     function handleSearchChange(e) {
         const newFilterValue = e.target.value;
-        const filteredRows = rows.filter(row => {
+        const filteredRows = page.filter(row => {
             const rowString = Object.values(row.values).join(' ');
             return rowString.toLowerCase().includes(newFilterValue.toLowerCase());
         });
@@ -162,11 +169,11 @@ function PlayerTable({ sport, data, setOnlyUseMine, slateId, setClearedSearch })
 
     const filteredRows = React.useMemo(() => {
         if (isFilterActive) {
-            return rows.filter(row => row.original.projection['custom'] === true);
+            return page.filter(row => row.original.projection['custom'] === true);
         } else {
-            return rows;
+            return page;
         }
-    }, [isFilterActive, rows]);
+    }, [isFilterActive, page]);
 
     function handleOnlyUseClick() {
         setIsFilterActive(prevIsFilterActive => {
@@ -235,6 +242,10 @@ function PlayerTable({ sport, data, setOnlyUseMine, slateId, setClearedSearch })
                         </table>
                     </Box>
                 </form>
+                <Grid container direction='row' justifyContent='space-between' alignItems='center'>
+                    <Button onClick={() => previousPage()} disabled={!canPreviousPage}>Previous</Button>
+                    <Button onClick={() => nextPage()} disabled={!canNextPage}>Next</Button>
+                </Grid>
             </div >
         </div>
     )

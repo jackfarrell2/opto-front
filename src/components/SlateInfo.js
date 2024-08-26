@@ -15,13 +15,13 @@ export const UserSettingsContext = React.createContext()
 
 function SlateInfo({ sport, slate, setOptimizedLineups, exposures, setExposures, optimizedLineups, setSelectedOpto, selectedOpto }) {
     const isMobile = useMediaQuery((theme) => theme.breakpoints.down('md'));
-    const totalPlayers = (sport === 'nba') ? 8 : 10
+    const totalPlayers = (sport === 'nba') ? 8 : (sport === 'nfl') ? 9 : 10;
     const { token, user } = React.useContext(UserContext)
     const optoApiUrl = `${config.apiUrl}${sport}/api/authenticated-optimize/`;
     const apiUrl = token ? `${config.apiUrl}${sport}/api/authenticated-slate-info/${slate.id}` : `${config.apiUrl}${sport}/api/unauthenticated-slate-info/${slate.id}`
     const [lockedData, setLockedData] = React.useState({ 'count': 0, 'salary': 0 })
     const [tab, setTab] = React.useState(0)
-    const [userSettings, setUserSettings] = React.useState({ 'uniques': 3, 'min-salary': 45000, 'max-salary': 50000, 'max-players-per-team': 5, 'num-lineups': 20, 'hittersVsPitcher': 0 })
+    const [userSettings, setUserSettings] = React.useState({ 'uniques': 3, 'min-salary': 45000, 'max-salary': 50000, 'max-players-per-team': 5, 'num-lineups': 20, 'hittersVsPitcher': 0, 'offenseVsDefense': 0 })
     const optoCount = optimizedLineups['count']
     const [buttonLoading, setButtonLoading] = React.useState(false)
     const [failedOptimizeModalOpen, setFailedOptimizeModalOpen] = React.useState(false)
@@ -85,6 +85,8 @@ function SlateInfo({ sport, slate, setOptimizedLineups, exposures, setExposures,
         let positionLists = {}
         let ofList = []
         let pList = []
+        let rbList = []
+        let wrList = []
         setButtonLoading(true);
         const players = data['slate-info'].players
         // Separate each player into each position they are eligible for 
@@ -107,6 +109,13 @@ function SlateInfo({ sport, slate, setOptimizedLineups, exposures, setExposures,
                 'TB': [],
                 'SS': [],
             }
+        } else if (sport === 'nfl') {
+            positionLists = {
+                'QB': [],
+                'TE': [],
+                'DST': [],
+                'FLEX': []
+            }
         }
         const team_lists = {}
         // Prepare optimization
@@ -121,6 +130,8 @@ function SlateInfo({ sport, slate, setOptimizedLineups, exposures, setExposures,
             if (onlyUseMine === false || player.projection.custom === true) {
                 const thisPlayerVars = []
                 for (let i = 0; i < player.eligiblePositions.length; i++) {
+                    const playerVar = player.id + '-' + player.eligiblePositions[i]
+                    playerVars.push(playerVar)
                     const team = player.team
                     const opp = player.opponent
                     let game = ''
@@ -134,13 +145,19 @@ function SlateInfo({ sport, slate, setOptimizedLineups, exposures, setExposures,
                     } else {
                         gameLists[game] = [{ 'name': player.id + '-' + player.eligiblePositions[i], 'coef': 1 }]
                     }
-                    const playerVar = player.id + '-' + player.eligiblePositions[i]
-                    playerVars.push(playerVar)
                     if (sport === 'mlb') {
                         if (player.eligiblePositions[i] === 'OF') {
                             ofList.push({ 'name': playerVar, 'coef': 1 })
                         } else if (player.eligiblePositions[i] === 'P') {
                             pList.push({ 'name': playerVar, 'coef': 1 })
+                        } else {
+                            positionLists[player.eligiblePositions[i]].push({ 'name': playerVar, 'coef': 1 })
+                        }
+                    } else if (sport === 'nfl') {
+                        if (player.eligiblePositions[i] === 'RB') {
+                            rbList.push({ 'name': playerVar, 'coef': 1 })
+                        } else if (player.eligiblePositions[i] === 'WR') {
+                            wrList.push({ 'name': playerVar, 'coef': 1 })
                         } else {
                             positionLists[player.eligiblePositions[i]].push({ 'name': playerVar, 'coef': 1 })
                         }
@@ -158,6 +175,12 @@ function SlateInfo({ sport, slate, setOptimizedLineups, exposures, setExposures,
                             team_lists[player.opponent] = [{ 'name': playerVar, 'coef': (5 - userSettings['hittersVsPitcher']) }]
 
                         }
+                    } else if (player.eligiblePositions[i] === 'DST') {
+                        if (team_lists[player.opponent]) {
+                            team_lists[player.opponent].push({ 'name': playerVar, 'coef': (userSettings['max-players-per-team'] - userSettings['offenseVsDefense']) })
+                        } else {
+                            team_lists[player.opponent] = [{ 'name': playerVar, 'coef': (userSettings['max-players-per-team'] - userSettings['offenseVsDefense']) }]
+                        }
                     } else {
                         if (team_lists[player.team]) {
                             team_lists[player.team].push({ 'name': playerVar, 'coef': 1 })
@@ -165,15 +188,14 @@ function SlateInfo({ sport, slate, setOptimizedLineups, exposures, setExposures,
                             team_lists[player.team] = [{ 'name': playerVar, 'coef': 1 }]
                         }
                     }
-                    // Add locks and removes
-                    if (player.lock === true) {
-                        individualPlayerVars.push({ 'name': player.id, 'vars': thisPlayerVars, 'bnds': { type: glpk.GLP_FX, ub: 1, lb: 1 } })
-                    }
-                    else if (player.remove === true) {
-                        individualPlayerVars.push({ 'name': player.id, 'vars': thisPlayerVars, 'bnds': { type: glpk.GLP_FX, ub: 0, lb: 0 } })
-                    } else {
-                        individualPlayerVars.push({ 'name': player.id, 'vars': thisPlayerVars, 'bnds': { type: glpk.GLP_UP, ub: 1, lb: 0 } })
-                    }
+                }
+                // Add locks and removes
+                if (player.lock === true) {
+                    individualPlayerVars.push({ 'name': player.id, 'vars': thisPlayerVars, 'bnds': { type: glpk.GLP_FX, ub: 1, lb: 1 } })
+                } else if (player.remove === true) {
+                    individualPlayerVars.push({ 'name': player.id, 'vars': thisPlayerVars, 'bnds': { type: glpk.GLP_FX, ub: 0, lb: 0 } })
+                } else {
+                    individualPlayerVars.push({ 'name': player.id, 'vars': thisPlayerVars, 'bnds': { type: glpk.GLP_UP, ub: 1, lb: 0 } })
                 }
             }
         })
@@ -205,7 +227,7 @@ function SlateInfo({ sport, slate, setOptimizedLineups, exposures, setExposures,
             ...Object.keys(gameLists).map(game => ({
                 name: `${game} max`,
                 vars: gameLists[game],
-                bnds: { type: glpk.GLP_UP, ub: 7, lb: 0 }
+                bnds: { type: glpk.GLP_UP, ub: totalPlayers - 1, lb: 0 }
             })),
             ...individualPlayerVars
         ];
@@ -219,6 +241,17 @@ function SlateInfo({ sport, slate, setOptimizedLineups, exposures, setExposures,
                 name: 'max_pitchers',
                 vars: pList,
                 bnds: { type: glpk.GLP_FX, ub: 2, lb: 2 }
+            })
+        } else if (sport === 'nfl') {
+            subjectToConstraints.push({
+                name: 'max_rbs',
+                vars: rbList,
+                bnds: { type: glpk.GLP_FX, ub: 2, lb: 2 }
+            })
+            subjectToConstraints.push({
+                name: 'max_wrs',
+                vars: wrList,
+                bnds: { type: glpk.GLP_FX, ub: 3, lb: 3 }
             })
         }
         const additionalConstraints = []
@@ -259,6 +292,8 @@ function SlateInfo({ sport, slate, setOptimizedLineups, exposures, setExposures,
                     updatedLineup = { 'PG': {}, "SG": {}, "SF": {}, "PF": {}, "C": {}, "G": {}, "F": {}, "UTIL": {}, 'total_salary': 0, 'total_projection': 0 }
                 } else if (sport === 'mlb') {
                     updatedLineup = { 'P': [], "C": {}, "FB": {}, "SB": {}, "TB": {}, "SS": {}, "OF": [], 'total_salary': 0, 'total_projection': 0 }
+                } else if (sport === 'nfl') {
+                    updatedLineup = { 'QB': {}, "RB": [], "WR": [], "TE": {}, "DST": {}, "FLEX": {}, 'total_salary': 0, 'total_projection': 0 }
                 }
                 let lineupSal = 0
                 let lineupProj = 0
@@ -272,6 +307,10 @@ function SlateInfo({ sport, slate, setOptimizedLineups, exposures, setExposures,
                                 updatedLineup['OF'].push({ 'playerId': selectedPlayerPositions[j].split('-')[0], 'dk-id': player.dk_id, 'name': player.name, 'salary': player.salary, 'projection': player.projection.projection, 'ownership': player.ownership, 'team': player.team, 'opponent': player.opponent, 'exposureCap': player.exposure })
                             } else if (selectedPlayerPositions[j].split('-')[1] === 'P') {
                                 updatedLineup['P'].push({ 'playerId': selectedPlayerPositions[j].split('-')[0], 'dk-id': player.dk_id, 'name': player.name, 'salary': player.salary, 'projection': player.projection.projection, 'ownership': player.ownership, 'team': player.team, 'opponent': player.opponent, 'exposureCap': player.exposure })
+                            } else if (selectedPlayerPositions[j].split('-')[1] === 'RB') {
+                                updatedLineup['RB'].push({ 'playerId': selectedPlayerPositions[j].split('-')[0], 'dk-id': player.dk_id, 'name': player.name, 'salary': player.salary, 'projection': player.projection.projection, 'ownership': player.ownership, 'team': player.team, 'opponent': player.opponent, 'exposureCap': player.exposure })
+                            } else if (selectedPlayerPositions[j].split('-')[1] === 'WR') {
+                                updatedLineup['WR'].push({ 'playerId': selectedPlayerPositions[j].split('-')[0], 'dk-id': player.dk_id, 'name': player.name, 'salary': player.salary, 'projection': player.projection.projection, 'ownership': player.ownership, 'team': player.team, 'opponent': player.opponent, 'exposureCap': player.exposure })
                             } else {
                                 updatedLineup[selectedPlayerPositions[j].split('-')[1]] = { 'playerId': selectedPlayerPositions[j].split('-')[0], 'dk-id': player.dk_id, 'name': player.name, 'salary': player.salary, 'projection': player.projection.projection, 'ownership': player.ownership, 'team': player.team, 'opponent': player.opponent, 'exposureCap': player.exposure }
                             }
@@ -323,7 +362,7 @@ function SlateInfo({ sport, slate, setOptimizedLineups, exposures, setExposures,
             }
             // Optimize each lineup
             if (cancelledRef.current) {
-                if (lineups.length > 0) {
+                if (lineups.length > 0 && user) {
                     optimizeMutation.mutate({ 'lineups': lineups, 'slate': slate.id, 'exposures': optoExposures });
                 }
                 setButtonLoading(false)
@@ -356,6 +395,21 @@ function SlateInfo({ sport, slate, setOptimizedLineups, exposures, setExposures,
                 cleanedMlbLineup['total_salary'] = lineup.total_salary
                 cleanedMlbLineup['total_projection'] = lineup.total_projection
                 lineups.push(cleanedMlbLineup)
+            } else if (sport === 'nfl') {
+                const cleanedNflLineup = { 'QB': {}, 'RB1': {}, 'RB2': {}, 'WR1': {}, 'WR2': {}, 'WR3': {}, 'TE': {}, 'DST': {}, 'FLEX': {}, 'total_salary': lineup.total_salary, 'total_projection': lineup.total_projection }
+                cleanedNflLineup['QB'] = lineup['QB']
+                cleanedNflLineup['RB1'] = lineup['RB'][0]
+                cleanedNflLineup['RB2'] = lineup['RB'][1]
+                cleanedNflLineup['WR1'] = lineup['WR'][0]
+                cleanedNflLineup['WR2'] = lineup['WR'][1]
+                cleanedNflLineup['WR3'] = lineup['WR'][2]
+                cleanedNflLineup['TE'] = lineup['TE']
+                cleanedNflLineup['DST'] = lineup['DST']
+                cleanedNflLineup['FLEX'] = lineup['FLEX']
+                cleanedNflLineup['total_salary'] = lineup.total_salary
+                cleanedNflLineup['total_projection'] = lineup.total_projection
+                lineups.push(cleanedNflLineup)
+
             } else {
                 lineups.push(lineup)
             }
@@ -364,7 +418,7 @@ function SlateInfo({ sport, slate, setOptimizedLineups, exposures, setExposures,
             const cleanedLineup = {}
             for (const pos in lineup) {
                 if (pos !== 'total_salary' && pos !== 'total_projection') {
-                    if (pos === 'P' || pos === 'OF') {
+                    if (pos === 'P' || pos === 'OF' || pos === 'RB' || pos === 'WR') {
                         for (let i = 0; i < lineup[pos].length; i++) {
                             cleanedLineup[`${pos}${i}`] = lineup[pos][i]
                         }
@@ -424,8 +478,9 @@ function SlateInfo({ sport, slate, setOptimizedLineups, exposures, setExposures,
         }
 
         setButtonLoading(false);
-        optimizeMutation.mutate({ 'lineups': lineups, 'slate': slate.id, 'exposures': optoExposures });
-
+        if (user) {
+            optimizeMutation.mutate({ 'lineups': lineups, 'slate': slate.id, 'exposures': optoExposures });
+        }
     }
 
     const handleCancelOptimize = () => {

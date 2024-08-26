@@ -1,10 +1,10 @@
 import React from 'react'
 import { Box, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Grid, Typography } from '@mui/material';
-import { teamColors, mlbTeamColors } from '../styles/colors'
+import { teamColors, mlbTeamColors, nflTeamColors } from '../styles/colors'
 
 function ExposurePanel({ sport, exposures, selectedOpto, optoLen }) {
 
-    const sportColors = (sport === 'mlb') ? mlbTeamColors : teamColors
+    const sportColors = (sport === 'mlb') ? mlbTeamColors : (sport === 'nfl') ? nflTeamColors : teamColors
 
     const exposuresArray = React.useMemo(() => {
         let array = [];

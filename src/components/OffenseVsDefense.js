@@ -6,54 +6,50 @@ import AddIcon from '@mui/icons-material/Add';
 import { UserContext } from './UserProvider';
 import { updateUserSettings } from '../util/utils';
 
-function MaxPlayersPerTeam({ sport, userSettings, setUserSettings }) {
+function OffenseVsDefense({ userSettings, setUserSettings }) {
     const isMedium = useMediaQuery((theme) => theme.breakpoints.down('xl'));
-
     const { token } = React.useContext(UserContext)
-    const playersPerTeam = userSettings['max-players-per-team']
-    const setPlayersPerTeam = (value) => setUserSettings({ ...userSettings, 'max-players-per-team': value })
-    const [storedValue, setStoredValue] = React.useState(playersPerTeam)
+    const { offenseVsDefense } = userSettings
+    const setOffenseVsDefense = (value) => setUserSettings({ ...userSettings, 'offenseVsDefense': value })
+    const [storedValue, setStoredValue] = React.useState(offenseVsDefense)
 
     const setStoredValueMeta = React.useCallback(async (value) => {
         if (value === storedValue) return
         setStoredValue(value)
         try {
-            await updateUserSettings({ ...userSettings, 'max-players-per-team': value }, token, sport);
+            await updateUserSettings({ ...userSettings, 'offenseVsDefense': value }, token, 'nfl');
         } catch (error) {
             console.error('Failed to update user settings', error)
         }
-    }, [storedValue, userSettings, token, sport])
+    }, [storedValue, userSettings, token])
 
     React.useEffect(() => {
         if (!token) return
-        const timeoutId = setTimeout(() => setStoredValueMeta(playersPerTeam), 1200);
+        const timeoutId = setTimeout(() => setStoredValueMeta(offenseVsDefense), 1200);
         return () => clearTimeout(timeoutId);
-    }, [setStoredValueMeta, playersPerTeam, token]);
+    }, [setStoredValueMeta, offenseVsDefense, token]);
 
     function handleChange(change) {
         if (change === 'add') {
-            if (sport === 'mlb') {
-                if (playersPerTeam + 1 > 5) return console.log('Max hitters per team on DK is 5')
-            }
-            if (playersPerTeam + 1 > 8) return console.log('Max players is 8')
-            setPlayersPerTeam(playersPerTeam + 1)
+            if (offenseVsDefense + 1 > 8) return console.log('Max players is 8')
+            setOffenseVsDefense(offenseVsDefense + 1)
         }
         if (change === 'subtract') {
-            if (playersPerTeam - 1 < 1) return console.log('Min players is 1')
-            setPlayersPerTeam(playersPerTeam - 1)
+            if (offenseVsDefense - 1 < 0) return console.log('Min uniques is 0')
+            setOffenseVsDefense(offenseVsDefense - 1)
         }
     }
 
     return (
         <Grid container direction='row' justifyContent='center' alignItems='center'>
             <Grid item>
-                <Typography variant='body1'>{isMedium ? 'Max' : 'Maximum'} {sport === 'mlb' ? 'Hitters' : 'Players'} Per Team: </Typography>
+                <Typography variant='body1'>{isMedium ? 'Max Offense vs. DST: ' : 'Max Offensive Players vs. Defense: '}</Typography>
             </Grid>
             <Grid item>
                 <IconButton onClick={() => handleChange('subtract')}><RemoveIcon /></IconButton>
             </Grid>
             <Grid item>
-                <Typography variant='body1'>{playersPerTeam}</Typography>
+                <Typography variant='body1'>{offenseVsDefense}</Typography>
             </Grid>
             <Grid item>
                 <IconButton onClick={() => handleChange('add')}><AddIcon /></IconButton>
@@ -62,4 +58,4 @@ function MaxPlayersPerTeam({ sport, userSettings, setUserSettings }) {
     )
 }
 
-export { MaxPlayersPerTeam }
+export { OffenseVsDefense }
