@@ -8,6 +8,7 @@ function LineupsDashHeader({ sport, optoCount, setSelectedOpto, selectedOpto, sl
     const isXtraSmall = useMediaQuery((theme) => theme.breakpoints.down('sm'));
     const [openConfirmModal, setOpenConfirmModal] = React.useState(false)
     const mlbMappings = { 'P1': 'P', 'P2': 'P', 'C': 'C', 'FB': '1B', 'SB': '2B', 'TB': '3B', 'SS': 'SS', 'OF1': 'OF', 'OF2': 'OF', 'OF3': 'OF' }
+    const nflMappings = { 'QB': 'QB', 'RB1': 'RB', 'RB2': 'RB', 'WR1': 'WR', 'WR2': 'WR', 'WR3': 'WR', 'TE': 'TE', 'DST': 'DST', 'FLEX': 'FLEX' }
 
     const handleExport = () => {
         let headers = ["PG", "SG", "SF", "PF", "C", "G", "F", "UTIL"]
@@ -15,6 +16,9 @@ function LineupsDashHeader({ sport, optoCount, setSelectedOpto, selectedOpto, sl
         if (sport === 'mlb') {
             headers = ["P1", "P2", "C", "FB", "SB", "TB", "SS", "OF1", "OF2", "OF3"]
             newHeaders = headers.map(header => mlbMappings[header])
+        } else if (sport === 'nfl') {
+            headers = ["QB", "RB1", "RB2", "WR1", "WR2", "WR3", "TE", "DST", "FLEX"]
+            newHeaders = headers.map(header => nflMappings[header])
         }
         let csvContent = newHeaders.join(",") + "\n"
         selectedLineups.forEach(lineup => {

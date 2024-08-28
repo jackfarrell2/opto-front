@@ -16,7 +16,7 @@ function Navbar({ handleOpen }) {
         <AppBar position='static'>
             <Toolbar sx={topBar}>
                 <Box sx={logo}>
-                    <Link to='/nba' style={{ textDecoration: 'none' }}>
+                    <Link to='/nfl' style={{ textDecoration: 'none' }}>
                         <Grid container direction='row' justifyContent='flex-start' alignItems='center'>
                             <img src={horizontal} alt='logo' width='200vh'></img>
                         </Grid>

@@ -41,6 +41,12 @@ function MenuDrawer({ handleOpen }) {
                         </ListItemText>
                     </ListItem>
                     <Divider />
+                    <ListItem onClick={() => setOpenDrawer(false)}>
+                        <ListItemText>
+                            <Link to='/nfl' style={drawerItem}>NFL</Link>
+                        </ListItemText>
+                    </ListItem>
+                    <Divider />
                     <ListItem>
                         <ListItemText>
                             {user ? (<Link to='/' onClick={handleSignOut} style={drawerItem}>Sign Out</Link>) : (<Link to='/' onClick={openLoginForm} style={drawerItem}>Sign In</Link>)}
