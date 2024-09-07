@@ -17,7 +17,7 @@ function LineupsDashHeader({ sport, optoCount, setSelectedOpto, selectedOpto, sl
             headers = ["P1", "P2", "C", "FB", "SB", "TB", "SS", "OF1", "OF2", "OF3"]
             newHeaders = headers.map(header => mlbMappings[header])
         } else if (sport === 'nfl') {
-            headers = ["QB", "RB1", "RB2", "WR1", "WR2", "WR3", "TE", "DST", "FLEX"]
+            headers = ["QB", "RB1", "RB2", "WR1", "WR2", "WR3", "TE", "FLEX", "DST"]
             newHeaders = headers.map(header => nflMappings[header])
         }
         let csvContent = newHeaders.join(",") + "\n"
