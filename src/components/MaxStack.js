@@ -46,7 +46,7 @@ function MaxStack({ team, pos, setStackData, stackData }) {
             )}
             {(team === 'opp') && (
                 <Grid item>
-                    {isMobile ? (<Typography variant='body1'>{`${pos}'s (same team):`}</Typography>) : (<Typography variant='body1'>{`${pos}'s from the same team:`}</Typography>)}
+                    {isMobile ? (<Typography variant='body1'>{`${pos}'s (opp team):`}</Typography>) : (<Typography variant='body1'>{`${pos}'s from the opposing team:`}</Typography>)}
                 </Grid>
             )}
             <Grid item>
