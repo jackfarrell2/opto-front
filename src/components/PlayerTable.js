@@ -12,11 +12,13 @@ import { LockCell } from './PlayerCells/LockCell'
 import { ExposureCell } from './PlayerCells/ExposureCell'
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
+import { AdvancedSettingsModal } from "./AdvancedSettingsModal";
 
 
-function PlayerTable({ sport, data, setOnlyUseMine, slateId, setClearedSearch }) {
+function PlayerTable({ sport, data, setOnlyUseMine, slateId, setClearedSearch, setStackData, stackData }) {
     const isMedium = useMediaQuery((theme) => theme.breakpoints.down('md'));
     const defaultPageSize = isMedium ? 10 : 25
+    const [openAdvancedSettingsModal, setOpenAdvancedSettingsModal] = React.useState(false)
     // Define columns
     const columns = React.useMemo(() => [
         {
@@ -193,20 +195,31 @@ function PlayerTable({ sport, data, setOnlyUseMine, slateId, setClearedSearch })
 
 
     const isMobile = useMediaQuery((theme) => theme.breakpoints.down('md'));
+    let stacking = false
+    if (stackData['WR-same'] !== 0 || stackData['TE-same'] !== 0 || stackData['WR-opp'] !== 0 || stackData['TE-opp'] !== 0) {
+        stacking = true
+    }
 
     return (
         <div>
-
+            <AdvancedSettingsModal openAdvancedSettingsModal={openAdvancedSettingsModal} setOpenAdvancedSettingsModal={setOpenAdvancedSettingsModal} setStackData={setStackData} stackData={stackData} />
             <div>
                 <Grid container direction='row' justifyContent='space-between' alignItems='flex-end' spacing={2}>
-                    <Grid item xs={7}>
-                        <TextField size='small' id="filled-search" label="Search Player" type="search" variant="filled" value={globalFilter || ''} onChange={handleSearchChange} />
+                    <Grid item sm={4} xs={5}>
+                        <TextField size='5vh' id="filled-search" label="Search Player" type="search" variant="filled" value={globalFilter || ''} onChange={handleSearchChange} />
                     </Grid>
                     <Grid item>
-                        <Grid style={{ marginBottom: '1vh' }} container direction='row' justifyContent='flex-end' alignItems='center' spacing={2}>
+                        <Grid style={{ marginBottom: '1vh' }} container direction='row' justifyContent='flex-end' alignItems='center' spacing={0}>
+                            <Grid item>
+                                {sport === 'nfl' && (
+                                    <Grid item>
+                                        <Button sx={{ mr: 2 }} size={isMedium ? 'small' : 'medium'} onClick={() => setOpenAdvancedSettingsModal(true)} variant={stacking ? 'contained' : 'outlined'} color='secondary'>{isMedium ? 'QB' : 'QB Stack Settings'}</Button>
+                                    </Grid>
+                                )}
+                            </Grid>
                             <Grid item>
                                 {isMobile ? (
-                                    <Button onClick={handleOnlyUseClick} variant='outlined' color='secondary'>{!isFilterActive ? 'Only Use Mine' : 'Use All'}</Button>
+                                    <Button size='small' onClick={handleOnlyUseClick} variant='outlined' color='secondary'>{!isFilterActive ? 'Only Use Mine' : 'Use All'}</Button>
                                 ) : (
                                     <Button onClick={handleOnlyUseClick} variant='outlined' color='secondary'>{!isFilterActive ? 'Only Use My Projections' : 'Use All Projections'}</Button>
                                 )}

@@ -8,10 +8,8 @@ import { UserContext } from './UserProvider';
 import { useMutation } from 'react-query'
 import { ConfirmErrorModal } from './ConfirmErrorModal';
 import GLPK from 'glpk.js'
-
 export const LockedContext = React.createContext()
 export const UserSettingsContext = React.createContext()
-
 
 function SlateInfo({ sport, slate, setOptimizedLineups, exposures, setExposures, optimizedLineups, setSelectedOpto, selectedOpto }) {
     const isMobile = useMediaQuery((theme) => theme.breakpoints.down('md'));
@@ -20,6 +18,7 @@ function SlateInfo({ sport, slate, setOptimizedLineups, exposures, setExposures,
     const optoApiUrl = `${config.apiUrl}${sport}/api/authenticated-optimize/`;
     const apiUrl = token ? `${config.apiUrl}${sport}/api/authenticated-slate-info/${slate.id}` : `${config.apiUrl}${sport}/api/unauthenticated-slate-info/${slate.id}`
     const [lockedData, setLockedData] = React.useState({ 'count': 0, 'salary': 0 })
+    const [stackData, setStackData] = React.useState({ 'WR-same': 0, 'TE-same': 0, 'WR-opp': 0, 'TE-opp': 0 })
     const [tab, setTab] = React.useState(0)
     const [userSettings, setUserSettings] = React.useState({ 'uniques': 3, 'min-salary': 45000, 'max-salary': 50000, 'max-players-per-team': 5, 'num-lineups': 20, 'hittersVsPitcher': 0, 'offenseVsDefense': 0 })
     const optoCount = optimizedLineups['count']
@@ -88,6 +87,20 @@ function SlateInfo({ sport, slate, setOptimizedLineups, exposures, setExposures,
         let rbList = []
         let wrList = []
         setButtonLoading(true);
+        const teams = data['slate-info'].teams
+        const qbStackLists = teams.reduce((acc, team) => {
+            acc[team.abbrev] = {
+                sameTeamWr: [],
+                sameTeamTe: [],
+                oppWr: [],
+                oppTe: []
+            };
+            return acc;
+        }, {});
+        const qbTeams = teams.reduce((acc, team) => {
+            acc[team.abbrev] = [];
+            return acc;
+        }, {});
         const players = data['slate-info'].players
         // Separate each player into each position they are eligible for 
         if (sport === 'nba') {
@@ -158,6 +171,29 @@ function SlateInfo({ sport, slate, setOptimizedLineups, exposures, setExposures,
                             rbList.push({ 'name': playerVar, 'coef': 1 })
                         } else if (player.eligiblePositions[i] === 'WR') {
                             wrList.push({ 'name': playerVar, 'coef': 1 })
+                            for (let teamStack in qbStackLists) {
+                                if (teamStack === team) {
+                                    qbStackLists[teamStack].sameTeamWr.push({ 'name': player.id + '-WR', 'coef': 1 })
+                                    qbStackLists[teamStack].sameTeamWr.push({ 'name': player.id + '-FLEX', 'coef': 1 })
+                                } else if (teamStack === opp) {
+                                    qbStackLists[teamStack].oppWr.push({ 'name': player.id + '-WR', 'coef': 1 })
+                                    qbStackLists[teamStack].oppWr.push({ 'name': player.id + '-FLEX', 'coef': 1 })
+                                }
+                            }
+                        } else if (player.eligiblePositions[i] === 'TE') {
+                            positionLists[player.eligiblePositions[i]].push({ 'name': playerVar, 'coef': 1 })
+                            for (let teamStack in qbStackLists) {
+                                if (teamStack === team) {
+                                    qbStackLists[teamStack].sameTeamTe.push({ 'name': player.id + '-TE', 'coef': 1 })
+                                    qbStackLists[teamStack].sameTeamTe.push({ 'name': player.id + '-FLEX', 'coef': 1 })
+                                } else if (teamStack === opp) {
+                                    qbStackLists[teamStack].oppTe.push({ 'name': player.id + '-TE', 'coef': 1 })
+                                    qbStackLists[teamStack].oppTe.push({ 'name': player.id + '-FLEX', 'coef': 1 })
+                                }
+                            }
+                        } else if (player.eligiblePositions[i] === 'QB') {
+                            positionLists[player.eligiblePositions[i]].push({ 'name': playerVar, 'coef': 1 })
+                            qbTeams[player.team].push(player)
                         } else {
                             positionLists[player.eligiblePositions[i]].push({ 'name': playerVar, 'coef': 1 })
                         }
@@ -201,7 +237,7 @@ function SlateInfo({ sport, slate, setOptimizedLineups, exposures, setExposures,
         })
         const options = {
             presol: true,
-            tmlim: .625,
+            tmlim: 1,
         };
         const subjectToConstraints = [
             {
@@ -231,6 +267,59 @@ function SlateInfo({ sport, slate, setOptimizedLineups, exposures, setExposures,
             })),
             ...individualPlayerVars
         ];
+        if (sport === 'nfl') {
+            for (let qbTeam in qbTeams) {
+                if (qbTeams.hasOwnProperty(qbTeam)) {
+                    const qbsTeam = qbTeams[qbTeam]
+                    // Same Team Wr's
+                    const wrSameTeamVars = qbStackLists[qbTeam]['sameTeamWr']
+                    for (let i = 0; i < qbsTeam.length; i++) {
+                        wrSameTeamVars.push({ 'name': `${qbsTeam[i].id}-QB`, 'coef': (-1 * stackData['WR-same']) })
+                    }
+                    subjectToConstraints.push({
+                        name: `${qbTeam}-WR-Same-Team-Stack`,
+                        vars: wrSameTeamVars,
+                        bnds: { type: glpk.GLP_LO, ub: 999, lb: 0 }
+
+                    })
+                    // Same Team TE's
+                    const teSameTeamVars = qbStackLists[qbTeam]['sameTeamTe']
+                    for (let i = 0; i < qbsTeam.length; i++) {
+                        teSameTeamVars.push({ 'name': `${qbsTeam[i].id}-QB`, 'coef': (-1 * stackData['TE-same']) })
+                    }
+                    subjectToConstraints.push({
+                        name: `${qbTeam}-TE-Same-Team-Stack`,
+                        vars: teSameTeamVars,
+                        bnds: { type: glpk.GLP_LO, ub: 999, lb: 0 }
+
+                    })
+                    // Opp Team WR's
+                    const oppWrTeamVars = qbStackLists[qbTeam]['oppWr']
+                    for (let i = 0; i < qbsTeam.length; i++) {
+                        oppWrTeamVars.push({ 'name': `${qbsTeam[i].id}-QB`, 'coef': (-1 * stackData['WR-opp']) })
+                    }
+                    subjectToConstraints.push({
+                        name: `${qbTeam}-WR-Opp-Team-Stack`,
+                        vars: oppWrTeamVars,
+                        bnds: { type: glpk.GLP_LO, ub: 999, lb: 0 }
+
+                    })
+                    // Opp Team TE's
+                    const oppTeTeamVars = qbStackLists[qbTeam]['oppTe']
+                    for (let i = 0; i < qbsTeam.length; i++) {
+                        oppTeTeamVars.push({ 'name': `${qbsTeam[i].id}-QB`, 'coef': (-1 * stackData['TE-opp']) })
+                    }
+                    subjectToConstraints.push({
+                        name: `${qbTeam}-TE-Opp-Team-Stack`,
+                        vars: oppTeTeamVars,
+                        bnds: { type: glpk.GLP_LO, ub: 999, lb: 0 }
+
+                    })
+
+                }
+            }
+        }
+
         if (sport === 'mlb') {
             subjectToConstraints.push({
                 name: 'max_ofs',
@@ -270,7 +359,6 @@ function SlateInfo({ sport, slate, setOptimizedLineups, exposures, setExposures,
                     subjectToConstraints.push(additionalConstraints[additionalConstraints.length - 1])
                 }
                 subjectToConstraints.push(...exposureConstraints)
-                console.log(subjectToConstraints)
                 const res = await glpk.solve({
                     name: `Optimize_Lineups_${i}`,
                     objective: {
@@ -500,9 +588,9 @@ function SlateInfo({ sport, slate, setOptimizedLineups, exposures, setExposures,
 
     const memoizedPlayerTable = React.useMemo(
         () => (
-            <PlayerTable sport={sport} setOnlyUseMine={setOnlyUseMine} setClearedSearch={setClearedSearch} data={playerData} slateId={slate.id} />
+            <PlayerTable sport={sport} setOnlyUseMine={setOnlyUseMine} setClearedSearch={setClearedSearch} setStackData={setStackData} stackData={stackData} data={playerData} slateId={slate.id} />
         ),
-        [playerData, slate.id, setOnlyUseMine, sport]
+        [playerData, slate.id, setOnlyUseMine, sport, setStackData, stackData]
     );
 
     return (
