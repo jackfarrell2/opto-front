@@ -16,7 +16,7 @@ function LineupCardBody({ lineup }) {
     if (sport === 'mlb') {
         playerInfo = ['P1', 'P2', 'C', 'FB', 'SB', 'TB', 'SS', 'OF1', 'OF2', 'OF3']
     } else if (sport === 'nfl') {
-        playerInfo = ['QB', 'RB1', 'RB2', 'WR1', 'WR2', 'WR3', 'TE', 'DST', 'FLEX']
+        playerInfo = ['QB', 'RB1', 'RB2', 'WR1', 'WR2', 'WR3', 'TE', 'FLEX', 'DST']
     } else {
         playerInfo = ['PG', 'SG', 'SF', 'PF', 'C', 'G', 'F', 'UTIL']
     }

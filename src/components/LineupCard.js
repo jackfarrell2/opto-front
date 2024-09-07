@@ -3,6 +3,7 @@ import { LineupCardBody } from './LineupCardBody'
 import { LineupCardHeader } from './LineupCardHeader'
 
 function LineupCard({ lineup, index }) {
+    console.log(lineup)
     return (
         <Paper elevation={15} style={{ margin: '1vh' }}>
             <Container disableGutters>
