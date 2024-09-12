@@ -237,7 +237,7 @@ function SlateInfo({ sport, slate, setOptimizedLineups, exposures, setExposures,
         })
         const options = {
             presol: true,
-            tmlim: 1,
+            tmlim: 1.5,
         };
         const subjectToConstraints = [
             {
