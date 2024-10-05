@@ -1,70 +1,53 @@
-# Getting Started with Create React App
+# DraftKings Lineup Optimizer
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Overview
+Welcome to the DraftKings Lineup Optimizer! This application enables users to create optimal lineups for DraftKings contests. You can utilize the default projections or upload your own. The optimizer calculates the highest-scoring lineups by utilizing linear programming techniques while adhering to all contest constraints and your custom settings.
 
-## Available Scripts
+This is the frontend. If you are looking for the backend please navigate to the "opto-back" project: [GitHub Repository](https://github.com/jackfarrell2/opto-back).
 
-In the project directory, you can run:
+Check out the deployed project at [dfsopto.com](https://dfsopto.com).
 
-### `npm start`
+## Features
+- **Default Projections**: Utilize built-in projections for players to quickly generate lineups.
+- **Custom Projections**: Upload your own player projections to tailor the optimizer to your strategy.
+- **Optimal Lineup Generation**: Create the highest scoring lineups based on the salary cap and your specific constraints.
+- **Flexible Constraints**:
+  - Unique players per lineup
+  - Maximum players allowed from a single team
+  - Maximum Offensive Players vs. Defense/Special Teams (DST)
+  - Custom stacking rules (e.g., always include a quarterback with two of their wide receivers)
+  - Exposure Caps (e.g., only allow this player in 75% of lineups max)
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## Getting Started
+### Homepage
+The homepage provides an intuitive interface to start building your lineups. You can choose between using default projections or uploading your own.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+### Uploading Projections
+To upload your custom player projections:
+1. Navigate to the "Upload Projections" section.
+2. You have two options:
+   - **Copy and Paste**: Copy and paste your player data directly into the spreadsheet available in the browser.
+   - **Upload a File**: Alternatively, choose your file containing the player data and submit it for processing.
 
-### `npm test`
+### Generating Lineups
+To generate optimal lineups:
+1. Type in the number of lineups you wish to generate. 
+2. Select the constraints you want to apply:
+   - Set the salary cap.
+   - Define unique players and maximum players per team.
+   - Choose any stacking rules.
+   - Set player exposures (max percentage of lineups a player can come up in).
+3. Click on "Generate Lineups" to view your optimal lineup recommendations.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### Analyzing Lineups
+Once the lineups are generated:
+- Review the suggested lineups based on your settings.
+- Each lineup will display player selections, total projection, and total salary used.
+- If you wish, adjust your settings and regenerate!
 
-### `npm run build`
+## Additional Features
+- **Save Lineups**: If you are logged in your lineups will automatically save.
+- **Export Options**: Download lineups in CSV format for easy upload to DraftKings.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+## Resources
+For more information, please visit our website at [dfsopto.com](https://dfsopto.com).
