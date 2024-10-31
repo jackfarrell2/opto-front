@@ -140,14 +140,7 @@ function PlayerTable({ sport, data, setOnlyUseMine, slateId, setClearedSearch, s
     // Search 
     function handleSearchChange(e) {
         const newFilterValue = e.target.value;
-        const filteredRows = page.filter(row => {
-            const rowString = Object.values(row.values).join(' ');
-            return rowString.toLowerCase().includes(newFilterValue.toLowerCase());
-        });
-
-        if (filteredRows.length > 0 || newFilterValue === '') {
-            setGlobalFilter(newFilterValue);
-        }
+        setGlobalFilter(newFilterValue);
     }
 
     // Retrieve stored data from local storage
