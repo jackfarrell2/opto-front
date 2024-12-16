@@ -11,6 +11,7 @@ function Footer() {
         backgroundColor: "primary.main",
         paddingTop: "1rem",
         paddingBottom: "1rem",
+        marginTop: '5rem'
       }}
     >
       <Container maxWidth="lg">
@@ -19,9 +20,6 @@ function Footer() {
             <Grid container direction='row' justifyContent='center' alignItems='center' spacing={1}>
               <Grid item xs={12} alignItems='center'>
                 <Typography textAlign='center' color="common.white" variant="h6" sx={{ mb: '.7vh' }}>DFS Opto</Typography>
-              </Grid>
-              <Grid item xs={12} alignItems='center' justifyContent='center'>
-                <Typography textAlign='center' color="common.white" variant="body2">Welcome to DFS Opto! This tool is completely free to use! You may build as many lineups as you need.</Typography>
               </Grid>
               <Grid item>
                 <CopyrightIcon fontSize="small" sx={{ color: 'white' }} />
