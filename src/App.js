@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Mlb from "./pages/mlb";
 import Nba from "./pages/nba";
 import Nfl from "./pages/nfl";
+import Home from "./pages/home";
 import { Navbar } from "./components/Navbar";
 import { SignInModal } from "./components/SignInModal";
 import { Footer } from "./components/Footer";
@@ -57,7 +58,7 @@ function App() {
         <Router>
           <Navbar handleOpen={handleOpen} />
           <Routes>
-            <Route exact path="/" element={<Nfl />} />
+            <Route exact path="/" element={<Home />} />
             <Route path='/activate/:token' element={<ActivationPage />} />
             <Route path='/mlb' element={<Mlb />} />
             <Route path='/nba' element={<Nba />} />

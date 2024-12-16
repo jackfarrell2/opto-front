@@ -28,6 +28,7 @@
     "react-spreadsheet": "^0.9.4",
     "react-table": "^7.8.0",
     "react-window": "^1.8.10",
+    "styled-components": "^6.1.13",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
