@@ -7,11 +7,13 @@ import { HomeBodyHelper } from '../components/HomeBodyHelper'
 
 function Home() {
     const isMobile = useMediaQuery((theme) => theme.breakpoints.down('xl'));
+    const isExtraSmall = useMediaQuery('(max-width:380px)');
+
     return (
-        <Box sx={page}>
+        <Box sx={page} style={{ marginBottom: isExtraSmall ? '40vh' : '0vh' }}>
             <Grid style={{ height: '100vh' }} container direction='row' justifyContent='center' alignItems='stretch' spacing={10}>
                 <Grid item xs={12} sm={12} md={12} lg={6}>
-                    <Grid style={{ height: '100%' }} container direction='row' justifyContent='center' alignItems='flex-start'>
+                    <Grid style={{ height: '100% ' }} container direction='row' justifyContent='center' alignItems='flex-start'>
                         <Grid item xs={12}>
                             <HomeBody />
                         </Grid>
