@@ -1,6 +1,7 @@
 import React from 'react';
 import { Grid, Typography, useMediaQuery } from '@mui/material'
 import DFSOptoTutorial from '../util/DFSOptoTutorial.mp4';
+import Poster from '../util/poster.png';
 
 function HomeBodyHelper() {
     const isMobile = useMediaQuery((theme) => theme.breakpoints.down('sm'));
@@ -10,7 +11,7 @@ function HomeBodyHelper() {
                 <Typography>Need some help getting started? Check out the tutorial below!</Typography>
             </Grid>
             <Grid item>
-                <video src={DFSOptoTutorial} width={isMobile ? '300' : '600'} controls>
+                <video src={DFSOptoTutorial} width={isMobile ? '250' : '600'} controls poster={Poster}>
                     Your browser does not support the video tag.
                 </video>
             </Grid>
