@@ -10,7 +10,7 @@ function HomeBodyHelper() {
                 <Typography>Need some help getting started? Check out the tutorial below!</Typography>
             </Grid>
             <Grid item>
-                <video src={DFSOptoTutorial} width={isMobile ? '350' : '600'} controls>
+                <video src={DFSOptoTutorial} width={isMobile ? '300' : '600'} controls>
                     Your browser does not support the video tag.
                 </video>
             </Grid>
