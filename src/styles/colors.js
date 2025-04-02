@@ -56,6 +56,7 @@ export const mlbTeamColors = {
     'NYM': '#002D72',
     'NYY': '#003087',
     'OAK': '#003831',
+    'ATH': '#003831',
     'PHI': '#E81828',
     'PIT': '#27251F',
     'SD': '#2F241D',
