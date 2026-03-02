@@ -23,7 +23,7 @@ function Nba() {
 
     // Fetch slates
     const { data: slates, isLoading: slatesLoading } = useQuery('slates', async () => {
-        const response = await fetch(`${apiUrl}nba/slates`)
+        const response = await fetch(`${apiUrl}nba/slates/`)
         if (!response.ok) {
             throw new Error('Failed to fetch slates')
         }

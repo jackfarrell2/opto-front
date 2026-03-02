@@ -32,8 +32,8 @@ function Footer() {
                 </Box>
               </Grid>
               <Grid item xs={12}>
-                <a href="mailto:support@dfsopto.com" style={{ color: 'inherit', textDecoration: 'none' }}>
-                  <Typography textAlign='center' color='common.white' variant='subtitle2'>Contact: support@dfsopto.com</Typography>
+                <a href="mailto:jackfarrell860@gmail.com" style={{ color: 'inherit', textDecoration: 'none' }}>
+                  <Typography textAlign='center' color='common.white' variant='subtitle2'>Contact: jackfarrell860@gmail.com</Typography>
                 </a>
               </Grid>
             </Grid>
