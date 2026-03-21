@@ -22,7 +22,7 @@ function SlateInfo({ sport, slate, setOptimizedLineups, exposures, setExposures,
     const [lockedData, setLockedData] = React.useState({ 'count': 0, 'salary': 0 })
     const [stackData, setStackData] = React.useState({ 'WR-same': 0, 'TE-same': 0, 'WR-opp': 0, 'TE-opp': 0 })
     const [tab, setTab] = React.useState(0)
-    const [userSettings, setUserSettings] = React.useState({ 'uniques': 3, 'min-salary': 45000, 'max-salary': 50000, 'max-players-per-team': 5, 'num-lineups': 20, 'hittersVsPitcher': 0, 'offenseVsDefense': 0, 'projection-cutoff': 1 })
+    const [userSettings, setUserSettings] = React.useState({ 'uniques': 3, 'min-salary': 45000, 'max-salary': 50000, 'max-players-per-team': 5, 'num-lineups': 20, 'hittersVsPitcher': 0, 'offenseVsDefense': 0, 'projection-cutoff': 0 })
     const optoCount = optimizedLineups['count']
     const [buttonLoading, setButtonLoading] = React.useState(false)
     const [failedOptimizeModalOpen, setFailedOptimizeModalOpen] = React.useState(false)
