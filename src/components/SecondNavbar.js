@@ -11,9 +11,9 @@ import { ConfirmModal } from "./ConfirmModal";
 function SecondNavbar({ sport, setSlateModal, slate, slates, setSlate }) {
     const isMobile = useMediaQuery((theme) => theme.breakpoints.down('md'));
     const isXtraSmall = useMediaQuery((theme) => theme.breakpoints.down('sm'));
-    const [openConfirmModal, setOpenConfirmModal] = React.useState(false)
-    const { user } = React.useContext(UserContext)
-    let userStaff = false
+    const [openConfirmModal, setOpenConfirmModal] = React.useState(false);
+    const { user } = React.useContext(UserContext);
+    let userStaff = false;
     if (user) {
         userStaff = user.isStaff
     }

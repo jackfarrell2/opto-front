@@ -4,6 +4,7 @@ import PropTypes from 'prop-types'
 import { SimpleSettings } from './SimpleSettings';
 import { UserSettingsContext } from './SlateInfo'
 import { ExposurePanel } from './ExposurePanel';
+import { StackSummaryPanel } from './StackSummaryPanel';
 import { LoadingButton } from '@mui/lab';
 import { UserContext } from './UserProvider';
 import { ConfirmSignUpModal } from './ConfirmSignUpModal';
@@ -43,7 +44,7 @@ function a11yProps(index) {
     };
 }
 
-function SettingsPanel({ sport, tab, setTab, exposures, selectedOpto, buttonLoading, handleCancelOptimize, handleOptimization, optoLen }) {
+function SettingsPanel({ sport, tab, setTab, exposures, selectedOpto, buttonLoading, handleCancelOptimize, handleOptimization, optoLen, jackStackSummary }) {
     const isMobile = useMediaQuery((theme) => theme.breakpoints.down('md'));
     const { user } = React.useContext(UserContext)
     const [openConfirmModal, setOpenConfirmModal] = React.useState(false)
@@ -79,6 +80,7 @@ function SettingsPanel({ sport, tab, setTab, exposures, selectedOpto, buttonLoad
     }
 
     function handleOptimizeClick() {
+        console.log('user is', user);
         handleOptimization()
         if (!user && !showedWarning) {
             setOpenConfirmModal(true)
@@ -96,8 +98,9 @@ function SettingsPanel({ sport, tab, setTab, exposures, selectedOpto, buttonLoad
                             <Box>
                                 <Box sx={{ borderBottom: 1, borderColor: 'divider', textColor: 'secondary' }}>
                                     <Tabs value={tab} onChange={handleTabChange} textColor='inherit' indicatorColor='inherit' variant='fullWidth'>
-                                        <Tab sx={{ width: '50%', color: 'white', backgroundColor: 'primary.main' }} label='Settings' {...a11yProps(0)} />
-                                        <Tab sx={{ width: '50%', color: 'white', backgroundColor: 'primary.main' }} label='Exposures' {...a11yProps(1)} />
+                                        <Tab sx={{ color: 'white', backgroundColor: 'primary.main' }} label='Settings' {...a11yProps(0)} />
+                                        <Tab sx={{ color: 'white', backgroundColor: 'primary.main' }} label='Exposures' {...a11yProps(1)} />
+                                        {jackStackSummary && jackStackSummary.length > 0 && <Tab sx={{ color: 'white', backgroundColor: 'primary.main' }} label='Stacks' {...a11yProps(2)} />}
                                     </Tabs>
                                 </Box>
                                 <CustomTabPanel sx={{ width: '100%' }} value={tab} index={0}>
@@ -106,6 +109,11 @@ function SettingsPanel({ sport, tab, setTab, exposures, selectedOpto, buttonLoad
                                 <CustomTabPanel sx={{ width: '100%' }} value={tab} index={1}>
                                     <ExposurePanel sport={sport} optoLen={optoLen} exposures={exposures} selectedOpto={selectedOpto} />
                                 </CustomTabPanel>
+                                {jackStackSummary && jackStackSummary.length > 0 && (
+                                    <CustomTabPanel sx={{ width: '100%' }} value={tab} index={2}>
+                                        <StackSummaryPanel stackSummary={jackStackSummary} />
+                                    </CustomTabPanel>
+                                )}
                             </Box>
                         </Grid>
                     </Grid>

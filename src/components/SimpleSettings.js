@@ -10,6 +10,8 @@ import { useQuery } from 'react-query'
 import { UserSettingsContext } from './SlateInfo';
 import { HittersVsPitcher } from './HittersVsPitcher';
 import { OffenseVsDefense } from './OffenseVsDefense';
+import { ProjectionCutoff } from './ProjectionCutoff';
+import { MLBStackSettings } from './MLBStackSettings';
 
 function SimpleSettings({ sport }) {
     const apiUrl = `${config.apiUrl}${sport}/api/user-opto-settings/`
@@ -29,7 +31,7 @@ function SimpleSettings({ sport }) {
             throw new Error('Failed to fetch players')
         }
         const data = await response.json()
-        setUserSettings({ ...data })
+        setUserSettings(prev => ({ ...prev, ...data }))
         return data
     },
         {
@@ -52,8 +54,10 @@ function SimpleSettings({ sport }) {
                     <Grid item><MaxPlayersPerTeam sport={sport} userSettings={userSettings} setUserSettings={setUserSettings} /></Grid>
                     {sport === 'mlb' && <Grid item><HittersVsPitcher userSettings={userSettings} setUserSettings={setUserSettings} /></Grid>}
                     {sport === 'nfl' && <Grid item><OffenseVsDefense userSettings={userSettings} setUserSettings={setUserSettings} /></Grid>}
+                    <Grid item><ProjectionCutoff sport={sport} userSettings={userSettings} setUserSettings={setUserSettings} /></Grid>
                     <Grid item><SalaryField sport={sport} variant='min' userSettings={userSettings} setUserSettings={setUserSettings} /></Grid>
                     <Grid item><SalaryField sport={sport} variant='max' userSettings={userSettings} setUserSettings={setUserSettings} /></Grid>
+                    {sport === 'mlb' && <Grid item sx={{ width: '100%' }}><MLBStackSettings /></Grid>}
                 </Grid>
             )}
         </>
