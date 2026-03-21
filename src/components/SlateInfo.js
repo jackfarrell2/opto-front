@@ -344,6 +344,12 @@ function SlateInfo({ sport, slate, setOptimizedLineups, exposures, setExposures,
             })
             if (mlbStackRules.length > 0) {
                 let anyRuleIdx = 0
+                // Collect teams already pinned by specific-team rules so ANY rules exclude them
+                const pinnedTeams = new Set(
+                    mlbStackRules.filter(r => r.team !== 'ANY').map(r => r.team)
+                )
+                // Track z-var names per team across all ANY rules, for cross-rule uniqueness constraints
+                const zVarsByTeam = {}
                 for (const rule of mlbStackRules) {
                     if (rule.team !== 'ANY') {
                         const teamHitters = hitterTeamLists[rule.team] || []
@@ -361,8 +367,8 @@ function SlateInfo({ sport, slate, setOptimizedLineups, exposures, setExposures,
                             }
                         }
                     } else {
-                        // "Any team" — use binary selection variables: z_T=1 means this team must have >= count hitters
-                        const anyTeams = Object.keys(hitterTeamLists)
+                        // "Any team" — exclude teams already covered by a specific-team rule
+                        const anyTeams = Object.keys(hitterTeamLists).filter(t => !pinnedTeams.has(t))
                         if (anyTeams.length > 0) {
                             const zVarNames = anyTeams.map(t => `z_r${anyRuleIdx}_${t}`)
                             // At least one team must be selected
@@ -382,9 +388,24 @@ function SlateInfo({ sport, slate, setOptimizedLineups, exposures, setExposures,
                                     ],
                                     bnds: { type: glpk.GLP_LO, ub: 999, lb: 0 }
                                 })
+                                // Accumulate z-vars per team for cross-rule uniqueness
+                                if (!zVarsByTeam[team]) zVarsByTeam[team] = []
+                                zVarsByTeam[team].push(zVarNames[ti])
                             }
                             playerVars.push(...zVarNames)
                             anyRuleIdx++
+                        }
+                    }
+                }
+                // Ensure no team is selected as the stack team for more than one ANY rule
+                if (anyRuleIdx > 1) {
+                    for (const team of Object.keys(zVarsByTeam)) {
+                        if (zVarsByTeam[team].length > 1) {
+                            subjectToConstraints.push({
+                                name: `any_stack_unique_${team.toLowerCase()}`,
+                                vars: zVarsByTeam[team].map(v => ({ name: v, coef: 1 })),
+                                bnds: { type: glpk.GLP_UP, ub: 1, lb: 0 }
+                            })
                         }
                     }
                 }
@@ -909,11 +930,11 @@ function SlateInfo({ sport, slate, setOptimizedLineups, exposures, setExposures,
                     const filteredConstraints = solveConstraints.filter(c => !removeExposureConstraints.includes(c.name))
                     filteredConstraints.push(...exposureConstraints)
 
-                    // Relax the primary team's max constraint
+                    // Relax the primary team's max constraint to exactly 5 (the stack size)
                     const primaryConstraintName = `${primaryTeam.toLowerCase()} max`
                     for (let c = 0; c < filteredConstraints.length; c++) {
                         if (filteredConstraints[c].name === primaryConstraintName) {
-                            filteredConstraints[c] = { ...filteredConstraints[c], bnds: { type: glpk.GLP_UP, ub: totalPlayers, lb: 0 } }
+                            filteredConstraints[c] = { ...filteredConstraints[c], bnds: { type: glpk.GLP_UP, ub: 5, lb: 0 } }
                             break
                         }
                     }
