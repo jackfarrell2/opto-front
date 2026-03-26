@@ -1,15 +1,17 @@
 import React from 'react'
-import { Grid, Tabs, Tab, Box, Typography, TextField, IconButton, useMediaQuery, Switch, FormControlLabel } from '@mui/material'
+import { Grid, Tabs, Tab, Box, Typography, TextField, IconButton, useMediaQuery, Switch, FormControlLabel, Button } from '@mui/material'
 import PropTypes from 'prop-types'
 import { SimpleSettings } from './SimpleSettings';
 import { UserSettingsContext } from './SlateInfo'
 import { ExposurePanel } from './ExposurePanel';
 import { StackSummaryPanel } from './StackSummaryPanel';
+import { StackRankPanel } from './StackRankPanel';
 import { LoadingButton } from '@mui/lab';
 import { UserContext } from './UserProvider';
 import { ConfirmSignUpModal } from './ConfirmSignUpModal';
 import CalculateIcon from '@mui/icons-material/Calculate';
 import CancelIcon from '@mui/icons-material/Cancel';
+import BarChartIcon from '@mui/icons-material/BarChart';
 
 function CustomTabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -44,7 +46,7 @@ function a11yProps(index) {
     };
 }
 
-function SettingsPanel({ sport, tab, setTab, exposures, selectedOpto, buttonLoading, handleCancelOptimize, handleOptimization, optoLen, jackStackSummary, useJackOpto, setUseJackOpto }) {
+function SettingsPanel({ sport, tab, setTab, exposures, selectedOpto, buttonLoading, handleCancelOptimize, handleOptimization, optoLen, jackStackSummary, useJackOpto, setUseJackOpto, stackRankResults, handleStackRank }) {
     const isMobile = useMediaQuery((theme) => theme.breakpoints.down('md'));
     const { user } = React.useContext(UserContext)
     const [openConfirmModal, setOpenConfirmModal] = React.useState(false)
@@ -88,6 +90,11 @@ function SettingsPanel({ sport, tab, setTab, exposures, selectedOpto, buttonLoad
         }
     }
 
+    const hasStackSummary = jackStackSummary && jackStackSummary.length > 0
+    const hasStackRank = stackRankResults && stackRankResults.length > 0
+    const stacksTabIdx = hasStackSummary ? 2 : null
+    const rankTabIdx = hasStackRank ? (hasStackSummary ? 3 : 2) : null
+
     return (
         <>
             <ConfirmSignUpModal openConfirmModal={openConfirmModal} setOpenConfirmModal={setOpenConfirmModal}></ConfirmSignUpModal>
@@ -100,7 +107,8 @@ function SettingsPanel({ sport, tab, setTab, exposures, selectedOpto, buttonLoad
                                     <Tabs value={tab} onChange={handleTabChange} textColor='inherit' indicatorColor='inherit' variant='fullWidth'>
                                         <Tab sx={{ color: 'white', backgroundColor: 'primary.main' }} label='Settings' {...a11yProps(0)} />
                                         <Tab sx={{ color: 'white', backgroundColor: 'primary.main' }} label='Exposures' {...a11yProps(1)} />
-                                        {jackStackSummary && jackStackSummary.length > 0 && <Tab sx={{ color: 'white', backgroundColor: 'primary.main' }} label='Stacks' {...a11yProps(2)} />}
+                                        {hasStackSummary && <Tab sx={{ color: 'white', backgroundColor: 'primary.main' }} label='Stacks' {...a11yProps(stacksTabIdx)} />}
+                                        {hasStackRank && <Tab sx={{ color: 'white', backgroundColor: 'primary.main' }} label='Stack Value' {...a11yProps(rankTabIdx)} />}
                                     </Tabs>
                                 </Box>
                                 <CustomTabPanel sx={{ width: '100%' }} value={tab} index={0}>
@@ -109,9 +117,14 @@ function SettingsPanel({ sport, tab, setTab, exposures, selectedOpto, buttonLoad
                                 <CustomTabPanel sx={{ width: '100%' }} value={tab} index={1}>
                                     <ExposurePanel sport={sport} optoLen={optoLen} exposures={exposures} selectedOpto={selectedOpto} />
                                 </CustomTabPanel>
-                                {jackStackSummary && jackStackSummary.length > 0 && (
-                                    <CustomTabPanel sx={{ width: '100%' }} value={tab} index={2}>
+                                {hasStackSummary && (
+                                    <CustomTabPanel sx={{ width: '100%' }} value={tab} index={stacksTabIdx}>
                                         <StackSummaryPanel stackSummary={jackStackSummary} />
+                                    </CustomTabPanel>
+                                )}
+                                {hasStackRank && (
+                                    <CustomTabPanel sx={{ width: '100%' }} value={tab} index={rankTabIdx}>
+                                        <StackRankPanel stackRankResults={stackRankResults} />
                                     </CustomTabPanel>
                                 )}
                             </Box>
@@ -127,6 +140,19 @@ function SettingsPanel({ sport, tab, setTab, exposures, selectedOpto, buttonLoad
                                     label={<Typography variant='caption'>{useJackOpto ? 'Jack Mode' : 'Default Mode'}</Typography>}
                                     labelPlacement='end'
                                 />
+                            </Grid>
+                        )}
+                        {sport === 'mlb' && user?.isJack && useJackOpto && (
+                            <Grid item xs={12}>
+                                <Button
+                                    onClick={handleStackRank}
+                                    size='small'
+                                    variant='outlined'
+                                    color='secondary'
+                                    startIcon={<BarChartIcon />}
+                                >
+                                    Rank Stacks
+                                </Button>
                             </Grid>
                         )}
                         <Grid item xs={12}>

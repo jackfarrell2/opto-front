@@ -33,8 +33,20 @@ function SlateInfo({ sport, slate, setOptimizedLineups, exposures, setExposures,
     const [jackStackSummary, setJackStackSummary] = React.useState([])
     const [mlbStackRules, setMlbStackRules] = React.useState([])
     const [useJackOpto, setUseJackOpto] = React.useState(true)
+    const [stackRankResults, setStackRankResults] = React.useState([])
+    const isFirstRender = React.useRef(true)
 
     React.useEffect(() => {
+        if (user?.isJack) {
+            setUserSettings(prev => ({ ...prev, 'projection-cutoff': 1 }))
+        }
+    }, [user?.isJack])
+
+    React.useEffect(() => {
+        if (isFirstRender.current) {
+            isFirstRender.current = false
+            return
+        }
         setTab(1)
     }, [selectedOpto])
 
@@ -673,11 +685,77 @@ function SlateInfo({ sport, slate, setOptimizedLineups, exposures, setExposures,
         cancelledRef.current = true
     };
 
+    const handleStackRank = () => {
+        const players = data['slate-info'].players
+        const teams = data['slate-info'].teams
+        const numCombos = 10
+        const minProj = 1
+        const results = []
+        teams.forEach(team => {
+            const hitters = players.filter(p =>
+                p.team === team.abbrev &&
+                p.eligiblePositions.some(pos => pos !== 'P') &&
+                p.projection.projection >= minProj
+            )
+            if (hitters.length < 5) return
+
+            let totalValue = 0
+            let totalProj = 0
+            let totalSal = 0
+            let validCombos = 0
+
+            for (let c = 0; c < numCombos; c++) {
+                const shuffled = [...hitters].sort(() => Math.random() - 0.5)
+                const combo = shuffled.slice(0, 5)
+                const proj = combo.reduce((sum, p) => sum + p.projection.projection, 0)
+                const sal = combo.reduce((sum, p) => sum + parseInt(p.salary), 0)
+                if (sal > 0) {
+                    totalValue += proj / (sal / 1000)
+                    totalProj += proj
+                    totalSal += sal
+                    validCombos++
+                }
+            }
+
+            if (validCombos > 0) {
+                results.push({
+                    team: team.abbrev,
+                    avgValue: totalValue / validCombos,
+                    avgProj: totalProj / validCombos,
+                    avgSal: totalSal / validCombos,
+                    hitterCount: hitters.length
+                })
+            }
+        })
+
+        results.sort((a, b) => b.avgValue - a.avgValue)
+        if (results.length > 0) {
+            setStackRankResults(results)
+            setTab(jackStackSummary.length > 0 ? 3 : 2)
+        }
+    }
+
     function distributeLineups(rankedTeams, numLineups) {
         const n = rankedTeams.length
         const base = Math.floor(numLineups / n)
         const remainder = numLineups % n
         return rankedTeams.map((_, i) => base + (i < remainder ? 1 : 0))
+    }
+
+    function buildJackAssignments(rankedTeams, numLineups) {
+        const FIRST_BATCH = 20
+        const firstCount = Math.min(FIRST_BATCH, numLineups)
+        const secondCount = numLineups - firstCount
+        const firstDist = distributeLineups(rankedTeams, firstCount)
+        const secondDist = secondCount > 0 ? distributeLineups(rankedTeams, secondCount) : rankedTeams.map(() => 0)
+        const assignments = []
+        for (let i = 0; i < rankedTeams.length; i++) {
+            for (let j = 0; j < firstDist[i]; j++) assignments.push(rankedTeams[i])
+        }
+        for (let i = 0; i < rankedTeams.length; i++) {
+            for (let j = 0; j < secondDist[i]; j++) assignments.push(rankedTeams[i])
+        }
+        return assignments
     }
 
     const handleJackOptimize = async (rankedTeams, variance) => {
@@ -820,14 +898,8 @@ function SlateInfo({ sport, slate, setOptimizedLineups, exposures, setExposures,
             ...individualPlayerVars
         ]
 
-        // Build assignment list: which team each lineup is assigned to
-        const counts = distributeLineups(rankedTeams, userSettings['num-lineups'])
-        const assignments = []
-        for (let i = 0; i < rankedTeams.length; i++) {
-            for (let j = 0; j < counts[i]; j++) {
-                assignments.push(rankedTeams[i])
-            }
-        }
+        // Build assignment list: first 20 evenly distributed, then remainder fills in
+        const assignments = buildJackAssignments(rankedTeams, userSettings['num-lineups'])
 
         // Get all unique team abbrevs from slate
         const allTeamAbbrevs = teams.map(t => t.abbrev)
@@ -1177,7 +1249,7 @@ function SlateInfo({ sport, slate, setOptimizedLineups, exposures, setExposures,
                                     <Divider />
                                 </Grid>
                                 <Grid item lg={3} md={4.1} xs={12}>
-                                    <SettingsPanel sport={sport} handleOptimization={(sport === 'mlb' && user?.isJack && useJackOpto) ? () => setJackOptoModalOpen(true) : handleOptimize} optoLen={optimizedLineups[selectedOpto] ? optimizedLineups[selectedOpto].length : null} clearedSearch={clearedSearch} handleCancelOptimize={handleCancelOptimize} buttonLoading={buttonLoading} tab={tab} setTab={setTab} exposures={exposures} selectedOpto={selectedOpto} jackStackSummary={jackStackSummary} useJackOpto={useJackOpto} setUseJackOpto={setUseJackOpto} />
+                                    <SettingsPanel sport={sport} handleOptimization={(sport === 'mlb' && user?.isJack && useJackOpto) ? () => setJackOptoModalOpen(true) : handleOptimize} optoLen={optimizedLineups[selectedOpto] ? optimizedLineups[selectedOpto].length : null} clearedSearch={clearedSearch} handleCancelOptimize={handleCancelOptimize} buttonLoading={buttonLoading} tab={tab} setTab={setTab} exposures={exposures} selectedOpto={selectedOpto} jackStackSummary={jackStackSummary} useJackOpto={useJackOpto} setUseJackOpto={setUseJackOpto} stackRankResults={stackRankResults} handleStackRank={handleStackRank} />
                                 </Grid>
                             </Grid>
                         </UserSettingsContext.Provider>

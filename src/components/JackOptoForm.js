@@ -5,7 +5,7 @@ import { mlbTeamColors } from '../styles/colors'
 
 function JackOptoForm({ teams, onConfirm, setOpenJackOptoModal }) {
     const [rankedTeams, setRankedTeams] = React.useState([])
-    const [variance, setVariance] = React.useState(30)
+    const [variance, setVariance] = React.useState(20)
 
     function handleTeamClick(teamAbbrev) {
         if (rankedTeams.includes(teamAbbrev)) {
@@ -80,7 +80,7 @@ function JackOptoForm({ teams, onConfirm, setOpenJackOptoModal }) {
                         step={5}
                         valueLabelDisplay='auto'
                         valueLabelFormat={v => `${v}%`}
-                        marks={[{ value: 0, label: '0%' }, { value: 30, label: '30%' }, { value: 75, label: '75%' }]}
+                        marks={[{ value: 0, label: '0%' }, { value: 20, label: '20%' }, { value: 75, label: '75%' }]}
                         size='small'
                     />
                 </Grid>
