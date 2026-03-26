@@ -8,7 +8,7 @@ import { ProjectionModal } from "./ProjectionModal";
 import { UserContext } from "./UserProvider"
 import { ConfirmModal } from "./ConfirmModal";
 
-function SecondNavbar({ sport, setSlateModal, slate, slates, setSlate }) {
+function SecondNavbar({ sport, setSlateModal, slate, slates, setSlate, setContestOpen }) {
     const isMobile = useMediaQuery((theme) => theme.breakpoints.down('md'));
     const isXtraSmall = useMediaQuery((theme) => theme.breakpoints.down('sm'));
     const [openConfirmModal, setOpenConfirmModal] = React.useState(false);
@@ -42,6 +42,11 @@ function SecondNavbar({ sport, setSlateModal, slate, slates, setSlate }) {
                         <Grid item>
                             <Button size='small' onClick={() => setOpenConfirmModal(true)} variant='outlined' color='error'>{isXtraSmall ? 'Remove' : 'Remove Projections'}</Button>
                         </Grid>
+                        {(sport === 'mlb' || sport === 'nba') && setContestOpen && !isMobile && (
+                            <Grid item>
+                                <Button size='small' onClick={() => setContestOpen(true)} variant='outlined' color='info'>Analyze a Contest</Button>
+                            </Grid>
+                        )}
                     </Grid>
                 </Toolbar>
             </AppBar>

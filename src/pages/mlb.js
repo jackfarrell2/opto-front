@@ -4,9 +4,11 @@ import { page } from '../styles/classes'
 import { SecondNavbar } from '../components/SecondNavbar'
 import { SlateModal } from '../components/SlateModal'
 import { SlateInfo } from '../components/SlateInfo'
+import { ContestResultsModal } from '../components/ContestResultsModal'
 import config from '../config'
 import { useQuery } from 'react-query'
 import { LineupsDash } from '../components/LineupsDash'
+import { useNavigate } from 'react-router-dom'
 
 function Mlb() {
 
@@ -19,6 +21,8 @@ function Mlb() {
     const [optimizedLineups, setOptimizedLineups] = React.useState({ 'count': 0 })
     const [exposures, setExposures] = React.useState({})
     const [selectedOpto, setSelectedOpto] = React.useState(1)
+    const [contestModalOpen, setContestModalOpen] = React.useState(false)
+    const navigate = useNavigate()
     const apiUrl = `${config.apiUrl}`
 
     // Fetch slates
@@ -50,6 +54,11 @@ function Mlb() {
     return (
         <Box sx={page}>
             {slate && (<SlateModal sport='mlb' slate={slate} openModal={slateModal} setSlateModal={setSlateModal} slates={slates} />)}
+            <ContestResultsModal
+                open={contestModalOpen}
+                onClose={() => setContestModalOpen(false)}
+                onResultsLoaded={(data, slate) => navigate('/mlb/contest-results', { state: { results: data, contestSlate: slate } })}
+            />
             <Divider />
             {(slatesLoading || !slate) ? (
                 <Grid container justifyContent="center" alignItems="center" sx={{ height: '75vh' }}>
@@ -59,7 +68,7 @@ function Mlb() {
                 </Grid>
             ) : (
                 <>
-                    <SecondNavbar sport='mlb' setSlateModal={setSlateModal} slate={slate} slates={slates || []} setSlate={setSlate}></SecondNavbar>
+                    <SecondNavbar sport='mlb' setSlateModal={setSlateModal} slate={slate} slates={slates || []} setSlate={setSlate} setContestOpen={setContestModalOpen}></SecondNavbar>
                     <Divider />
                     <Grid container direction='column' justifyContent='center' alignItems='stretch' spacing={0}>
                         <Grid item style={{ minHeight: '75vh' }}>
@@ -68,7 +77,6 @@ function Mlb() {
                         <Grid item>
                             {slate && <LineupsDash sport='mlb' setExposures={setExposures} optimizedLineups={optimizedLineups} setOptimizedLineups={setOptimizedLineups} selectedOpto={selectedOpto} setSelectedOpto={setSelectedOpto} slate={slate.id} />}
                         </Grid>
-
                     </Grid>
                 </>
             )}

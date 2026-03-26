@@ -1,5 +1,5 @@
 import React from 'react'
-import { Grid, Tabs, Tab, Box, Typography, TextField, IconButton, useMediaQuery } from '@mui/material'
+import { Grid, Tabs, Tab, Box, Typography, TextField, IconButton, useMediaQuery, Switch, FormControlLabel } from '@mui/material'
 import PropTypes from 'prop-types'
 import { SimpleSettings } from './SimpleSettings';
 import { UserSettingsContext } from './SlateInfo'
@@ -44,7 +44,7 @@ function a11yProps(index) {
     };
 }
 
-function SettingsPanel({ sport, tab, setTab, exposures, selectedOpto, buttonLoading, handleCancelOptimize, handleOptimization, optoLen, jackStackSummary }) {
+function SettingsPanel({ sport, tab, setTab, exposures, selectedOpto, buttonLoading, handleCancelOptimize, handleOptimization, optoLen, jackStackSummary, useJackOpto, setUseJackOpto }) {
     const isMobile = useMediaQuery((theme) => theme.breakpoints.down('md'));
     const { user } = React.useContext(UserContext)
     const [openConfirmModal, setOpenConfirmModal] = React.useState(false)
@@ -120,6 +120,15 @@ function SettingsPanel({ sport, tab, setTab, exposures, selectedOpto, buttonLoad
                 </Grid>
                 <Grid item xs={12} style={{ textAlign: 'center', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                     <Grid container direction='row' justifyContent='center' alignItems='flex-end' spacing={!isMobile ? 2 : 1.5}>
+                        {sport === 'mlb' && user?.isJack && (
+                            <Grid item xs={12}>
+                                <FormControlLabel
+                                    control={<Switch checked={useJackOpto} onChange={(e) => setUseJackOpto(e.target.checked)} color='primary' size='small' />}
+                                    label={<Typography variant='caption'>{useJackOpto ? 'Jack Mode' : 'Default Mode'}</Typography>}
+                                    labelPlacement='end'
+                                />
+                            </Grid>
+                        )}
                         <Grid item xs={12}>
                             <TextField sx={{ width: '10vh', textAlign: 'center' }} onChange={handleTotalLineupsChange} id="lineup-count" label="Lineups" value={userSettings['num-lineups']} variant="standard" inputProps={{ style: { textAlign: 'center' } }} />
                         </Grid>

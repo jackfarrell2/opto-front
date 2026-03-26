@@ -7,8 +7,11 @@ import { SlateInfo } from '../components/SlateInfo'
 import config from '../config'
 import { useQuery } from 'react-query'
 import { LineupsDash } from '../components/LineupsDash'
+import { ContestResultsModal } from '../components/ContestResultsModal'
+import { useNavigate } from 'react-router-dom'
 
 function Nba() {
+    const navigate = useNavigate()
 
     React.useEffect(() => {
         document.title = "DFS Opto: NBA";
@@ -19,6 +22,7 @@ function Nba() {
     const [optimizedLineups, setOptimizedLineups] = React.useState({ 'count': 0 })
     const [exposures, setExposures] = React.useState({})
     const [selectedOpto, setSelectedOpto] = React.useState(1)
+    const [contestModalOpen, setContestModalOpen] = React.useState(false)
     const apiUrl = `${config.apiUrl}`
 
     // Fetch slates
@@ -50,6 +54,15 @@ function Nba() {
     return (
         <Box sx={page}>
             {slate && (<SlateModal sport='nba' slate={slate} openModal={slateModal} setSlateModal={setSlateModal} slates={slates} />)}
+            <ContestResultsModal
+                sport='nba'
+                open={contestModalOpen}
+                onClose={() => setContestModalOpen(false)}
+                onResultsLoaded={(data, slate) => {
+                    setContestModalOpen(false)
+                    navigate('/nba/contest-results', { state: { results: data, contestSlate: slate } })
+                }}
+            />
             <Divider />
             {(slatesLoading || !slate) ? (
                 <Grid container justifyContent="center" alignItems="center" sx={{ height: '75vh' }}>
@@ -59,7 +72,7 @@ function Nba() {
                 </Grid>
             ) : (
                 <>
-                    <SecondNavbar sport='nba' setSlateModal={setSlateModal} slate={slate} slates={slates || []} setSlate={setSlate}></SecondNavbar>
+                    <SecondNavbar sport='nba' setSlateModal={setSlateModal} slate={slate} slates={slates || []} setSlate={setSlate} setContestOpen={setContestModalOpen}></SecondNavbar>
                     <Divider />
                     <Grid container direction='column' justifyContent='center' alignItems='stretch' spacing={0}>
                         <Grid item style={{ minHeight: '75vh' }}>

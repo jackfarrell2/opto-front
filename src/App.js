@@ -12,6 +12,8 @@ import config from "./config";
 import { UserProvider } from "./components/UserProvider";
 import { ActivationPage } from './components/ActivationPage';
 import NotFound from './pages/notfound';
+import ContestResults from './pages/contestresults';
+import NbaContestResults from './pages/nbacontestresults';
 import { IntercomChat } from "./components/IntercomChat";
 
 
@@ -63,6 +65,8 @@ function App() {
             <Route path='/mlb' element={<Mlb />} />
             <Route path='/nba' element={<Nba />} />
             <Route path='nfl' element={<Nfl />} />
+            <Route path='/mlb/contest-results' element={<ContestResults />} />
+            <Route path='/nba/contest-results' element={<NbaContestResults />} />
             <Route path='*' Component={NotFound} />
           </Routes>
           <Footer />
