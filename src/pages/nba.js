@@ -58,9 +58,9 @@ function Nba() {
                 sport='nba'
                 open={contestModalOpen}
                 onClose={() => setContestModalOpen(false)}
-                onResultsLoaded={(data, slate) => {
+                onResultsLoaded={(data, contestSlate) => {
                     setContestModalOpen(false)
-                    navigate('/nba/contest-results', { state: { results: data, contestSlate: slate } })
+                    navigate('/nba/contest-results', { state: { results: data, contestSlate } })
                 }}
             />
             <Divider />

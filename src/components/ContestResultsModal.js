@@ -37,6 +37,8 @@ function ContestResultsModal({ open, onClose, onResultsLoaded, sport = 'mlb' }) 
     const handleClose = () => {
         setFile(null)
         setError(null)
+        setSelectedSlateId('')
+        setRecentSlates([])
         onClose()
     }
 

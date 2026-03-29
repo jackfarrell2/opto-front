@@ -542,6 +542,9 @@ function PlayerLookupPanel({ lineupDetails, playerOwnership }) {
                                     {parseFloat(lineup.points) > 0 && (
                                         <Chip label={`${lineup.points} pts`} size='small' variant='outlined' sx={{ fontSize: 11 }} />
                                     )}
+                                    {lineup.total_salary > 0 && (
+                                        <Chip label={`$${lineup.total_salary.toLocaleString()}`} size='small' variant='outlined' sx={{ fontSize: 11, color: '#90EE90', borderColor: '#90EE90' }} />
+                                    )}
                                     {lineup.entry_name && (
                                         <Chip label={lineup.entry_name} size='small' variant='outlined' sx={{ fontSize: 11 }} />
                                     )}

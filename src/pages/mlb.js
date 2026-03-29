@@ -57,7 +57,7 @@ function Mlb() {
             <ContestResultsModal
                 open={contestModalOpen}
                 onClose={() => setContestModalOpen(false)}
-                onResultsLoaded={(data, slate) => navigate('/mlb/contest-results', { state: { results: data, contestSlate: slate } })}
+                onResultsLoaded={(data, contestSlate) => navigate('/mlb/contest-results', { state: { results: data, contestSlate } })}
             />
             <Divider />
             {(slatesLoading || !slate) ? (

@@ -30,11 +30,10 @@ function SlateInfo({ sport, slate, setOptimizedLineups, exposures, setExposures,
     const [onlyUseMine, setOnlyUseMine] = React.useState(false)
     const cancelledRef = React.useRef(false)
     const [jackOptoModalOpen, setJackOptoModalOpen] = React.useState(false)
-    const [jackStackSummary, setJackStackSummary] = React.useState([])
+    const [jackStackSummaries, setJackStackSummaries] = React.useState({})
     const [mlbStackRules, setMlbStackRules] = React.useState([])
     const [useJackOpto, setUseJackOpto] = React.useState(true)
     const [stackRankResults, setStackRankResults] = React.useState([])
-    const isFirstRender = React.useRef(true)
 
     React.useEffect(() => {
         if (user?.isJack) {
@@ -42,13 +41,6 @@ function SlateInfo({ sport, slate, setOptimizedLineups, exposures, setExposures,
         }
     }, [user?.isJack])
 
-    React.useEffect(() => {
-        if (isFirstRender.current) {
-            isFirstRender.current = false
-            return
-        }
-        setTab(1)
-    }, [selectedOpto])
 
     // Fetch slate information
     const { data, isLoading: playersLoading } = useQuery(['players', slate.id], async () => {
@@ -73,6 +65,24 @@ function SlateInfo({ sport, slate, setOptimizedLineups, exposures, setExposures,
             setOptimizedLineups(userOptimizations)
             setSelectedOpto(userOptimizations.count)
             setExposures(userExposures)
+            if (sport === 'mlb' && user?.isJack) {
+                const mlbHitterPositions = ['C', 'FB', 'SB', 'TB', 'SS', 'OF1', 'OF2', 'OF3']
+                const savedStackSummaries = {}
+                for (let i = 0; i < optimizationLength; i++) {
+                    const lineups = data['optimizations'][i]['lineups']
+                    savedStackSummaries[`${i + 1}`] = lineups.map(lineup => {
+                        const teamCounts = {}
+                        mlbHitterPositions.forEach(pos => {
+                            const p = lineup[pos]
+                            if (p?.team) teamCounts[p.team] = (teamCounts[p.team] || 0) + 1
+                        })
+                        const sorted = Object.entries(teamCounts).sort((a, b) => b[1] - a[1])
+                        if (sorted.length === 0) return null
+                        return { primaryTeam: sorted[0][0], secondaryTeam: sorted.length >= 2 ? sorted[1][0] : sorted[0][0] }
+                    }).filter(Boolean)
+                }
+                setJackStackSummaries(savedStackSummaries)
+            }
         }
         return data
     }, {
@@ -531,7 +541,7 @@ function SlateInfo({ sport, slate, setOptimizedLineups, exposures, setExposures,
         const overexposedPlayers = []
         const optoExposures = {}
         const stackSummaryEntries = []
-        if (sport === 'mlb' && user?.isJack) setJackStackSummary([])
+        if (sport === 'mlb' && user?.isJack) setJackStackSummaries(prev => ({ ...prev, [thisOpto]: [] }))
         for (let i = 0; i < userSettings['num-lineups']; i++) {
             const exposureConstraints = []
             const removeExposureConstraints = []
@@ -589,7 +599,7 @@ function SlateInfo({ sport, slate, setOptimizedLineups, exposures, setExposures,
                     const sorted = Object.entries(teamCounts).sort((a, b) => b[1] - a[1])
                     if (sorted.length >= 1) {
                         stackSummaryEntries.push({ primaryTeam: sorted[0][0], secondaryTeam: sorted.length >= 2 ? sorted[1][0] : sorted[0][0] })
-                        setJackStackSummary([...stackSummaryEntries])
+                        setJackStackSummaries(prev => ({ ...prev, [thisOpto]: [...stackSummaryEntries] }))
                     }
                 }
             } else if (sport === 'nfl') {
@@ -731,7 +741,7 @@ function SlateInfo({ sport, slate, setOptimizedLineups, exposures, setExposures,
         results.sort((a, b) => b.avgValue - a.avgValue)
         if (results.length > 0) {
             setStackRankResults(results)
-            setTab(jackStackSummary.length > 0 ? 3 : 2)
+            setTab(3)
         }
     }
 
@@ -764,7 +774,6 @@ function SlateInfo({ sport, slate, setOptimizedLineups, exposures, setExposures,
         let ofList = []
         let pList = []
         setButtonLoading(true)
-        setJackStackSummary([])
         const stackSummaryAccumulator = []
         const teams = data['slate-info'].teams
         const players = data['slate-info'].players
@@ -1071,7 +1080,7 @@ function SlateInfo({ sport, slate, setOptimizedLineups, exposures, setExposures,
             if (bestSecondaryTeam) {
                 usedSecondaryByPrimary[primaryTeam].add(bestSecondaryTeam)
                 stackSummaryAccumulator.push({ primaryTeam, secondaryTeam: bestSecondaryTeam })
-                setJackStackSummary([...stackSummaryAccumulator])
+                setJackStackSummaries(prev => ({ ...prev, [thisOpto]: [...stackSummaryAccumulator] }))
             }
 
             if (bestLineup === null) {
@@ -1249,7 +1258,7 @@ function SlateInfo({ sport, slate, setOptimizedLineups, exposures, setExposures,
                                     <Divider />
                                 </Grid>
                                 <Grid item lg={3} md={4.1} xs={12}>
-                                    <SettingsPanel sport={sport} handleOptimization={(sport === 'mlb' && user?.isJack && useJackOpto) ? () => setJackOptoModalOpen(true) : handleOptimize} optoLen={optimizedLineups[selectedOpto] ? optimizedLineups[selectedOpto].length : null} clearedSearch={clearedSearch} handleCancelOptimize={handleCancelOptimize} buttonLoading={buttonLoading} tab={tab} setTab={setTab} exposures={exposures} selectedOpto={selectedOpto} jackStackSummary={jackStackSummary} useJackOpto={useJackOpto} setUseJackOpto={setUseJackOpto} stackRankResults={stackRankResults} handleStackRank={handleStackRank} />
+                                    <SettingsPanel sport={sport} handleOptimization={(sport === 'mlb' && user?.isJack && useJackOpto) ? () => setJackOptoModalOpen(true) : handleOptimize} optoLen={optimizedLineups[selectedOpto] ? optimizedLineups[selectedOpto].length : null} clearedSearch={clearedSearch} handleCancelOptimize={handleCancelOptimize} buttonLoading={buttonLoading} tab={tab} setTab={setTab} exposures={exposures} selectedOpto={selectedOpto} jackStackSummary={jackStackSummaries[selectedOpto] || []} useJackOpto={useJackOpto} setUseJackOpto={setUseJackOpto} stackRankResults={stackRankResults} handleStackRank={handleStackRank} />
                                 </Grid>
                             </Grid>
                         </UserSettingsContext.Provider>

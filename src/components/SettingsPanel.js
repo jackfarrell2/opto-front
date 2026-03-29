@@ -90,10 +90,10 @@ function SettingsPanel({ sport, tab, setTab, exposures, selectedOpto, buttonLoad
         }
     }
 
-    const hasStackSummary = jackStackSummary && jackStackSummary.length > 0
+    const showStacksTab = sport === 'mlb' && user?.isJack
     const hasStackRank = stackRankResults && stackRankResults.length > 0
-    const stacksTabIdx = hasStackSummary ? 2 : null
-    const rankTabIdx = hasStackRank ? (hasStackSummary ? 3 : 2) : null
+    const stacksTabIdx = showStacksTab ? 2 : null
+    const rankTabIdx = hasStackRank ? (showStacksTab ? 3 : 2) : null
 
     return (
         <>
@@ -107,7 +107,7 @@ function SettingsPanel({ sport, tab, setTab, exposures, selectedOpto, buttonLoad
                                     <Tabs value={tab} onChange={handleTabChange} textColor='inherit' indicatorColor='inherit' variant='fullWidth'>
                                         <Tab sx={{ color: 'white', backgroundColor: 'primary.main' }} label='Settings' {...a11yProps(0)} />
                                         <Tab sx={{ color: 'white', backgroundColor: 'primary.main' }} label='Exposures' {...a11yProps(1)} />
-                                        {hasStackSummary && <Tab sx={{ color: 'white', backgroundColor: 'primary.main' }} label='Stacks' {...a11yProps(stacksTabIdx)} />}
+                                        {showStacksTab && <Tab sx={{ color: 'white', backgroundColor: 'primary.main' }} label='Stacks' {...a11yProps(stacksTabIdx)} />}
                                         {hasStackRank && <Tab sx={{ color: 'white', backgroundColor: 'primary.main' }} label='Stack Value' {...a11yProps(rankTabIdx)} />}
                                     </Tabs>
                                 </Box>
@@ -117,7 +117,7 @@ function SettingsPanel({ sport, tab, setTab, exposures, selectedOpto, buttonLoad
                                 <CustomTabPanel sx={{ width: '100%' }} value={tab} index={1}>
                                     <ExposurePanel sport={sport} optoLen={optoLen} exposures={exposures} selectedOpto={selectedOpto} />
                                 </CustomTabPanel>
-                                {hasStackSummary && (
+                                {showStacksTab && (
                                     <CustomTabPanel sx={{ width: '100%' }} value={tab} index={stacksTabIdx}>
                                         <StackSummaryPanel stackSummary={jackStackSummary} />
                                     </CustomTabPanel>

@@ -25,7 +25,7 @@ function StackSummaryPanel({ stackSummary }) {
         return (
             <Grid container direction='row' justifyContent='center' alignItems='center'>
                 <Grid item>
-                    <Typography>No stack data yet.</Typography>
+                    <Typography>You haven't optimized any lineups!</Typography>
                 </Grid>
             </Grid>
         )
