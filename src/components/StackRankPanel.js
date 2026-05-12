@@ -14,7 +14,7 @@ function StackRankPanel({ stackRankResults }) {
     return (
         <Box sx={{ maxHeight: '50vh', overflow: 'auto' }}>
             <Typography variant='caption' color='text.secondary' sx={{ display: 'block', mb: 1 }}>
-                Avg of 10 random 5-hitter combos per team (proj ≥ 1). Sorted by value (pts/$1k).
+                Avg of 10 random 5-hitter combos per team (proj ≥ 1). Sorted by avg proj.
             </Typography>
             <TableContainer component={Paper}>
                 <Table size='small'>
@@ -38,13 +38,13 @@ function StackRankPanel({ stackRankResults }) {
                                             sx={{ backgroundColor: bgColor, color: '#fff', fontWeight: 'bold', fontSize: '0.72rem' }}
                                         />
                                     </TableCell>
-                                    <TableCell align='right' sx={{ py: 0.5, fontSize: '0.8rem' }}>
+                                    <TableCell align='right' sx={{ py: 0.5, fontSize: '0.8rem', fontWeight: idx < 3 ? 'bold' : 'normal', color: idx < 3 ? 'success.main' : 'inherit' }}>
                                         {row.avgProj.toFixed(1)}
                                     </TableCell>
                                     <TableCell align='right' sx={{ py: 0.5, fontSize: '0.8rem' }}>
                                         ${Math.round(row.avgSal / 1000).toFixed(1)}k
                                     </TableCell>
-                                    <TableCell align='right' sx={{ py: 0.5, fontSize: '0.8rem', fontWeight: idx < 3 ? 'bold' : 'normal', color: idx < 3 ? 'success.main' : 'inherit' }}>
+                                    <TableCell align='right' sx={{ py: 0.5, fontSize: '0.8rem' }}>
                                         {row.avgValue.toFixed(2)}
                                     </TableCell>
                                 </TableRow>

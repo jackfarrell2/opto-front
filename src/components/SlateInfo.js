@@ -738,7 +738,7 @@ function SlateInfo({ sport, slate, setOptimizedLineups, exposures, setExposures,
             }
         })
 
-        results.sort((a, b) => b.avgValue - a.avgValue)
+        results.sort((a, b) => b.avgProj - a.avgProj)
         if (results.length > 0) {
             setStackRankResults(results)
             setTab(3)
