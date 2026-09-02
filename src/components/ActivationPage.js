@@ -12,7 +12,7 @@ const ActivationPage = () => {
     const { setUser, setToken } = React.useContext(UserContext)
     const navigate = useNavigate();
 
-
+    // don't remove this useEffect
     useEffect(() => {
         fetch(`${config.apiUrl}users/activate/${token}`, { method: 'GET' })
             .then(response => response.json())
